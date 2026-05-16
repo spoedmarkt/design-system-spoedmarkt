@@ -8,6 +8,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Soft Pro — Component Library</title>
+  <script>if (history.scrollRestoration) history.scrollRestoration = 'manual';</script>
   <style>
     /* =========================================================
        SOFT PRO TOKENS — mirrors design-system/tokens.ts
@@ -1861,7 +1862,6 @@
   </style>
 </head>
 <body data-theme="light">
-  <script>if (history.scrollRestoration) history.scrollRestoration = 'manual'; window.scrollTo(0, 0);</script>
 
   <nav class="topbar">
     <div class="topbar-inner">
@@ -3644,6 +3644,14 @@
       label.textContent = theme === 'dark' ? 'Dark' : 'Light';
       localStorage.setItem('softpro-theme', theme);
     }
+
+    window.addEventListener('load', () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => {
+        document.documentElement.style.scrollBehavior = '';
+      });
+    });
   </script>
 
 </body>

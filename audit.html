@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>if (history.scrollRestoration) history.scrollRestoration = 'manual';</script>
   <title>Soft Pro Token Audit — Spoedmarktplaats Mobile</title>
   <style>
     :root {
@@ -466,7 +467,6 @@
   </style>
 </head>
 <body data-theme="light">
-  <script>if (history.scrollRestoration) history.scrollRestoration = 'manual'; window.scrollTo(0, 0);</script>
 
   <nav class="topbar">
     <div class="topbar-inner">
@@ -853,6 +853,14 @@ function MyScreen() {
       label.textContent = theme === 'dark' ? 'Dark' : 'Light';
       localStorage.setItem('softpro-theme', theme);
     }
+
+    window.addEventListener('load', () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => {
+        document.documentElement.style.scrollBehavior = '';
+      });
+    });
   </script>
 
 </body>
