@@ -1136,6 +1136,10 @@
     .toast--success::before { content: '✓'; color: var(--brand-accent); font-weight: 700; }
     .toast--error::before   { content: '!'; color: var(--error-soft); font-weight: 700; }
     .toast--info::before    { content: 'ⓘ'; color: var(--info-soft); font-weight: 700; }
+    /* Dark mode: toast bg inverts to white — use high-contrast icon colors */
+    [data-theme="dark"] .toast--success::before { color: #16A34A; }
+    [data-theme="dark"] .toast--error::before   { color: #DC2626; }
+    [data-theme="dark"] .toast--info::before    { color: #0284C7; }
 
     /* =========================================================
        STATES: empty / error / loading / skeleton
@@ -2595,12 +2599,22 @@
           </div>
         </div>
 
-        <div class="group">
-          <div class="group-label">Toast</div>
-          <div class="col">
-            <div class="toast toast--success">Bid placed — provider has been notified.</div>
-            <div class="toast toast--error">Couldn't reach the server. Pull to retry.</div>
-            <div class="toast toast--info">New message in your deal with Jan.</div>
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light</div>
+            <div class="col">
+              <div class="toast toast--success">Bid placed — provider has been notified.</div>
+              <div class="toast toast--error">Couldn't reach the server. Pull to retry.</div>
+              <div class="toast toast--info">New message in your deal with Jan.</div>
+            </div>
+          </div>
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark</div>
+            <div class="col">
+              <div class="toast toast--success">Bid placed — provider has been notified.</div>
+              <div class="toast toast--error">Couldn't reach the server. Pull to retry.</div>
+              <div class="toast toast--info">New message in your deal with Jan.</div>
+            </div>
           </div>
         </div>
       </section>
