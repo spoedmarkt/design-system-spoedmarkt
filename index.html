@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soft Pro — Spoedmarkt Design System</title>
+  <style>
+    :root {
+      --ink:         #1A1814;
+      --ink-strong:  #0A0906;
+      --paper:       #FCFAF7;
+      --paper-200:   #F2EEE8;
+      --paper-400:   #D8D2CA;
+      --warm-600:    #6B6359;
+      --chartreuse:  #E3FF00;
+      --chartreuse-soft: #F8FFB3;
+      --surface:     #FFFFFF;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 720px; width: 100%; }
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 12px;
+      background: var(--chartreuse);
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 44px;
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+      margin-bottom: 16px;
+    }
+    p.lead {
+      font-size: 17px;
+      color: var(--warm-600);
+      max-width: 540px;
+      margin-bottom: 40px;
+    }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 800px) { .cards { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 540px) { .cards { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--paper-400);
+      border-radius: 20px;
+      padding: 28px;
+      text-decoration: none;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 130ms cubic-bezier(.2,0,0,1), box-shadow 130ms cubic-bezier(.2,0,0,1);
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(26,24,20,0.10);
+    }
+    .card-meta {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--warm-600);
+    }
+    .card-title { font-size: 20px; font-weight: 700; letter-spacing: -0.2px; }
+    .card-body { font-size: 14px; color: var(--warm-600); margin-top: 4px; }
+    .card-arrow {
+      margin-top: 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .card-arrow::after { content: ' →'; transition: transform 130ms ease; display: inline-block; }
+    .card:hover .card-arrow::after { transform: translateX(3px); }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <span class="eyebrow">Soft Pro</span>
+    <h1>Spoedmarkt design system</h1>
+    <p class="lead">
+      Token audit and component library for the SpoedMarktplaats mobile app —
+      extracted archaeologically from the existing screens and rebuilt as a
+      semantic, light + dark, token-driven foundation.
+    </p>
+
+    <div class="cards">
+      <a class="card" href="./component-library.html">
+        <span class="card-meta">Showcase</span>
+        <span class="card-title">Component library</span>
+        <span class="card-body">
+          Base components (Button, Input, Card, Modal…) plus the Spoedmarkt
+          signature components (UrgencyTimer, JobCard, BidCard…) — every
+          variant in light and dark mode.
+        </span>
+        <span class="card-arrow">Open</span>
+      </a>
+
+      <a class="card" href="./audit.html">
+        <span class="card-meta">Report</span>
+        <span class="card-title">Token audit</span>
+        <span class="card-body">
+          Every hex literal and magic number in the mobile codebase, tabulated,
+          clustered, and collapsed into a semantic token system.
+        </span>
+        <span class="card-arrow">Open</span>
+      </a>
+
+      <a class="card" href="./tokens.html">
+        <span class="card-meta">Source</span>
+        <span class="card-title">tokens.ts</span>
+        <span class="card-body">
+          The full design-system source — primitives, semantic color roles,
+          spacing, radii, typography, shadows, and motion as TypeScript
+          constants.
+        </span>
+        <span class="card-arrow">Open</span>
+      </a>
+    </div>
+  </main>
+</body>
+</html>

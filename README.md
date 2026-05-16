@@ -7,9 +7,10 @@ SpoedMarktplaats mobile app.
 
 | File                       | What it is                                          |
 | -------------------------- | --------------------------------------------------- |
-| `index.html`               | Landing page with links to both reviews             |
+| `index.html`               | Landing page with links to the three pages         |
 | `component-library.html`   | Base + signature components, light + dark           |
 | `audit.html`               | Archaeological token audit of the mobile codebase   |
+| `tokens.html`              | The full `tokens.ts` source, syntax-highlighted     |
 
 ## Deployment
 
