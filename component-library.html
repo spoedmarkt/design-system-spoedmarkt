@@ -1453,6 +1453,21 @@
       color: var(--text-secondary);
     }
     .job-card-bids svg { width: 14px; height: 14px; }
+    .job-card-sector {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.1px;
+    }
+    .job-card-sector svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      color: var(--text-muted);
+    }
 
     /* =========================================================
        SIGNATURE: BidCard
@@ -2933,6 +2948,10 @@
               </div>
               <div class="job-card-body">
                 <div class="job-card-title">Boiler defect — geen warm water</div>
+                <div class="job-card-sector">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                  Loodgieter
+                </div>
                 <div class="job-card-meta">
                   <span>Utrecht Oost</span>
                   <span class="job-card-meta-dot"></span>
@@ -2962,6 +2981,10 @@
               </div>
               <div class="job-card-body">
                 <div class="job-card-title">Lekkende kraan keuken</div>
+                <div class="job-card-sector">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                  Loodgieter
+                </div>
                 <div class="job-card-meta">
                   <span>Amsterdam Zuid</span>
                   <span class="job-card-meta-dot"></span>
@@ -2984,6 +3007,7 @@
   job<span class="p">: {</span>
     id<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
     title<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
+    sector<span class="p">: {</span> label<span class="p">:</span> <span class="t">string</span><span class="p">;</span> icon<span class="p">:</span> <span class="t">React.ReactNode</span> <span class="p">};</span>
     media<span class="p">?: {</span> type<span class="p">:</span> <span class="s">'photo'</span> <span class="p">|</span> <span class="s">'video'</span><span class="p">;</span> url<span class="p">:</span> <span class="t">string</span><span class="p">;</span> thumbnail<span class="p">?:</span> <span class="t">string</span> <span class="p">};</span>
     voiceNote<span class="p">?: {</span> url<span class="p">:</span> <span class="t">string</span><span class="p">;</span> durationSec<span class="p">:</span> <span class="t">number</span> <span class="p">};</span>
     location<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
