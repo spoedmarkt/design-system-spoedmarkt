@@ -1029,11 +1029,28 @@
       transition: all var(--motion-quick) var(--ease);
       font-family: inherit;
     }
-    .chip:hover { background: var(--surface-secondary); }
+    .chip:hover {
+      background: var(--surface-primary);
+      border-color: var(--border-strong);
+    }
+    .chip:active {
+      background: var(--surface-tertiary);
+      border-color: var(--border-strong);
+      transform: scale(0.97);
+    }
     .chip--active {
       background: var(--brand-primary);
       color: var(--text-on-brand);
       border-color: var(--brand-primary);
+    }
+    .chip--active:hover {
+      background: var(--brand-primary-strong);
+      border-color: var(--brand-primary-strong);
+    }
+    .chip--active:active {
+      background: var(--brand-primary-soft);
+      border-color: var(--brand-primary-soft);
+      transform: scale(0.97);
     }
     .chip--accent {
       background: var(--brand-accent);
