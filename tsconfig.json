@@ -1,0 +1,19 @@
+{
+  "//": "Resolves react / react-native types from the mobile project's node_modules so the editor type-checks this folder. These files are meant to be copied INTO spoedmarktplaats-mobile/src/design-system/ — this tsconfig only exists so VS Code / tsserver doesn't flag environmental missing-module errors while previewing.",
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-native",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../spoedmarktplaats-mobile/node_modules/@types/react"],
+      "react/jsx-runtime": ["../../spoedmarktplaats-mobile/node_modules/@types/react/jsx-runtime"],
+      "react-native": ["../../spoedmarktplaats-mobile/node_modules/react-native"]
+    }
+  },
+  "include": ["./*.ts", "./*.tsx"]
+}
