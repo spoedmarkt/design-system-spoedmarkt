@@ -1,0 +1,3649 @@
+<!DOCTYPE html>
+<!-- cspell:disable -->
+<!-- Dutch domain copy (Loodgieter, Elektricien, etc.) + CSS shorthand
+     (tabular-nums) + custom storage key (softpro-theme) trigger cSpell.
+     Disable for the whole file since this is preview markup, not content. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soft Pro — Component Library</title>
+  <style>
+    /* =========================================================
+       SOFT PRO TOKENS — mirrors design-system/tokens.ts
+       Light is default; data-theme="dark" swaps via theme.tsx.
+       Build these components once, use them everywhere.
+       ========================================================= */
+    :root[data-theme="light"], :root {
+      /* Brand */
+      --brand-primary:        #1A1814;
+      --brand-primary-strong: #0A0906;
+      --brand-primary-soft:   #2D2A26;
+      --brand-accent:         #E3FF00;
+      --brand-accent-soft:    #F8FFB3;
+      --brand-flame:          #FF5F1F;
+
+      /* Surface */
+      --surface-bg:           #FCFAF7;
+      --surface-primary:      #FFFFFF;
+      --surface-secondary:    #F2EEE8;
+      --surface-tertiary:     #EDE8E1;
+      --surface-inverse:      #1A1814;
+      --surface-tinted:       #F8FFB3;
+
+      /* Text */
+      --text-primary:         #1A1814;
+      --text-secondary:       #6B6359;
+      --text-muted:           #A39B8E;
+      --text-inverse:         #FFFFFF;
+      --text-link:            #1A1814;
+      --text-on-accent:       #1A1814;
+      --text-on-brand:        #FFFFFF;
+
+      /* Border */
+      --border-default:       #D8D2CA;
+      --border-subtle:        #EDE8E1;
+      --border-strong:        #1A1814;
+      --border-accent:        #E3FF00;
+
+      /* Feedback */
+      --success:              #16A34A;
+      --success-soft:         #3B9C4F;
+      --success-muted:        #DCFCE7;
+      --warning:              #F59E0B;
+      --warning-soft:         #FBBF24;
+      --warning-muted:        #FEF9C3;
+      --error:                #DC2626;
+      --error-soft:           #F87171;
+      --error-muted:          #FEE2E2;
+      --info:                 #0284C7;
+      --info-soft:            #60A5FA;
+      --info-muted:           #DBEAFE;
+
+      /* Urgency */
+      --urgency-critical:     #EF4444;
+      --urgency-high:         #3B82F6;
+      --urgency-scheduled:    #3B82F6;
+      --urgency-flexible:     #16A34A;
+
+      /* Badge */
+      --badge-verified:       #16A34A;
+      --badge-boosted:        #F59E0B;
+      --badge-private-pool:   #7C3AED;
+
+      /* Overlay */
+      --overlay-scrim:        rgba(26,24,20,0.52);
+      --overlay-soft:         rgba(26,24,20,0.06);
+
+      /* Branded CTA surface — non-inverting. Primary buttons should read
+         identical in light + dark; the chartreuse-on-ink combo IS the
+         brand. */
+      --cta-primary-bg:       #1A1814;
+      --cta-primary-bg-hover: #0A0906;
+
+      /* Shadows — iOS-style warm ink-tinted */
+      --shadow-xs:  0 1px 2px  rgba(26,24,20,0.04);
+      --shadow-sm:  0 2px 6px  rgba(26,24,20,0.06);
+      --shadow-md:  0 4px 12px rgba(26,24,20,0.08);
+      --shadow-lg:  0 8px 20px rgba(26,24,20,0.10);
+      --shadow-xl:  0 12px 28px rgba(26,24,20,0.12);
+      --shadow-2xl: 0 16px 36px rgba(26,24,20,0.16);
+
+      /* Spacing — 4px grid */
+      --space-xs:  4px;
+      --space-sm:  8px;
+      --space-md:  12px;
+      --space-lg:  16px;
+      --space-xl:  24px;
+      --space-2xl: 32px;
+      --space-3xl: 48px;
+
+      /* Radii */
+      --radius-xs:   4px;
+      --radius-sm:   8px;
+      --radius-md:   12px;
+      --radius-lg:   16px;
+      --radius-xl:   20px;
+      --radius-2xl:  24px;
+      --radius-pill: 999px;
+
+      /* Motion */
+      --motion-quick: 130ms;
+      --motion-std:   210ms;
+      --motion-slow:  310ms;
+      --ease:         cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    [data-theme="dark"] {
+      --brand-primary:        #F8F4EC;
+      --brand-primary-strong: #FCFAF7;
+      --brand-primary-soft:   #F2EEE8;
+      --brand-accent:         #E3FF00;
+      --brand-accent-soft:    rgba(227,255,0,0.16);
+      --brand-flame:          #FF5F1F;
+
+      --surface-bg:           #15130F;
+      --surface-primary:      #1A1814;
+      --surface-secondary:    #211E18;
+      --surface-tertiary:     rgba(248,244,236,0.04);
+      --surface-inverse:      #FCFAF7;
+      --surface-tinted:       rgba(227,255,0,0.08);
+
+      --text-primary:         #F8F4EC;
+      --text-secondary:       #A39B8E;
+      --text-muted:           #6B6359;
+      --text-inverse:         #1A1814;
+      --text-link:            #E3FF00;
+      --text-on-accent:       #1A1814;
+      --text-on-brand:        #1A1814;
+
+      --border-default:       rgba(248,244,236,0.12);
+      --border-subtle:        rgba(248,244,236,0.06);
+      --border-strong:        #F8F4EC;
+      --border-accent:        #E3FF00;
+
+      --success:              #4ADE80;
+      --success-soft:         #3B9C4F;
+      --success-muted:        rgba(74,222,128,0.15);
+      --warning:              #FBBF24;
+      --warning-soft:         #F59E0B;
+      --warning-muted:        rgba(251,191,36,0.15);
+      --error:                #F87171;
+      --error-soft:           #EF4444;
+      --error-muted:          rgba(248,113,113,0.15);
+      --info:                 #60A5FA;
+      --info-soft:            #93C5FD;
+      --info-muted:           rgba(96,165,250,0.15);
+
+      --urgency-critical:     #F87171;
+      --urgency-high:         #60A5FA;
+      --urgency-scheduled:    #60A5FA;
+      --urgency-flexible:     #4ADE80;
+
+      --badge-verified:       #4ADE80;
+      --badge-boosted:        #FBBF24;
+      --badge-private-pool:   #A78BFA;
+
+      --overlay-scrim:        rgba(0,0,0,0.7);
+      --overlay-soft:         rgba(248,244,236,0.08);
+
+      /* Same ink CTA in dark mode — chartreuse-on-ink stays consistent. */
+      --cta-primary-bg:       #1A1814;
+      --cta-primary-bg-hover: #0A0906;
+
+      --shadow-xs:  0 1px 2px  rgba(0,0,0,0.20);
+      --shadow-sm:  0 2px 6px  rgba(0,0,0,0.28);
+      --shadow-md:  0 4px 12px rgba(0,0,0,0.36);
+      --shadow-lg:  0 8px 20px rgba(0,0,0,0.42);
+      --shadow-xl:  0 12px 28px rgba(0,0,0,0.50);
+      --shadow-2xl: 0 16px 36px rgba(0,0,0,0.58);
+    }
+
+    /* =========================================================
+       BASE STYLES
+       ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+      background: var(--surface-bg);
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background var(--motion-std) var(--ease), color var(--motion-std) var(--ease);
+    }
+
+    a { color: var(--text-link); }
+    code, pre { font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; }
+    code { background: var(--surface-secondary); padding: 2px 6px; border-radius: var(--radius-xs); color: var(--text-primary); }
+
+    /* =========================================================
+       LAYOUT — sticky nav + content
+       ========================================================= */
+    .page {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      max-width: 1280px;
+      margin: 0 auto;
+      gap: var(--space-3xl);
+      padding: var(--space-3xl) var(--space-xl);
+    }
+    .sidebar {
+      position: sticky;
+      top: var(--space-xl);
+      align-self: start;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+    }
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-md);
+      padding-left: var(--space-md);
+    }
+    .sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .sidebar-nav a {
+      display: block;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      transition: background var(--motion-quick) var(--ease), color var(--motion-quick) var(--ease);
+    }
+    .sidebar-nav a:hover {
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+    .header .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-top: 4px;
+    }
+
+    /* =========================================================
+       STICKY TOPBAR — shared chrome with audit.html / tokens.html
+       ========================================================= */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface-bg);
+      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(10px);
+      transition: background var(--motion-std) var(--ease);
+    }
+    .topbar-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .crumb {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      transition: color var(--motion-quick) var(--ease);
+    }
+    .crumb:hover { color: var(--text-primary); }
+    .crumb-back {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-default);
+    }
+    .crumb-back svg { width: 14px; height: 14px; }
+
+    /* Theme toggle — repositioned into the topbar */
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: inherit;
+      transition: all var(--motion-quick) var(--ease);
+    }
+    .theme-toggle:hover { box-shadow: var(--shadow-sm); }
+    .theme-toggle .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--brand-accent);
+    }
+
+    /* =========================================================
+       SECTIONS
+       ========================================================= */
+    section.demo {
+      margin-bottom: var(--space-3xl);
+      scroll-margin-top: var(--space-xl);
+    }
+    section.demo > h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: var(--space-xl);
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-md);
+    }
+    section.demo > h2 .name { font-family: 'SF Mono', Monaco, monospace; }
+    section.demo > h2 .meta {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0;
+      font-family: inherit;
+    }
+    section.demo > p.lead {
+      color: var(--text-secondary);
+      margin-bottom: var(--space-lg);
+      max-width: 640px;
+    }
+
+    .group {
+      background: var(--surface-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+    }
+    .group-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: var(--space-md);
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    /* =========================================================
+       BUTTON
+       primary / secondary / tertiary / destructive / ghost
+       sizes: sm, md, lg | states: default, disabled, loading
+       ========================================================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform var(--motion-quick) var(--ease),
+                  background var(--motion-quick) var(--ease),
+                  box-shadow var(--motion-quick) var(--ease),
+                  opacity var(--motion-quick) var(--ease);
+      white-space: nowrap;
+    }
+    .btn:not(:disabled):hover { transform: translateY(-1px); }
+    .btn:not(:disabled):active { transform: translateY(0); }
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--brand-accent-soft), 0 0 0 4px var(--border-strong);
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* Sizes */
+    .btn--sm { padding: 8px 14px;  font-size: 13px; min-height: 36px; }
+    .btn--md { padding: 12px 18px; font-size: 14px; min-height: 44px; }
+    .btn--lg { padding: 14px 22px; font-size: 16px; min-height: 52px; }
+
+    /* Variants */
+    .btn--primary {
+      background: var(--cta-primary-bg);
+      color: var(--brand-accent);
+    }
+    .btn--primary:not(:disabled):hover { background: var(--cta-primary-bg-hover); box-shadow: var(--shadow-sm); }
+
+    .btn--secondary {
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+    }
+    .btn--secondary:not(:disabled):hover { background: var(--surface-tertiary); }
+
+    .btn--tertiary {
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+    }
+    .btn--tertiary:not(:disabled):hover { box-shadow: var(--shadow-md); }
+
+    .btn--destructive {
+      background: var(--error);
+      color: #FFFFFF;
+    }
+    .btn--destructive:not(:disabled):hover { background: var(--error-soft); }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-default);
+    }
+    .btn--ghost:not(:disabled):hover { background: var(--overlay-soft); }
+
+    /* Loading spinner */
+    .spinner {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* =========================================================
+       ICON BUTTON
+       same variants as Button, but square / round + icon only.
+       ========================================================= */
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      padding: 0;
+      flex-shrink: 0;
+      transition: transform var(--motion-quick) var(--ease),
+                  background var(--motion-quick) var(--ease),
+                  box-shadow var(--motion-quick) var(--ease),
+                  opacity var(--motion-quick) var(--ease);
+    }
+    .icon-btn:not(:disabled):hover  { transform: translateY(-1px); }
+    .icon-btn:not(:disabled):active { transform: translateY(0); }
+    .icon-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--brand-accent-soft), 0 0 0 4px var(--border-strong);
+    }
+    .icon-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .icon-btn svg { width: 60%; height: 60%; }
+
+    /* Sizes — square */
+    .icon-btn--sm { width: 36px; height: 36px; }
+    .icon-btn--md { width: 44px; height: 44px; }
+    .icon-btn--lg { width: 52px; height: 52px; }
+    .icon-btn--xl { width: 64px; height: 64px; }
+
+    /* Shape */
+    .icon-btn--round { border-radius: var(--radius-pill); }
+
+    /* Variants */
+    .icon-btn--primary {
+      background: var(--cta-primary-bg);
+      color: var(--brand-accent);
+    }
+    .icon-btn--primary:not(:disabled):hover { background: var(--cta-primary-bg-hover); box-shadow: var(--shadow-sm); }
+
+    .icon-btn--secondary {
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+    }
+    .icon-btn--secondary:not(:disabled):hover { background: var(--surface-tertiary); }
+
+    .icon-btn--tertiary {
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+    }
+    .icon-btn--tertiary:not(:disabled):hover { box-shadow: var(--shadow-md); }
+
+    .icon-btn--destructive {
+      background: var(--error);
+      color: #FFFFFF;
+    }
+    .icon-btn--destructive:not(:disabled):hover { background: var(--error-soft); }
+
+    .icon-btn--ghost {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-default);
+    }
+    .icon-btn--ghost:not(:disabled):hover { background: var(--overlay-soft); }
+
+    /* FAB — floating action button */
+    .icon-btn--fab {
+      box-shadow: var(--shadow-lg);
+    }
+    .icon-btn--fab:not(:disabled):hover { box-shadow: var(--shadow-xl); }
+
+    /* =========================================================
+       DARK-MODE BUTTON ROLE SWAP
+       Ink disappears against the dark card surface. In dark mode
+       we swap Primary ↔ Tertiary so Primary is the loud chartreuse
+       CTA and Tertiary keeps the muted ink-on-chartreuse-text feel.
+       ========================================================= */
+    [data-theme="dark"] .btn--primary,
+    [data-theme="dark"] .icon-btn--primary {
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+    }
+    [data-theme="dark"] .btn--primary:not(:disabled):hover,
+    [data-theme="dark"] .icon-btn--primary:not(:disabled):hover {
+      background: var(--brand-accent);
+      box-shadow: var(--shadow-md);
+    }
+    [data-theme="dark"] .btn--tertiary,
+    [data-theme="dark"] .icon-btn--tertiary {
+      background: var(--cta-primary-bg);
+      color: var(--brand-accent);
+    }
+    [data-theme="dark"] .btn--tertiary:not(:disabled):hover,
+    [data-theme="dark"] .icon-btn--tertiary:not(:disabled):hover {
+      background: var(--cta-primary-bg-hover);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* =========================================================
+       SEARCH BAR
+       sm/md/lg · outlined + filled variants · clear, filter, voice,
+       suggestions dropdown.
+       Radius: always pill — matches tokens.ts `cornerRadius.chip`
+       (the discovery-surface aesthetic of Soft Pro).
+       ========================================================= */
+    .search {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-pill);
+      padding: 0 var(--space-lg);
+      min-height: 44px;
+      transition: border var(--motion-quick) var(--ease), box-shadow var(--motion-quick) var(--ease);
+      width: 100%;
+      max-width: 540px;
+    }
+    .search:focus-within {
+      border-color: var(--border-strong);
+      box-shadow: 0 0 0 3px var(--brand-accent-soft);
+    }
+    .search--filled {
+      background: var(--surface-secondary);
+      border-color: transparent;
+    }
+    .search--filled:focus-within {
+      background: var(--surface-primary);
+      border-color: var(--border-strong);
+    }
+    .search--sm { min-height: 36px; padding: 0 var(--space-md); }
+    .search--lg { min-height: 52px; padding: 0 var(--space-lg); gap: var(--space-md); }
+
+    .search-icon {
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      display: inline-flex;
+    }
+    .search-icon svg { width: 18px; height: 18px; }
+    .search--lg .search-icon svg { width: 20px; height: 20px; }
+
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text-primary);
+      padding: var(--space-md) 0;
+    }
+    .search--sm .search-input { font-size: 14px; padding: var(--space-sm) 0; }
+    .search--lg .search-input { font-size: 16px; padding: var(--space-md) 0; }
+    .search-input:focus { outline: none; }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:disabled { cursor: not-allowed; color: var(--text-muted); }
+
+    .search-clear {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--surface-tertiary);
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      flex-shrink: 0;
+      transition: background var(--motion-quick) var(--ease);
+    }
+    .search-clear:hover { background: var(--border-default); color: var(--text-primary); }
+    .search-clear svg { width: 12px; height: 12px; }
+
+    .search-divider {
+      width: 1px;
+      background: var(--border-subtle);
+      align-self: stretch;
+      margin: 8px 0;
+    }
+
+    .search-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      transition: background var(--motion-quick) var(--ease);
+      font-family: inherit;
+    }
+    .search-action:hover { background: var(--overlay-soft); }
+    .search-action svg { width: 16px; height: 16px; }
+    .search-action .count-badge {
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      min-width: 18px;
+      text-align: center;
+    }
+
+    /* Suggestions dropdown */
+    .search-suggestions {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0; right: 0;
+      background: var(--surface-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      z-index: 10;
+    }
+    .search-suggestion-group {
+      padding: 10px var(--space-lg) 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+    .search-suggestion {
+      padding: 10px var(--space-lg);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    .search-suggestion:hover, .search-suggestion.is-highlighted {
+      background: var(--surface-secondary);
+    }
+    .search-suggestion-icon {
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      display: inline-flex;
+    }
+    .search-suggestion-icon svg { width: 16px; height: 16px; }
+    .search-suggestion-text { flex: 1; min-width: 0; }
+    .search-suggestion-text mark {
+      background: transparent;
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+    .search-suggestion-meta {
+      color: var(--text-muted);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* =========================================================
+       INPUT / TEXTAREA
+       text / email / phone / number | error / success / focused
+       ========================================================= */
+    .field { display: flex; flex-direction: column; gap: 6px; min-width: 240px; flex: 1; }
+    .field-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .field-helper { font-size: 12px; color: var(--text-secondary); }
+    .field-helper.error { color: var(--error); }
+    .field-helper.success { color: var(--success); }
+
+    .input, .textarea {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      background: var(--surface-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      transition: border var(--motion-quick) var(--ease), box-shadow var(--motion-quick) var(--ease);
+    }
+    .input::placeholder, .textarea::placeholder { color: var(--text-muted); }
+    .input:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--border-strong);
+      box-shadow: 0 0 0 3px var(--brand-accent-soft);
+    }
+    .field--error .input,
+    .field--error .textarea { border-color: var(--error); }
+    .field--error .input:focus,
+    .field--error .textarea:focus { box-shadow: 0 0 0 3px var(--error-muted); }
+    .field--success .input,
+    .field--success .textarea { border-color: var(--success); }
+    .field--success .input:focus,
+    .field--success .textarea:focus { box-shadow: 0 0 0 3px var(--success-muted); }
+    .input:disabled, .textarea:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .input-prefix {
+      position: relative;
+    }
+    .input-prefix .icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+    .input-prefix .input { padding-left: 38px; }
+
+    .textarea { min-height: 96px; resize: vertical; font-family: inherit; }
+    .textarea-wrap { position: relative; }
+    .textarea-counter {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--surface-primary);
+      padding: 2px 6px;
+      border-radius: var(--radius-xs);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* =========================================================
+       CHECKBOX / RADIO / TOGGLE
+       ========================================================= */
+    .control {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      cursor: pointer;
+      font-size: 14px;
+      user-select: none;
+    }
+    .control input { display: none; }
+
+    .checkbox {
+      width: 20px; height: 20px;
+      border: 1.5px solid var(--border-default);
+      border-radius: var(--radius-xs);
+      background: var(--surface-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--motion-quick) var(--ease);
+    }
+    .control input:checked + .checkbox {
+      background: var(--brand-primary);
+      border-color: var(--brand-primary);
+    }
+    .control input:checked + .checkbox::after {
+      content: '';
+      width: 6px; height: 10px;
+      border: solid var(--text-on-brand);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg) translateY(-1px);
+    }
+
+    .radio {
+      width: 20px; height: 20px;
+      border: 1.5px solid var(--border-default);
+      border-radius: 50%;
+      background: var(--surface-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--motion-quick) var(--ease);
+    }
+    .control input:checked + .radio { border-color: var(--brand-primary); border-width: 2px; }
+    .control input:checked + .radio::after {
+      content: '';
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+    }
+
+    .toggle {
+      width: 40px; height: 24px;
+      background: var(--border-default);
+      border-radius: 999px;
+      position: relative;
+      transition: background var(--motion-std) var(--ease);
+    }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 20px; height: 20px;
+      background: var(--surface-primary);
+      border-radius: 50%;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--motion-std) var(--ease);
+    }
+    .control input:checked + .toggle { background: var(--brand-accent); }
+    .control input:checked + .toggle::after { transform: translateX(16px); }
+    .control input:disabled + .checkbox,
+    .control input:disabled + .radio,
+    .control input:disabled + .toggle { opacity: 0.4; }
+
+    /* =========================================================
+       SELECT / PICKER
+       ========================================================= */
+    .select {
+      position: relative;
+      min-width: 220px;
+    }
+    .select select {
+      appearance: none;
+      width: 100%;
+      padding: 12px 38px 12px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      background: var(--surface-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+    .select::after {
+      content: '';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      width: 8px; height: 8px;
+      border-right: 1.5px solid var(--text-secondary);
+      border-bottom: 1.5px solid var(--text-secondary);
+      transform: translateY(-70%) rotate(45deg);
+      pointer-events: none;
+    }
+    .select select:focus {
+      outline: none;
+      border-color: var(--border-strong);
+      box-shadow: 0 0 0 3px var(--brand-accent-soft);
+    }
+
+    .picker {
+      background: var(--surface-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      max-width: 320px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .picker-item {
+      padding: var(--space-md) var(--space-lg);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .picker-item:last-child { border-bottom: none; }
+    .picker-item:hover { background: var(--surface-secondary); }
+    .picker-item.is-selected {
+      background: var(--brand-accent-soft);
+      color: var(--text-on-accent);
+      font-weight: 600;
+    }
+    .picker-item.is-selected::after {
+      content: '✓';
+      color: var(--brand-primary);
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       CARD / ELEVATED CARD
+       ========================================================= */
+    .card, .card-elevated {
+      background: var(--surface-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      min-width: 260px;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .card { border: 1px solid var(--border-default); }
+    .card-elevated {
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-md);
+    }
+    .card-title, .card-elevated .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .card-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* =========================================================
+       AVATAR — with fallback initials
+       ========================================================= */
+    .avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+      border-radius: 50%;
+      font-weight: 600;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar--xs { width: 28px; height: 28px; font-size: 11px; }
+    .avatar--sm { width: 36px; height: 36px; font-size: 13px; }
+    .avatar--md { width: 44px; height: 44px; font-size: 15px; }
+    .avatar--lg { width: 56px; height: 56px; font-size: 18px; }
+    .avatar--xl { width: 72px; height: 72px; font-size: 22px; }
+    .avatar--accent { background: var(--brand-accent); color: var(--text-on-accent); }
+    .avatar--flame  { background: var(--brand-flame);  color: #FFFFFF; }
+    .avatar--ink    { background: var(--brand-primary); color: var(--text-on-brand); }
+
+    /* =========================================================
+       STATUS PILL — job / bid / deal statuses
+       ========================================================= */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+    }
+    .pill .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .pill--success { background: var(--success-muted); color: var(--success); }
+    .pill--warning { background: var(--warning-muted); color: var(--warning); }
+    .pill--error   { background: var(--error-muted);   color: var(--error); }
+    .pill--info    { background: var(--info-muted);    color: var(--info); }
+    .pill--ink     { background: var(--brand-primary); color: var(--text-on-brand); }
+    .pill--accent  { background: var(--brand-accent);  color: var(--text-on-accent); }
+    .pill--flame   { background: var(--brand-flame);   color: #FFFFFF; }
+
+    /* =========================================================
+       TAG / CHIP
+       ========================================================= */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-pill);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-default);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all var(--motion-quick) var(--ease);
+      font-family: inherit;
+    }
+    .chip:hover { background: var(--surface-secondary); }
+    .chip--active {
+      background: var(--brand-primary);
+      color: var(--text-on-brand);
+      border-color: var(--brand-primary);
+    }
+    .chip--accent {
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+      border-color: var(--brand-accent);
+    }
+    .chip .remove {
+      width: 14px; height: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.1);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    /* =========================================================
+       MODAL / BOTTOM SHEET / TOAST
+       ========================================================= */
+    .modal-frame {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface-primary);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-2xl);
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+    .modal-header {
+      padding: var(--space-lg) var(--space-xl);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 { font-size: 17px; font-weight: 600; }
+    .modal-body { padding: var(--space-xl); }
+    .modal-footer {
+      padding: var(--space-lg) var(--space-xl);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-sm);
+    }
+
+    .sheet-frame {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface-primary);
+      border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+      box-shadow: var(--shadow-xl);
+      padding: var(--space-md) var(--space-xl) var(--space-xl);
+      border: 1px solid var(--border-subtle);
+      border-bottom: none;
+    }
+    .sheet-grabber {
+      width: 40px; height: 4px;
+      background: var(--border-default);
+      border-radius: var(--radius-pill);
+      margin: 0 auto var(--space-lg);
+    }
+    .sheet-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: var(--space-md);
+    }
+
+    .toast {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-md);
+      background: var(--surface-inverse);
+      color: var(--text-inverse);
+      padding: var(--space-md) var(--space-lg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      font-size: 14px;
+      font-weight: 500;
+      min-width: 280px;
+    }
+    .toast--success::before { content: '✓'; color: var(--brand-accent); font-weight: 700; }
+    .toast--error::before   { content: '!'; color: var(--error-soft); font-weight: 700; }
+    .toast--info::before    { content: 'ⓘ'; color: var(--info-soft); font-weight: 700; }
+
+    /* =========================================================
+       STATES: empty / error / loading / skeleton
+       ========================================================= */
+    .state {
+      background: var(--surface-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-2xl);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--space-md);
+      min-width: 280px;
+      max-width: 360px;
+    }
+    .state-icon {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--surface-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    .state-icon--accent { background: var(--brand-accent-soft); }
+    .state-icon--error  { background: var(--error-muted); color: var(--error); }
+    .state-title { font-size: 16px; font-weight: 600; }
+    .state-body  { font-size: 14px; color: var(--text-secondary); }
+
+    /* Skeleton */
+    .skeleton {
+      background: linear-gradient(
+        90deg,
+        var(--surface-secondary) 0%,
+        var(--surface-tertiary)  50%,
+        var(--surface-secondary) 100%
+      );
+      background-size: 200% 100%;
+      border-radius: var(--radius-sm);
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+    .skeleton--line  { height: 12px; }
+    .skeleton--title { height: 18px; }
+    .skeleton--circle { border-radius: 50%; }
+    @keyframes shimmer {
+      from { background-position: 200% 0; }
+      to   { background-position: -200% 0; }
+    }
+    .skeleton-card {
+      width: 100%;
+      max-width: 320px;
+      padding: var(--space-lg);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .skeleton-card .head { display: flex; align-items: center; gap: var(--space-md); }
+
+    /* =========================================================
+       PREVIEW PAIR — side-by-side light + dark for visual review.
+       Inner element carries data-theme so vars resolve in scope.
+       ========================================================= */
+    .preview-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+    .preview-pair > .preview {
+      background: var(--surface-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      min-width: 0;
+    }
+    .preview-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    @media (max-width: 720px) {
+      .preview-pair { grid-template-columns: 1fr; }
+    }
+
+    /* =========================================================
+       CODE BLOCK — TypeScript snippets
+       ========================================================= */
+    .code-block {
+      background: #1A1814;
+      color: #F8F4EC;
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      overflow-x: auto;
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      margin-bottom: var(--space-md);
+    }
+    .code-block .k { color: #E3FF00; }              /* keyword */
+    .code-block .t { color: #93C5FD; }              /* type */
+    .code-block .s { color: #FBBF24; }              /* string */
+    .code-block .c { color: #A39B8E; font-style: italic; } /* comment */
+    .code-block .p { color: #F8F4EC; }              /* punctuation */
+    .code-block .f { color: #FCFAF7; }              /* function */
+    .code-tabs {
+      display: inline-flex;
+      gap: 2px;
+      margin-bottom: -6px;
+      position: relative;
+      z-index: 1;
+    }
+    .code-tab {
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--surface-secondary);
+      border: 1px solid var(--border-subtle);
+      border-bottom: none;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+    .code-tab--active {
+      background: #1A1814;
+      color: #E3FF00;
+      border-color: #1A1814;
+    }
+
+    /* =========================================================
+       SIGNATURE: UrgencyTimer
+       ========================================================= */
+    .urgency-timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.2px;
+    }
+    .urgency-timer svg { width: 14px; height: 14px; }
+    .urgency-timer--ample      { background: var(--success-muted); color: var(--success); }
+    .urgency-timer--halfway    { background: var(--warning-muted); color: var(--warning); }
+    .urgency-timer--near       { background: var(--error-muted);   color: var(--error); animation: pulse 1.6s ease-in-out infinite; }
+    .urgency-timer--expired    { background: var(--surface-secondary); color: var(--text-muted); }
+    .urgency-timer--lg { padding: 8px 14px; font-size: 14px; }
+    .urgency-timer--sm { padding: 4px 10px; font-size: 11px; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.7; transform: scale(0.97); }
+    }
+
+    /* =========================================================
+       SIGNATURE: FsBadge — Validated via For Suppliers
+       ========================================================= */
+    .fs-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px 5px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+    }
+    .fs-badge svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .fs-badge--verified  { background: var(--success-muted); color: var(--success); }
+    .fs-badge--pending   { background: var(--warning-muted); color: var(--warning); }
+    .fs-badge--unlinked  { background: var(--surface-secondary); color: var(--text-muted); border-color: var(--border-default); }
+
+    /* =========================================================
+       SIGNATURE: BoostFlame
+       ========================================================= */
+    .boost-flame {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #FF5F1F 0%, #FFA94D 100%);
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(255, 95, 31, 0.35);
+    }
+    .boost-flame .flame {
+      width: 12px; height: 12px;
+      display: inline-flex;
+      animation: flicker 1.4s ease-in-out infinite;
+    }
+    .boost-flame .flame svg { width: 100%; height: 100%; fill: #FFE5A0; }
+    .boost-flame--sm { padding: 2px 8px 2px 6px; font-size: 10px; }
+    .boost-flame--lg { padding: 6px 14px 6px 10px; font-size: 13px; }
+    .boost-flame--lg .flame { width: 16px; height: 16px; }
+    @keyframes flicker {
+      0%, 100% { transform: scale(1) rotate(-2deg); }
+      50%      { transform: scale(1.1) rotate(2deg); }
+    }
+
+    /* =========================================================
+       SIGNATURE: JobCard — media-first feed card
+       ========================================================= */
+    .job-card {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      background: var(--surface-primary);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform var(--motion-quick) var(--ease), box-shadow var(--motion-quick) var(--ease);
+    }
+    .job-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .job-card-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: linear-gradient(135deg, #5D4037 0%, #2D2A26 100%);
+      overflow: hidden;
+    }
+    .job-card-media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.5) 100%);
+    }
+    .job-card-media-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .job-card-overlay {
+      position: absolute;
+      inset: 0;
+      padding: var(--space-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      z-index: 1;
+    }
+    .job-card-overlay-bottom {
+      position: absolute;
+      left: var(--space-md);
+      bottom: var(--space-md);
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .voice-play {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      border: none;
+      cursor: pointer;
+    }
+    .voice-play svg { width: 14px; height: 14px; }
+    .voice-duration {
+      font-size: 12px;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: rgba(0,0,0,0.5);
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.3px;
+    }
+    .job-card-body {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .job-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .job-card-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .job-card-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); }
+    .job-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 4px;
+    }
+    .job-card-price {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .job-card-price small {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    .job-card-bids {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .job-card-bids svg { width: 14px; height: 14px; }
+
+    /* =========================================================
+       SIGNATURE: BidCard
+       ========================================================= */
+    .bid-card {
+      width: 100%;
+      max-width: 360px;
+      background: var(--surface-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .bid-card--accepted {
+      border-color: var(--success);
+      box-shadow: 0 0 0 3px var(--success-muted);
+    }
+    .bid-card--declined {
+      opacity: 0.6;
+    }
+    .bid-card--declined .bid-card-amount {
+      background: var(--surface-secondary);
+    }
+    .bid-card-head {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    .bid-card-identity { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .bid-card-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bid-card-name svg { width: 14px; height: 14px; color: var(--badge-verified); }
+    .bid-card-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .bid-card-rating svg { width: 12px; height: 12px; fill: var(--badge-boosted); color: var(--badge-boosted); }
+    .bid-card-verifications {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .verify-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 6px;
+      border-radius: var(--radius-xs);
+      background: var(--surface-secondary);
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.3px;
+    }
+    .verify-chip--ok { color: var(--success); background: var(--success-muted); }
+    .bid-card-amount {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      padding: var(--space-md) var(--space-lg);
+      background: var(--surface-tinted);
+      border-radius: var(--radius-md);
+    }
+    .bid-card-amount .value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+    .bid-card-amount .unit {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .bid-card-message {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .bid-card-actions {
+      display: flex;
+      gap: var(--space-sm);
+    }
+    .bid-card-actions .btn { flex: 1; }
+
+    /* =========================================================
+       SIGNATURE: MediaCarousel
+       ========================================================= */
+    .media-carousel {
+      display: flex;
+      gap: var(--space-sm);
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+    .media-carousel::-webkit-scrollbar { height: 6px; }
+    .media-carousel::-webkit-scrollbar-thumb {
+      background: var(--border-default);
+      border-radius: var(--radius-pill);
+    }
+    .media-tile {
+      position: relative;
+      flex-shrink: 0;
+      width: 120px;
+      height: 96px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--surface-secondary);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+    }
+    .media-tile img { width: 100%; height: 100%; object-fit: cover; }
+    .media-tile--video::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 50%);
+    }
+    .media-tile-icon {
+      position: absolute;
+      top: 6px; left: 6px;
+      width: 22px; height: 22px;
+      background: rgba(0,0,0,0.55);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      z-index: 1;
+    }
+    .media-tile-icon svg { width: 12px; height: 12px; }
+    .media-tile-meta {
+      position: absolute;
+      bottom: 6px; right: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: rgba(0,0,0,0.6);
+      padding: 2px 6px;
+      border-radius: var(--radius-xs);
+      z-index: 1;
+      letter-spacing: 0.3px;
+    }
+    .media-tile--voice {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-tinted);
+      border-color: var(--brand-accent);
+    }
+    .waveform {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 0 var(--space-md);
+      height: 100%;
+    }
+    .waveform-bar {
+      width: 3px;
+      background: var(--brand-primary);
+      border-radius: var(--radius-pill);
+    }
+
+    /* =========================================================
+       SIGNATURE: ProviderProfileHeader
+       ========================================================= */
+    .provider-header {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      background: var(--surface-primary);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+    }
+    .provider-intro {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, #2D2A26 0%, #1A1814 100%);
+      overflow: hidden;
+    }
+    .provider-intro-img { width: 100%; height: 100%; object-fit: cover; }
+    .provider-intro::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
+    }
+    .provider-intro-play {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      border: none;
+      cursor: pointer;
+      z-index: 1;
+    }
+    .provider-intro-play svg { width: 22px; height: 22px; margin-left: 3px; }
+    .provider-intro-duration {
+      position: absolute;
+      bottom: var(--space-md);
+      right: var(--space-md);
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: rgba(0,0,0,0.55);
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      z-index: 1;
+    }
+
+    /* No-intro variant — provider hasn't uploaded an intro video yet.
+       The avatar sits at the top of the body with proper breathing room
+       instead of overlapping a video band. */
+    .provider-header--no-intro .provider-body {
+      padding-top: var(--space-xl);
+    }
+    .provider-header--no-intro .provider-avatar-row {
+      margin-top: 0;
+    }
+    .provider-header--no-intro .provider-avatar {
+      /* Without the dark video behind it, the avatar ring is just visual
+         noise. Drop the ring entirely. */
+      border: none;
+    }
+    .provider-body {
+      padding: 0 var(--space-lg) var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .provider-avatar-row {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-md);
+      margin-top: -28px;
+      position: relative;   /* lift above .provider-intro (positioned) */
+      z-index: 1;
+    }
+    .provider-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      /* Ring matches the card surface in light mode, paper-strong in dark.
+         color.border.strong from tokens.ts = ink (light) / paper (dark);
+         in dark mode the paper ring contrasts the dark card AND the video. */
+      border: 3px solid var(--surface-primary);
+      background: var(--brand-primary);
+      color: var(--brand-accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    [data-theme="dark"] .provider-avatar {
+      border-color: var(--border-strong);
+    }
+    .provider-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .provider-name svg { width: 16px; height: 16px; color: var(--badge-verified); }
+    .provider-headline {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .provider-stats {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+    .provider-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .provider-rating svg { width: 14px; height: 14px; fill: var(--badge-boosted); color: var(--badge-boosted); }
+    .provider-rating small {
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    .provider-verifications {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .provider-sectors {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: var(--space-xs);
+    }
+
+    /* =========================================================
+       SIGNATURE: OtpInput
+       ========================================================= */
+    .otp-input {
+      display: flex;
+      gap: var(--space-sm);
+    }
+    .otp-cell {
+      width: 44px;
+      height: 56px;
+      border: 1.5px solid var(--border-default);
+      border-radius: var(--radius-md);
+      background: var(--surface-primary);
+      color: var(--text-primary);
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      transition: all var(--motion-quick) var(--ease);
+    }
+    .otp-cell:focus {
+      outline: none;
+      border-color: var(--border-strong);
+      box-shadow: 0 0 0 3px var(--brand-accent-soft);
+    }
+    .otp-cell--active {
+      border-color: var(--border-strong);
+      box-shadow: 0 0 0 3px var(--brand-accent-soft);
+    }
+    .otp-input--error .otp-cell {
+      border-color: var(--error);
+    }
+    .otp-input--error .otp-cell:focus,
+    .otp-input--error .otp-cell.otp-cell--active {
+      box-shadow: 0 0 0 3px var(--error-muted);
+    }
+
+    /* =========================================================
+       PROPS TABLE
+       ========================================================= */
+    table.props {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: var(--space-md);
+      font-size: 13px;
+      background: var(--surface-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    table.props th, table.props td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    table.props tr:last-child td { border-bottom: none; }
+    table.props th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface-secondary);
+    }
+    table.props td code {
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+    }
+
+    /* =========================================================
+       MEDIA
+       ========================================================= */
+    @media (max-width: 880px) {
+      .page { grid-template-columns: 1fr; padding: var(--space-lg); gap: var(--space-xl); }
+      .sidebar { position: static; max-height: none; }
+      .sidebar-nav { flex-direction: row; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+
+  <nav class="topbar">
+    <div class="topbar-inner">
+      <a class="crumb" href="./index.html">
+        <span class="crumb-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </span>
+        Back to design system
+      </a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span class="dot"></span>
+        <span id="themeLabel">Light</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- ========== HEADER ========== -->
+    <header class="header">
+      <div>
+        <h1>Soft Pro Component Library</h1>
+        <p class="subtitle">
+          Build these components once, use them everywhere. Each one resolves
+          light / dark through the theme.
+        </p>
+      </div>
+    </header>
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="sidebar-title">Base components</div>
+      <ul class="sidebar-nav">
+        <li><a href="#button">Button</a></li>
+        <li><a href="#icon-button">IconButton</a></li>
+        <li><a href="#input">Input</a></li>
+        <li><a href="#textarea">Textarea</a></li>
+        <li><a href="#search">SearchBar</a></li>
+        <li><a href="#choice">Checkbox · Radio · Toggle</a></li>
+        <li><a href="#select">Select · Picker</a></li>
+        <li><a href="#card">Card · ElevatedCard</a></li>
+        <li><a href="#avatar">Avatar</a></li>
+        <li><a href="#status-pill">StatusPill</a></li>
+        <li><a href="#chip">Tag · Chip</a></li>
+        <li><a href="#overlay">Modal · BottomSheet · Toast</a></li>
+        <li><a href="#state">Empty · Error · Loading · Skeleton</a></li>
+      </ul>
+
+      <div class="sidebar-title" style="margin-top: var(--space-xl);">Signature components</div>
+      <ul class="sidebar-nav">
+        <li><a href="#urgency-timer">UrgencyTimer</a></li>
+        <li><a href="#fs-badge">FsBadge</a></li>
+        <li><a href="#boost-flame">BoostFlame</a></li>
+        <li><a href="#job-card">JobCard</a></li>
+        <li><a href="#bid-card">BidCard</a></li>
+        <li><a href="#media-carousel">MediaCarousel</a></li>
+        <li><a href="#provider-header">ProviderProfileHeader</a></li>
+        <li><a href="#otp-input">OtpInput</a></li>
+      </ul>
+    </aside>
+
+    <!-- ========== CONTENT ========== -->
+    <main>
+
+      <!-- ========== BUTTON ========== -->
+      <section class="demo" id="button">
+        <h2><span class="name">Button</span> <span class="meta">5 variants · 3 sizes · loading + disabled</span></h2>
+        <p class="lead">
+          Primary actions use ink. Tertiary uses chartreuse for celebratory or
+          high-attention actions (e.g. "Place bid"). Ghost is for secondary
+          inline actions in dense layouts.
+        </p>
+
+        <div class="group">
+          <div class="group-label">Variants · medium size</div>
+          <div class="row">
+            <button class="btn btn--primary btn--md">Primary</button>
+            <button class="btn btn--secondary btn--md">Secondary</button>
+            <button class="btn btn--tertiary btn--md">Tertiary</button>
+            <button class="btn btn--destructive btn--md">Destructive</button>
+            <button class="btn btn--ghost btn--md">Ghost</button>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Sizes</div>
+          <div class="row">
+            <button class="btn btn--primary btn--sm">Small</button>
+            <button class="btn btn--primary btn--md">Medium</button>
+            <button class="btn btn--primary btn--lg">Large</button>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">States</div>
+          <div class="row">
+            <button class="btn btn--primary btn--md">Default</button>
+            <button class="btn btn--primary btn--md" disabled>Disabled</button>
+            <button class="btn btn--primary btn--md"><span class="spinner"></span>Loading</button>
+            <button class="btn btn--tertiary btn--md"><span class="spinner"></span>Placing bid</button>
+          </div>
+        </div>
+
+        <table class="props">
+          <thead><tr><th>Prop</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>variant</code></td><td><code>'primary' | 'secondary' | 'tertiary' | 'destructive' | 'ghost'</code></td><td><code>'primary'</code></td></tr>
+            <tr><td><code>size</code></td><td><code>'sm' | 'md' | 'lg'</code></td><td><code>'md'</code></td></tr>
+            <tr><td><code>loading</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+            <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+            <tr><td><code>leftIcon · rightIcon</code></td><td><code>ReactNode</code></td><td><code>—</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ========== ICON BUTTON ========== -->
+      <section class="demo" id="icon-button">
+        <h2><span class="name">IconButton</span> <span class="meta">5 variants · 4 sizes · square + round · FAB</span></h2>
+        <p class="lead">
+          Same variant ladder as <code>Button</code> but icon-only — square by
+          default, round for floating actions and avatar-adjacent controls.
+          Always include an <code>aria-label</code>.
+        </p>
+
+        <div class="group">
+          <div class="group-label">Variants · square · medium</div>
+          <div class="row">
+            <button class="icon-btn icon-btn--primary icon-btn--md" aria-label="Save">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--secondary icon-btn--md" aria-label="Search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--tertiary icon-btn--md" aria-label="Place bid">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--destructive icon-btn--md" aria-label="Delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--ghost icon-btn--md" aria-label="Share">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Sizes</div>
+          <div class="row">
+            <button class="icon-btn icon-btn--primary icon-btn--sm" aria-label="Add">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--primary icon-btn--md" aria-label="Add">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--primary icon-btn--lg" aria-label="Add">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--primary icon-btn--xl" aria-label="Add">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Round shape · for avatar-adjacent + floating actions</div>
+          <div class="row">
+            <button class="icon-btn icon-btn--primary icon-btn--round icon-btn--md" aria-label="Message">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--secondary icon-btn--round icon-btn--md" aria-label="Notifications">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--tertiary icon-btn--round icon-btn--lg icon-btn--fab" aria-label="Create job">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--ghost icon-btn--round icon-btn--md" aria-label="More">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--ghost icon-btn--round icon-btn--md" aria-label="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">States</div>
+          <div class="row">
+            <button class="icon-btn icon-btn--primary icon-btn--md" aria-label="Save">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--primary icon-btn--md" disabled aria-label="Save">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--primary icon-btn--md" aria-label="Saving">
+              <span class="spinner"></span>
+            </button>
+            <button class="icon-btn icon-btn--secondary icon-btn--round icon-btn--md" aria-label="Liked" style="color: var(--error);">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <table class="props">
+          <thead><tr><th>Prop</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>icon</code></td><td><code>ReactNode</code> (required)</td><td><code>—</code></td></tr>
+            <tr><td><code>aria-label</code></td><td><code>string</code> (required)</td><td><code>—</code></td></tr>
+            <tr><td><code>variant</code></td><td><code>'primary' | 'secondary' | 'tertiary' | 'destructive' | 'ghost'</code></td><td><code>'secondary'</code></td></tr>
+            <tr><td><code>size</code></td><td><code>'sm' | 'md' | 'lg' | 'xl'</code></td><td><code>'md'</code></td></tr>
+            <tr><td><code>shape</code></td><td><code>'square' | 'round'</code></td><td><code>'square'</code></td></tr>
+            <tr><td><code>loading</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+            <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+            <tr><td><code>elevated</code></td><td><code>boolean</code> — adds FAB-style shadow</td><td><code>false</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ========== INPUT ========== -->
+      <section class="demo" id="input">
+        <h2><span class="name">Input</span> <span class="meta">text · email · phone · number · error / success / focused</span></h2>
+
+        <div class="group">
+          <div class="group-label">Variants</div>
+          <div class="row" style="align-items: flex-start;">
+            <div class="field">
+              <label class="field-label">Email</label>
+              <input class="input" type="email" placeholder="you@spoedmarktplaats.nl" />
+              <span class="field-helper">We'll send verification to this address.</span>
+            </div>
+            <div class="field">
+              <label class="field-label">Phone</label>
+              <div class="input-prefix">
+                <span class="icon">+31</span>
+                <input class="input" type="tel" placeholder="6 12 34 56 78" />
+              </div>
+              <span class="field-helper">Dutch mobile number.</span>
+            </div>
+            <div class="field">
+              <label class="field-label">Hourly rate</label>
+              <input class="input" type="number" placeholder="65" />
+              <span class="field-helper">EUR per hour, excl. VAT.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">States</div>
+          <div class="row" style="align-items: flex-start;">
+            <div class="field">
+              <label class="field-label">Default</label>
+              <input class="input" type="text" value="Jan de Vries" />
+              <span class="field-helper">Helper text</span>
+            </div>
+            <div class="field field--error">
+              <label class="field-label">Error</label>
+              <input class="input" type="email" value="not-an-email" />
+              <span class="field-helper error">Please enter a valid email.</span>
+            </div>
+            <div class="field field--success">
+              <label class="field-label">Success</label>
+              <input class="input" type="email" value="jan@vries.nl" />
+              <span class="field-helper success">Email looks good.</span>
+            </div>
+            <div class="field">
+              <label class="field-label">Disabled</label>
+              <input class="input" type="text" value="Read-only" disabled />
+              <span class="field-helper">Filled by KvK lookup.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== TEXTAREA ========== -->
+      <section class="demo" id="textarea">
+        <h2><span class="name">Textarea</span> <span class="meta">multiline · character counter</span></h2>
+
+        <div class="group">
+          <div class="row" style="align-items: flex-start;">
+            <div class="field" style="max-width: 480px;">
+              <label class="field-label">Job description</label>
+              <div class="textarea-wrap">
+                <textarea class="textarea" maxlength="240" placeholder="Describe what needs to be done…">Boiler kapot, geen warm water sinds vanochtend. Combiketel Remeha Calenta. Servicemonteur met spoed gezocht in Utrecht Oost.</textarea>
+                <span class="textarea-counter">137 / 240</span>
+              </div>
+              <span class="field-helper">Be specific — better descriptions get more bids.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SEARCH BAR ========== -->
+      <section class="demo" id="search">
+        <h2><span class="name">SearchBar</span> <span class="meta">3 sizes · outlined + filled · clear · filter · voice · suggestions</span></h2>
+        <p class="lead">
+          The primary discovery surface. Always pill-shaped (matches
+          <code>tokens.ts → cornerRadius.chip</code>). Use the filled variant
+          inside cards / sheets where an outlined border would compete with the
+          parent surface.
+        </p>
+
+        <div class="group">
+          <div class="group-label">Default · pill · medium</div>
+          <div class="row">
+            <div class="search">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              </span>
+              <input class="search-input" type="search" placeholder="Search jobs, providers, categories…" />
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">With value + clear</div>
+          <div class="row">
+            <div class="search">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              </span>
+              <input class="search-input" type="search" value="loodgieter utrecht" />
+              <button class="search-clear" aria-label="Clear search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">With filter + voice</div>
+          <div class="row">
+            <div class="search">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              </span>
+              <input class="search-input" type="search" placeholder="Find a job…" />
+              <button class="search-action" aria-label="Voice search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 0 1-14 0M12 19v3"/></svg>
+              </button>
+              <span class="search-divider"></span>
+              <button class="search-action" aria-label="Filters">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+                Filters
+                <span class="count-badge">3</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Filled variant · inside cards / sheets</div>
+          <div class="row">
+            <div class="search search--filled">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              </span>
+              <input class="search-input" type="search" placeholder="Search this deal's messages" />
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Sizes</div>
+          <div class="col" style="gap: var(--space-md);">
+            <div class="search search--sm">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              </span>
+              <input class="search-input" type="search" placeholder="Small — header / inline" />
+            </div>
+            <div class="search">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              </span>
+              <input class="search-input" type="search" placeholder="Medium — default" />
+            </div>
+            <div class="search search--lg">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              </span>
+              <input class="search-input" type="search" placeholder="Large — landing / empty home" />
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">With suggestions dropdown (focused state)</div>
+          <div class="row" style="padding-bottom: 240px;">
+            <div class="search">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              </span>
+              <input class="search-input" type="search" value="lood" autofocus />
+              <button class="search-clear" aria-label="Clear search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+              <div class="search-suggestions">
+                <div class="search-suggestion-group">Recent</div>
+                <div class="search-suggestion">
+                  <span class="search-suggestion-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </span>
+                  <span class="search-suggestion-text">loodgieter utrecht</span>
+                  <span class="search-suggestion-meta">Yesterday</span>
+                </div>
+                <div class="search-suggestion-group">Categories</div>
+                <div class="search-suggestion is-highlighted">
+                  <span class="search-suggestion-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  </span>
+                  <span class="search-suggestion-text"><mark>Lood</mark>gieter</span>
+                  <span class="search-suggestion-meta">214 jobs open</span>
+                </div>
+                <div class="search-suggestion">
+                  <span class="search-suggestion-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  </span>
+                  <span class="search-suggestion-text"><mark>Lood</mark>gieter — noodgeval</span>
+                  <span class="search-suggestion-meta">38 jobs open</span>
+                </div>
+                <div class="search-suggestion-group">Jobs</div>
+                <div class="search-suggestion">
+                  <span class="search-suggestion-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                  </span>
+                  <span class="search-suggestion-text">Lekkende kraan keuken — Utrecht Oost</span>
+                  <span class="search-suggestion-meta">€60–90/hr</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">States</div>
+          <div class="col" style="gap: var(--space-md);">
+            <div class="search">
+              <span class="search-icon">
+                <span class="spinner" style="border-color: currentColor; border-top-color: transparent;"></span>
+              </span>
+              <input class="search-input" type="search" value="loodgieter" />
+              <span class="search-suggestion-meta" style="padding-right: 4px;">Searching…</span>
+            </div>
+            <div class="search">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              </span>
+              <input class="search-input" type="search" placeholder="Search is unavailable" disabled />
+            </div>
+          </div>
+        </div>
+
+        <table class="props">
+          <thead><tr><th>Prop</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>value · onChangeText</code></td><td><code>string · (text) =&gt; void</code></td><td><code>—</code></td></tr>
+            <tr><td><code>placeholder</code></td><td><code>string</code></td><td><code>'Search'</code></td></tr>
+            <tr><td><code>variant</code></td><td><code>'outlined' | 'filled'</code></td><td><code>'outlined'</code></td></tr>
+            <tr><td><code>size</code></td><td><code>'sm' | 'md' | 'lg'</code></td><td><code>'md'</code></td></tr>
+            <tr><td><code>showClear</code></td><td><code>boolean</code> — auto-shown when value is non-empty</td><td><code>true</code></td></tr>
+            <tr><td><code>onVoicePress</code></td><td><code>() =&gt; void</code> — renders mic action when provided</td><td><code>—</code></td></tr>
+            <tr><td><code>onFilterPress · activeFilterCount</code></td><td><code>() =&gt; void · number</code></td><td><code>—</code></td></tr>
+            <tr><td><code>suggestions</code></td><td><code>SearchSuggestion[]</code> — opens dropdown when non-empty + focused</td><td><code>[]</code></td></tr>
+            <tr><td><code>loading · disabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ========== CHECKBOX / RADIO / TOGGLE ========== -->
+      <section class="demo" id="choice">
+        <h2><span class="name">Checkbox · Radio · Toggle</span></h2>
+
+        <div class="group">
+          <div class="group-label">Checkbox</div>
+          <div class="col" style="gap: var(--space-md);">
+            <label class="control"><input type="checkbox" checked /><span class="checkbox"></span>Notify me when a provider bids</label>
+            <label class="control"><input type="checkbox" /><span class="checkbox"></span>Also notify by email</label>
+            <label class="control"><input type="checkbox" disabled /><span class="checkbox"></span>SMS (requires verified phone)</label>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Radio · urgency</div>
+          <div class="col" style="gap: var(--space-md);">
+            <label class="control"><input type="radio" name="urgency" checked /><span class="radio"></span>Critical — within the hour</label>
+            <label class="control"><input type="radio" name="urgency" /><span class="radio"></span>High — today</label>
+            <label class="control"><input type="radio" name="urgency" /><span class="radio"></span>Scheduled — this week</label>
+            <label class="control"><input type="radio" name="urgency" /><span class="radio"></span>Flexible — no rush</label>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Toggle</div>
+          <div class="col" style="gap: var(--space-md);">
+            <label class="control"><input type="checkbox" checked /><span class="toggle"></span>Show my profile to private pools</label>
+            <label class="control"><input type="checkbox" /><span class="toggle"></span>Auto-accept invited jobs</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SELECT / PICKER ========== -->
+      <section class="demo" id="select">
+        <h2><span class="name">Select · Picker</span> <span class="meta">category · urgency · location filters</span></h2>
+
+        <div class="group">
+          <div class="group-label">Select (native)</div>
+          <div class="row">
+            <div class="select">
+              <select>
+                <option>Category — all</option>
+                <option>Loodgieter</option>
+                <option>Elektricien</option>
+                <option>CV-monteur</option>
+                <option>Schilder</option>
+              </select>
+            </div>
+            <div class="select">
+              <select>
+                <option>Location — within 10 km</option>
+                <option>Within 5 km</option>
+                <option>Within 25 km</option>
+                <option>Anywhere in NL</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Picker (custom — open state)</div>
+          <div class="picker">
+            <div class="picker-item">Critical · within the hour</div>
+            <div class="picker-item is-selected">High · today</div>
+            <div class="picker-item">Scheduled · this week</div>
+            <div class="picker-item">Flexible · no rush</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== CARD ========== -->
+      <section class="demo" id="card">
+        <h2><span class="name">Card · ElevatedCard</span></h2>
+        <p class="lead">Flat <code>Card</code> for in-flow content. <code>ElevatedCard</code> for items that need to float — featured jobs, summary tiles.</p>
+
+        <div class="group">
+          <div class="row" style="align-items: flex-start;">
+            <div class="card">
+              <span class="pill pill--success"><span class="dot"></span>OPEN</span>
+              <div class="card-title">Lekkende kraan keuken</div>
+              <div class="card-meta">Utrecht · 3 km · €60–90/hr</div>
+              <div class="card-meta">Posted 14 min ago · 4 bids</div>
+            </div>
+            <div class="card-elevated">
+              <span class="pill pill--accent">FEATURED</span>
+              <div class="card-title">CV-installatie Amsterdam</div>
+              <div class="card-meta">Amsterdam Oost · €1,200 fixed</div>
+              <div class="card-meta">Posted 2 hours ago · 11 bids</div>
+              <button class="btn btn--primary btn--sm" style="align-self: flex-start; margin-top: 4px;">View job</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== AVATAR ========== -->
+      <section class="demo" id="avatar">
+        <h2><span class="name">Avatar</span> <span class="meta">with fallback initials</span></h2>
+
+        <div class="group">
+          <div class="group-label">Sizes</div>
+          <div class="row">
+            <span class="avatar avatar--xs">JV</span>
+            <span class="avatar avatar--sm">JV</span>
+            <span class="avatar avatar--md">JV</span>
+            <span class="avatar avatar--lg">JV</span>
+            <span class="avatar avatar--xl">JV</span>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Variants</div>
+          <div class="row">
+            <span class="avatar avatar--lg">JV</span>
+            <span class="avatar avatar--lg avatar--ink">FB</span>
+            <span class="avatar avatar--lg avatar--accent">SM</span>
+            <span class="avatar avatar--lg avatar--flame">PV</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== STATUS PILL ========== -->
+      <section class="demo" id="status-pill">
+        <h2><span class="name">StatusPill</span> <span class="meta">job · bid · deal statuses</span></h2>
+
+        <div class="group">
+          <div class="group-label">Job statuses</div>
+          <div class="row">
+            <span class="pill"><span class="dot"></span>DRAFT</span>
+            <span class="pill pill--success"><span class="dot"></span>OPEN</span>
+            <span class="pill pill--warning"><span class="dot"></span>PENDING APPROVAL</span>
+            <span class="pill pill--info"><span class="dot"></span>CLOSED</span>
+            <span class="pill pill--error"><span class="dot"></span>EXPIRED</span>
+            <span class="pill pill--error"><span class="dot"></span>CANCELED</span>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Bid statuses</div>
+          <div class="row">
+            <span class="pill pill--warning"><span class="dot"></span>PENDING</span>
+            <span class="pill pill--success"><span class="dot"></span>ACCEPTED</span>
+            <span class="pill pill--error"><span class="dot"></span>REJECTED</span>
+            <span class="pill"><span class="dot"></span>WITHDRAWN</span>
+            <span class="pill"><span class="dot"></span>EXPIRED</span>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Deal statuses</div>
+          <div class="row">
+            <span class="pill pill--info"><span class="dot"></span>ACCEPTED</span>
+            <span class="pill pill--accent"><span class="dot"></span>IN PROGRESS</span>
+            <span class="pill pill--warning"><span class="dot"></span>AWAITING CONFIRM</span>
+            <span class="pill pill--success"><span class="dot"></span>CLOSED</span>
+            <span class="pill pill--error"><span class="dot"></span>DISPUTED</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== TAG / CHIP ========== -->
+      <section class="demo" id="chip">
+        <h2><span class="name">Tag · Chip</span> <span class="meta">categories · filters · multi-select</span></h2>
+
+        <div class="group">
+          <div class="group-label">Category chips (multi-select)</div>
+          <div class="row">
+            <button class="chip chip--active">Loodgieter <span class="remove">×</span></button>
+            <button class="chip">Elektricien</button>
+            <button class="chip">CV-monteur</button>
+            <button class="chip chip--active">Schilder <span class="remove">×</span></button>
+            <button class="chip">Dakdekker</button>
+            <button class="chip">Stukadoor</button>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Filter chips</div>
+          <div class="row">
+            <button class="chip chip--accent">Within 10 km</button>
+            <button class="chip">Today</button>
+            <button class="chip">Verified only</button>
+            <button class="chip">€50–100/hr</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== MODAL / BOTTOM SHEET / TOAST ========== -->
+      <section class="demo" id="overlay">
+        <h2><span class="name">Modal · BottomSheet · Toast</span></h2>
+
+        <div class="group">
+          <div class="group-label">Modal</div>
+          <div class="modal-frame">
+            <div class="modal-header">
+              <h3>Accept this bid?</h3>
+              <button class="btn btn--ghost btn--sm" style="min-height: 32px; padding: 4px 10px;">✕</button>
+            </div>
+            <div class="modal-body">
+              <p>
+                Accepting <strong>Jan de Vries</strong>' bid of <strong>€85/hr</strong>
+                will close this job to other bidders and start a Deal with chat.
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn--ghost btn--md">Cancel</button>
+              <button class="btn btn--primary btn--md">Accept bid</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">BottomSheet</div>
+          <div class="sheet-frame">
+            <div class="sheet-grabber"></div>
+            <h3 class="sheet-title">Filter jobs</h3>
+            <div class="col" style="gap: var(--space-lg);">
+              <div class="field">
+                <label class="field-label">Category</label>
+                <div class="select"><select><option>All categories</option></select></div>
+              </div>
+              <div class="field">
+                <label class="field-label">Urgency</label>
+                <div class="row" style="gap: var(--space-sm);">
+                  <button class="chip chip--active">Critical</button>
+                  <button class="chip">High</button>
+                  <button class="chip">Scheduled</button>
+                  <button class="chip">Flexible</button>
+                </div>
+              </div>
+              <button class="btn btn--primary btn--lg" style="width: 100%;">Apply 2 filters</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Toast</div>
+          <div class="col">
+            <div class="toast toast--success">Bid placed — provider has been notified.</div>
+            <div class="toast toast--error">Couldn't reach the server. Pull to retry.</div>
+            <div class="toast toast--info">New message in your deal with Jan.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== STATES ========== -->
+      <section class="demo" id="state">
+        <h2><span class="name">EmptyState · ErrorState · LoadingState · SkeletonLoader</span></h2>
+
+        <div class="group">
+          <div class="row" style="align-items: stretch;">
+
+            <div class="state">
+              <div class="state-icon state-icon--accent">📭</div>
+              <div class="state-title">No bids yet</div>
+              <div class="state-body">As soon as a provider places a bid, you'll see it here.</div>
+              <button class="btn btn--ghost btn--sm">Share this job</button>
+            </div>
+
+            <div class="state">
+              <div class="state-icon state-icon--error">!</div>
+              <div class="state-title">Couldn't load jobs</div>
+              <div class="state-body">We're having trouble reaching the server. Check your connection and try again.</div>
+              <button class="btn btn--primary btn--sm">Retry</button>
+            </div>
+
+            <div class="state">
+              <div class="state-icon"><span class="spinner" style="border-color: var(--text-secondary); border-top-color: transparent; width: 22px; height: 22px;"></span></div>
+              <div class="state-title">Loading jobs…</div>
+              <div class="state-body">Hang tight — this usually takes a second.</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">SkeletonLoader — job card</div>
+          <div class="row" style="align-items: flex-start;">
+            <div class="skeleton-card">
+              <div class="head">
+                <div class="skeleton skeleton--circle" style="width: 40px; height: 40px;"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                  <div class="skeleton skeleton--title" style="width: 70%;"></div>
+                  <div class="skeleton skeleton--line" style="width: 40%;"></div>
+                </div>
+              </div>
+              <div class="skeleton skeleton--line"></div>
+              <div class="skeleton skeleton--line" style="width: 85%;"></div>
+              <div class="skeleton skeleton--line" style="width: 60%;"></div>
+            </div>
+            <div class="skeleton-card">
+              <div class="head">
+                <div class="skeleton skeleton--circle" style="width: 40px; height: 40px;"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                  <div class="skeleton skeleton--title" style="width: 60%;"></div>
+                  <div class="skeleton skeleton--line" style="width: 30%;"></div>
+                </div>
+              </div>
+              <div class="skeleton skeleton--line"></div>
+              <div class="skeleton skeleton--line" style="width: 75%;"></div>
+              <div class="skeleton skeleton--line" style="width: 50%;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================
+           ███████╗██╗ ██████╗ ███╗   ██╗ █████╗ ████████╗██╗   ██╗██████╗ ███████╗
+           ██╔════╝██║██╔════╝ ████╗  ██║██╔══██╗╚══██╔══╝██║   ██║██╔══██╗██╔════╝
+           ███████╗██║██║  ███╗██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝█████╗
+           ╚════██║██║██║   ██║██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗██╔══╝
+           ███████║██║╚██████╔╝██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║███████╗
+           Spoedmarkt-specific signature components — invest extra time here.
+           Every component:  TS props · component code · light + dark previews.
+           =================================================================== -->
+
+      <section class="demo" style="margin-top: var(--space-3xl);">
+        <h2 style="font-size: 28px; border-bottom-width: 2px; border-color: var(--brand-accent);">
+          Signature components
+        </h2>
+        <p class="lead">
+          These appear on most screens and carry the Soft Pro feel. Each lists
+          its TypeScript props interface, the component skeleton, and at least
+          two variants rendered in both light and dark mode for visual review.
+        </p>
+      </section>
+
+      <!-- ============== UrgencyTimer ============== -->
+      <section class="demo" id="urgency-timer">
+        <h2><span class="name">UrgencyTimer</span> <span class="meta">8h / 16h / 24h / 48h windows · ample / halfway / near / expired</span></h2>
+        <p class="lead">
+          The most visible recurring element in the app — sits on every JobCard
+          and the JobDetail header. Reaches into the urgency color tokens
+          (<code>color.urgency.*</code>) as it shifts state every second.
+        </p>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · all states</div>
+            <div class="col" style="gap: 10px;">
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="preview-label" style="width: 96px; flex-shrink: 0;">Ample</span>
+                <span class="urgency-timer urgency-timer--ample">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  7h 42m left
+                </span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="preview-label" style="width: 96px; flex-shrink: 0;">Halfway</span>
+                <span class="urgency-timer urgency-timer--halfway">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  4h 12m left
+                </span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="preview-label" style="width: 96px; flex-shrink: 0;">Near&#8209;expiry</span>
+                <span class="urgency-timer urgency-timer--near">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  38m left
+                </span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="preview-label" style="width: 96px; flex-shrink: 0;">Expired</span>
+                <span class="urgency-timer urgency-timer--expired">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Expired
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · all states</div>
+            <div class="col" style="gap: 10px;">
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="preview-label" style="width: 96px; flex-shrink: 0;">Ample</span>
+                <span class="urgency-timer urgency-timer--ample">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  7h 42m left
+                </span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="preview-label" style="width: 96px; flex-shrink: 0;">Halfway</span>
+                <span class="urgency-timer urgency-timer--halfway">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  4h 12m left
+                </span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="preview-label" style="width: 96px; flex-shrink: 0;">Near&#8209;expiry</span>
+                <span class="urgency-timer urgency-timer--near">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  38m left
+                </span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="preview-label" style="width: 96px; flex-shrink: 0;">Expired</span>
+                <span class="urgency-timer urgency-timer--expired">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Expired
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-tabs">
+          <span class="code-tab code-tab--active">Props</span>
+        </div>
+<pre class="code-block"><span class="c">// UrgencyTimer.tsx</span>
+<span class="k">export type</span> <span class="t">UrgencyState</span> <span class="p">=</span> <span class="s">'ample'</span> <span class="p">|</span> <span class="s">'halfway'</span> <span class="p">|</span> <span class="s">'near-expiry'</span> <span class="p">|</span> <span class="s">'expired'</span><span class="p">;</span>
+
+<span class="k">export interface</span> <span class="t">UrgencyTimerProps</span> <span class="p">{</span>
+  <span class="c">/** Job posted-at timestamp (ms). */</span>
+  startAt<span class="p">:</span> <span class="t">number</span><span class="p">;</span>
+  <span class="c">/** Bid window length in ms — 8h / 16h / 24h / 48h. */</span>
+  windowMs<span class="p">:</span> <span class="t">number</span><span class="p">;</span>
+  size<span class="p">?:</span> <span class="s">'sm'</span> <span class="p">|</span> <span class="s">'md'</span> <span class="p">|</span> <span class="s">'lg'</span><span class="p">;</span>
+  hideIcon<span class="p">?:</span> <span class="t">boolean</span><span class="p">;</span>
+  <span class="c">/** Fires when the timer crosses into a new state. */</span>
+  onStateChange<span class="p">?:</span> <span class="p">(</span>state<span class="p">:</span> <span class="t">UrgencyState</span><span class="p">) =&gt;</span> <span class="t">void</span><span class="p">;</span>
+<span class="p">}</span></pre>
+
+<pre class="code-block"><span class="k">import</span> <span class="p">{</span> useEffect<span class="p">,</span> useState <span class="p">}</span> <span class="k">from</span> <span class="s">'react'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> View<span class="p">,</span> Text <span class="p">}</span> <span class="k">from</span> <span class="s">'react-native'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> useTheme <span class="p">}</span> <span class="k">from</span> <span class="s">'@/design-system/theme'</span><span class="p">;</span>
+
+<span class="k">const</span> <span class="f">resolveState</span> <span class="p">=</span> <span class="p">(</span>pct<span class="p">:</span> <span class="t">number</span><span class="p">):</span> <span class="t">UrgencyState</span> <span class="p">=&gt;</span>
+  pct <span class="p">&gt;=</span> <span class="s">1</span>   <span class="p">?</span> <span class="s">'expired'</span>     <span class="p">:</span>
+  pct <span class="p">&gt;=</span> <span class="s">0.8</span> <span class="p">?</span> <span class="s">'near-expiry'</span> <span class="p">:</span>
+  pct <span class="p">&gt;=</span> <span class="s">0.5</span> <span class="p">?</span> <span class="s">'halfway'</span>     <span class="p">:</span> <span class="s">'ample'</span><span class="p">;</span>
+
+<span class="k">export const</span> <span class="f">UrgencyTimer</span> <span class="p">=</span> <span class="p">({</span> startAt<span class="p">,</span> windowMs<span class="p">,</span> size <span class="p">=</span> <span class="s">'md'</span><span class="p">,</span> onStateChange <span class="p">}:</span> <span class="t">UrgencyTimerProps</span><span class="p">) =&gt; {</span>
+  <span class="k">const</span> t <span class="p">=</span> <span class="f">useTheme</span><span class="p">();</span>
+  <span class="k">const</span> <span class="p">[</span>now<span class="p">,</span> setNow<span class="p">] =</span> <span class="f">useState</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="t">Date</span><span class="p">.</span><span class="f">now</span><span class="p">());</span>
+
+  <span class="f">useEffect</span><span class="p">(()</span> <span class="p">=&gt; {</span>
+    <span class="k">const</span> id <span class="p">=</span> <span class="f">setInterval</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="f">setNow</span><span class="p">(</span><span class="t">Date</span><span class="p">.</span><span class="f">now</span><span class="p">()),</span> <span class="s">1000</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="f">clearInterval</span><span class="p">(</span>id<span class="p">);</span>
+  <span class="p">},</span> <span class="p">[]);</span>
+
+  <span class="k">const</span> remaining <span class="p">=</span> <span class="t">Math</span><span class="p">.</span><span class="f">max</span><span class="p">(</span><span class="s">0</span><span class="p">,</span> windowMs <span class="p">- (</span>now <span class="p">-</span> startAt<span class="p">));</span>
+  <span class="k">const</span> state <span class="p">=</span> <span class="f">resolveState</span><span class="p">((</span>now <span class="p">-</span> startAt<span class="p">) /</span> windowMs<span class="p">);</span>
+
+  <span class="k">const</span> tone <span class="p">= {</span>
+    ample<span class="p">:</span>        <span class="p">{</span> bg<span class="p">:</span> t<span class="p">.</span>color<span class="p">.</span>feedback<span class="p">.</span>success<span class="p">.</span>muted<span class="p">,</span> fg<span class="p">:</span> t<span class="p">.</span>color<span class="p">.</span>feedback<span class="p">.</span>success<span class="p">.</span>default <span class="p">},</span>
+    halfway<span class="p">:</span>      <span class="p">{</span> bg<span class="p">:</span> t<span class="p">.</span>color<span class="p">.</span>feedback<span class="p">.</span>warning<span class="p">.</span>muted<span class="p">,</span> fg<span class="p">:</span> t<span class="p">.</span>color<span class="p">.</span>feedback<span class="p">.</span>warning<span class="p">.</span>default <span class="p">},</span>
+    <span class="s">'near-expiry'</span><span class="p">:</span> <span class="p">{</span> bg<span class="p">:</span> t<span class="p">.</span>color<span class="p">.</span>feedback<span class="p">.</span>error<span class="p">.</span>muted<span class="p">,</span>   fg<span class="p">:</span> t<span class="p">.</span>color<span class="p">.</span>feedback<span class="p">.</span>error<span class="p">.</span>default <span class="p">},</span>
+    expired<span class="p">:</span>      <span class="p">{</span> bg<span class="p">:</span> t<span class="p">.</span>color<span class="p">.</span>surface<span class="p">.</span>secondary<span class="p">,</span>     fg<span class="p">:</span> t<span class="p">.</span>color<span class="p">.</span>text<span class="p">.</span>muted <span class="p">},</span>
+  <span class="p">}[</span>state<span class="p">];</span>
+
+  <span class="k">return</span> <span class="p">(</span>
+    <span class="p">&lt;</span><span class="t">View</span> style<span class="p">={{</span> backgroundColor<span class="p">:</span> tone<span class="p">.</span>bg<span class="p">,</span> borderRadius<span class="p">:</span> t<span class="p">.</span>cornerRadius<span class="p">.</span>chip<span class="p">,</span> paddingHorizontal<span class="p">:</span> t<span class="p">.</span>space<span class="p">.</span>md <span class="p">}}&gt;</span>
+      <span class="p">&lt;</span><span class="t">Text</span> style<span class="p">={{</span> color<span class="p">:</span> tone<span class="p">.</span>fg<span class="p">,</span> ...t<span class="p">.</span>textStyle<span class="p">.</span>captionEmphasis <span class="p">}}&gt;{</span><span class="f">formatRemaining</span><span class="p">(</span>remaining<span class="p">)}&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+  <span class="p">);</span>
+<span class="p">};</span></pre>
+      </section>
+
+      <!-- ============== FsBadge ============== -->
+      <section class="demo" id="fs-badge">
+        <h2><span class="name">FsBadge</span> <span class="meta">verified · pending · not-linked</span></h2>
+        <p class="lead">
+          Surfaces a provider's For Suppliers validation status across cards,
+          profile headers, and bid lists. Reads as trust signal first, link
+          second — never as a CTA on its own.
+        </p>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · all states</div>
+            <div class="col" style="gap: 10px; align-items: flex-start;">
+              <span class="fs-badge fs-badge--verified">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Validated via For Suppliers
+              </span>
+              <span class="fs-badge fs-badge--pending">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Validation pending
+              </span>
+              <span class="fs-badge fs-badge--unlinked">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                Not linked to For Suppliers
+              </span>
+            </div>
+          </div>
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · all states</div>
+            <div class="col" style="gap: 10px; align-items: flex-start;">
+              <span class="fs-badge fs-badge--verified">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Validated via For Suppliers
+              </span>
+              <span class="fs-badge fs-badge--pending">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Validation pending
+              </span>
+              <span class="fs-badge fs-badge--unlinked">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                Not linked to For Suppliers
+              </span>
+            </div>
+          </div>
+        </div>
+
+<pre class="code-block"><span class="c">// FsBadge.tsx</span>
+<span class="k">export type</span> <span class="t">FsState</span> <span class="p">=</span> <span class="s">'verified'</span> <span class="p">|</span> <span class="s">'pending'</span> <span class="p">|</span> <span class="s">'not-linked'</span><span class="p">;</span>
+
+<span class="k">export interface</span> <span class="t">FsBadgeProps</span> <span class="p">{</span>
+  state<span class="p">:</span> <span class="t">FsState</span><span class="p">;</span>
+  size<span class="p">?:</span> <span class="s">'sm'</span> <span class="p">|</span> <span class="s">'md'</span><span class="p">;</span>
+  <span class="c">/** Tapping opens the FS validation explainer sheet. */</span>
+  onPress<span class="p">?:</span> <span class="p">() =&gt;</span> <span class="t">void</span><span class="p">;</span>
+<span class="p">}</span></pre>
+      </section>
+
+      <!-- ============== BoostFlame ============== -->
+      <section class="demo" id="boost-flame">
+        <h2><span class="name">BoostFlame</span> <span class="meta">boost indicator · 3 sizes · subtle gamification</span></h2>
+        <p class="lead">
+          Sits on JobCards that the client paid to boost. The flame flickers
+          gently — enough to be noticed, not enough to distract. Pairs with the
+          remaining-days countdown when shown on the seller's own job list.
+        </p>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · sizes + with days-left</div>
+            <div class="col" style="gap: 10px; align-items: flex-start;">
+              <span class="boost-flame boost-flame--sm">
+                <span class="flame"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                BOOST
+              </span>
+              <span class="boost-flame">
+                <span class="flame"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                BOOSTED
+              </span>
+              <span class="boost-flame boost-flame--lg">
+                <span class="flame"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                BOOST · 2 DAYS LEFT
+              </span>
+            </div>
+          </div>
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · sizes + with days-left</div>
+            <div class="col" style="gap: 10px; align-items: flex-start;">
+              <span class="boost-flame boost-flame--sm">
+                <span class="flame"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                BOOST
+              </span>
+              <span class="boost-flame">
+                <span class="flame"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                BOOSTED
+              </span>
+              <span class="boost-flame boost-flame--lg">
+                <span class="flame"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                BOOST · 2 DAYS LEFT
+              </span>
+            </div>
+          </div>
+        </div>
+
+<pre class="code-block"><span class="c">// BoostFlame.tsx</span>
+<span class="k">export interface</span> <span class="t">BoostFlameProps</span> <span class="p">{</span>
+  size<span class="p">?:</span> <span class="s">'sm'</span> <span class="p">|</span> <span class="s">'md'</span> <span class="p">|</span> <span class="s">'lg'</span><span class="p">;</span>
+  <span class="c">/** When provided, renders "BOOST · {n} DAYS LEFT". */</span>
+  daysLeft<span class="p">?:</span> <span class="t">number</span><span class="p">;</span>
+  <span class="c">/** Disable the flicker (e.g. on reduced motion). Default: true. */</span>
+  animated<span class="p">?:</span> <span class="t">boolean</span><span class="p">;</span>
+<span class="p">}</span></pre>
+      </section>
+
+      <!-- ============== JobCard ============== -->
+      <section class="demo" id="job-card">
+        <h2><span class="name">JobCard</span> <span class="meta">media-first feed card · urgency · location · price · bid count</span></h2>
+        <p class="lead">
+          The hero of the Feed tab. Media (photo or video thumbnail) covers the
+          top half as a background. UrgencyTimer pins to the top-left;
+          BoostFlame to the top-right; voice-note play button sits bottom-left
+          when the job has an attached voice note.
+        </p>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · boosted + voice note</div>
+            <div class="job-card">
+              <div class="job-card-media" style="background: linear-gradient(135deg, #5D4037 0%, #2D2A26 100%);">
+                <div class="job-card-overlay">
+                  <span class="urgency-timer urgency-timer--near">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    42m left
+                  </span>
+                  <span class="boost-flame boost-flame--sm">
+                    <span class="flame"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                    BOOST
+                  </span>
+                </div>
+                <div class="job-card-overlay-bottom">
+                  <button class="voice-play" aria-label="Play voice note">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  </button>
+                  <span class="voice-duration">0:24</span>
+                </div>
+              </div>
+              <div class="job-card-body">
+                <div class="job-card-title">Boiler defect — geen warm water</div>
+                <div class="job-card-meta">
+                  <span>Utrecht Oost</span>
+                  <span class="job-card-meta-dot"></span>
+                  <span>3 km</span>
+                </div>
+                <div class="job-card-footer">
+                  <div class="job-card-price">€60–90<small> /hr</small></div>
+                  <span class="job-card-bids">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    11 bids
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · standard photo</div>
+            <div class="job-card">
+              <div class="job-card-media" style="background: linear-gradient(135deg, #4A4A4A 0%, #1A1814 100%);">
+                <div class="job-card-overlay">
+                  <span class="urgency-timer urgency-timer--ample">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    21h left
+                  </span>
+                </div>
+              </div>
+              <div class="job-card-body">
+                <div class="job-card-title">Lekkende kraan keuken</div>
+                <div class="job-card-meta">
+                  <span>Amsterdam Zuid</span>
+                  <span class="job-card-meta-dot"></span>
+                  <span>6 km</span>
+                </div>
+                <div class="job-card-footer">
+                  <div class="job-card-price">€120<small> fixed</small></div>
+                  <span class="job-card-bids">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    3 bids
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<pre class="code-block"><span class="c">// JobCard.tsx</span>
+<span class="k">export interface</span> <span class="t">JobCardProps</span> <span class="p">{</span>
+  job<span class="p">: {</span>
+    id<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
+    title<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
+    media<span class="p">?: {</span> type<span class="p">:</span> <span class="s">'photo'</span> <span class="p">|</span> <span class="s">'video'</span><span class="p">;</span> url<span class="p">:</span> <span class="t">string</span><span class="p">;</span> thumbnail<span class="p">?:</span> <span class="t">string</span> <span class="p">};</span>
+    voiceNote<span class="p">?: {</span> url<span class="p">:</span> <span class="t">string</span><span class="p">;</span> durationSec<span class="p">:</span> <span class="t">number</span> <span class="p">};</span>
+    location<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
+    distanceKm<span class="p">:</span> <span class="t">number</span><span class="p">;</span>
+    price<span class="p">: {</span>
+      type<span class="p">:</span> <span class="s">'fixed'</span> <span class="p">|</span> <span class="s">'hourly'</span> <span class="p">|</span> <span class="s">'range'</span> <span class="p">|</span> <span class="s">'let-bid'</span><span class="p">;</span>
+      min<span class="p">?:</span> <span class="t">number</span><span class="p">;</span> max<span class="p">?:</span> <span class="t">number</span><span class="p">;</span>
+    <span class="p">};</span>
+    bidCount<span class="p">:</span> <span class="t">number</span><span class="p">;</span>
+    urgency<span class="p">: {</span> startAt<span class="p">:</span> <span class="t">number</span><span class="p">;</span> windowMs<span class="p">:</span> <span class="t">number</span> <span class="p">};</span>
+    boosted<span class="p">?: {</span> daysLeft<span class="p">:</span> <span class="t">number</span> <span class="p">};</span>
+  <span class="p">};</span>
+  onPress<span class="p">:</span> <span class="p">() =&gt;</span> <span class="t">void</span><span class="p">;</span>
+  onVoicePlay<span class="p">?:</span> <span class="p">() =&gt;</span> <span class="t">void</span><span class="p">;</span>
+<span class="p">}</span></pre>
+      </section>
+
+      <!-- ============== BidCard ============== -->
+      <section class="demo" id="bid-card">
+        <h2><span class="name">BidCard</span> <span class="meta">bid on JobDetail · verification badges · ratings · accept / decline</span></h2>
+        <p class="lead">
+          One per bid on the JobDetail screen. The bid amount is the visual
+          anchor — it gets the chartreuse-tinted surface treatment. Verification
+          chips communicate trust at a glance; the Accept action carries the
+          ink primary style for emphasis.
+        </p>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · pending · accepted · declined</div>
+
+            <!-- PENDING -->
+            <div class="bid-card">
+              <div class="bid-card-head">
+                <span class="avatar avatar--md avatar--ink">JV</span>
+                <div class="bid-card-identity">
+                  <span class="bid-card-name">
+                    Jan de Vries
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  </span>
+                  <span class="bid-card-rating">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                    4.9
+                    <span style="color: var(--text-muted); font-weight: 500;">· 142 reviews</span>
+                  </span>
+                </div>
+                <span class="pill pill--warning" style="font-size: 11px;"><span class="dot"></span>PENDING</span>
+              </div>
+              <div class="bid-card-verifications">
+                <span class="verify-chip verify-chip--ok">ID</span>
+                <span class="verify-chip verify-chip--ok">KvK</span>
+                <span class="verify-chip verify-chip--ok">IBAN</span>
+                <span class="fs-badge fs-badge--verified" style="padding: 2px 8px 2px 6px; font-size: 10px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 11px; height: 11px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  FS
+                </span>
+              </div>
+              <div class="bid-card-amount">
+                <span class="value">€85</span>
+                <span class="unit">/ hr · 3-4 hrs</span>
+              </div>
+              <p class="bid-card-message">Beschikbaar binnen het uur. Heb een Remeha-gecertificeerde monteur. Onderdelen op voorraad.</p>
+              <div class="bid-card-actions">
+                <button class="btn btn--ghost btn--md">Decline</button>
+                <button class="btn btn--primary btn--md">Accept bid</button>
+              </div>
+            </div>
+
+            <!-- ACCEPTED -->
+            <div class="bid-card bid-card--accepted">
+              <div class="bid-card-head">
+                <span class="avatar avatar--md avatar--accent">SM</span>
+                <div class="bid-card-identity">
+                  <span class="bid-card-name">
+                    Sander Meijer
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  </span>
+                  <span class="bid-card-rating">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                    4.7
+                    <span style="color: var(--text-muted); font-weight: 500;">· 38 reviews</span>
+                  </span>
+                </div>
+                <span class="pill pill--success" style="font-size: 11px;"><span class="dot"></span>ACCEPTED</span>
+              </div>
+              <div class="bid-card-verifications">
+                <span class="verify-chip verify-chip--ok">ID</span>
+                <span class="verify-chip verify-chip--ok">KvK</span>
+              </div>
+              <div class="bid-card-amount">
+                <span class="value">€140</span>
+                <span class="unit">fixed</span>
+              </div>
+              <p class="bid-card-message">Kan vanavond langskomen tussen 18:00 en 20:00. Ervaring met combiketels.</p>
+            </div>
+
+            <!-- DECLINED -->
+            <div class="bid-card bid-card--declined">
+              <div class="bid-card-head">
+                <span class="avatar avatar--md avatar--flame">PV</span>
+                <div class="bid-card-identity">
+                  <span class="bid-card-name">Pieter Visser</span>
+                  <span class="bid-card-rating">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                    3.8
+                    <span style="color: var(--text-muted); font-weight: 500;">· 24 reviews</span>
+                  </span>
+                </div>
+                <span class="pill pill--error" style="font-size: 11px;"><span class="dot"></span>DECLINED</span>
+              </div>
+              <div class="bid-card-verifications">
+                <span class="verify-chip verify-chip--ok">ID</span>
+              </div>
+              <div class="bid-card-amount">
+                <span class="value">€110</span>
+                <span class="unit">/ hr</span>
+              </div>
+              <p class="bid-card-message">Kan morgenochtend langs komen. Heb basisgereedschap mee.</p>
+            </div>
+          </div>
+
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · pending · accepted · declined</div>
+
+            <!-- PENDING -->
+            <div class="bid-card">
+              <div class="bid-card-head">
+                <span class="avatar avatar--md avatar--ink">JV</span>
+                <div class="bid-card-identity">
+                  <span class="bid-card-name">
+                    Jan de Vries
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  </span>
+                  <span class="bid-card-rating">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                    4.9
+                    <span style="color: var(--text-muted); font-weight: 500;">· 142 reviews</span>
+                  </span>
+                </div>
+                <span class="pill pill--warning" style="font-size: 11px;"><span class="dot"></span>PENDING</span>
+              </div>
+              <div class="bid-card-verifications">
+                <span class="verify-chip verify-chip--ok">ID</span>
+                <span class="verify-chip verify-chip--ok">KvK</span>
+                <span class="verify-chip verify-chip--ok">IBAN</span>
+                <span class="fs-badge fs-badge--verified" style="padding: 2px 8px 2px 6px; font-size: 10px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 11px; height: 11px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  FS
+                </span>
+              </div>
+              <div class="bid-card-amount">
+                <span class="value">€85</span>
+                <span class="unit">/ hr · 3-4 hrs</span>
+              </div>
+              <p class="bid-card-message">Beschikbaar binnen het uur. Heb een Remeha-gecertificeerde monteur. Onderdelen op voorraad.</p>
+              <div class="bid-card-actions">
+                <button class="btn btn--ghost btn--md">Decline</button>
+                <button class="btn btn--primary btn--md">Accept bid</button>
+              </div>
+            </div>
+
+            <!-- ACCEPTED -->
+            <div class="bid-card bid-card--accepted">
+              <div class="bid-card-head">
+                <span class="avatar avatar--md avatar--accent">SM</span>
+                <div class="bid-card-identity">
+                  <span class="bid-card-name">
+                    Sander Meijer
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  </span>
+                  <span class="bid-card-rating">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                    4.7
+                    <span style="color: var(--text-muted); font-weight: 500;">· 38 reviews</span>
+                  </span>
+                </div>
+                <span class="pill pill--success" style="font-size: 11px;"><span class="dot"></span>ACCEPTED</span>
+              </div>
+              <div class="bid-card-verifications">
+                <span class="verify-chip verify-chip--ok">ID</span>
+                <span class="verify-chip verify-chip--ok">KvK</span>
+              </div>
+              <div class="bid-card-amount">
+                <span class="value">€140</span>
+                <span class="unit">fixed</span>
+              </div>
+              <p class="bid-card-message">Kan vanavond langskomen tussen 18:00 en 20:00. Ervaring met combiketels.</p>
+            </div>
+
+            <!-- DECLINED -->
+            <div class="bid-card bid-card--declined">
+              <div class="bid-card-head">
+                <span class="avatar avatar--md avatar--flame">PV</span>
+                <div class="bid-card-identity">
+                  <span class="bid-card-name">Pieter Visser</span>
+                  <span class="bid-card-rating">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                    3.8
+                    <span style="color: var(--text-muted); font-weight: 500;">· 24 reviews</span>
+                  </span>
+                </div>
+                <span class="pill pill--error" style="font-size: 11px;"><span class="dot"></span>DECLINED</span>
+              </div>
+              <div class="bid-card-verifications">
+                <span class="verify-chip verify-chip--ok">ID</span>
+              </div>
+              <div class="bid-card-amount">
+                <span class="value">€110</span>
+                <span class="unit">/ hr</span>
+              </div>
+              <p class="bid-card-message">Kan morgenochtend langs komen. Heb basisgereedschap mee.</p>
+            </div>
+          </div>
+        </div>
+
+<pre class="code-block"><span class="c">// BidCard.tsx</span>
+<span class="k">export interface</span> <span class="t">BidCardProps</span> <span class="p">{</span>
+  bid<span class="p">: {</span>
+    id<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
+    status<span class="p">:</span> <span class="s">'pending'</span> <span class="p">|</span> <span class="s">'accepted'</span> <span class="p">|</span> <span class="s">'declined'</span> <span class="p">|</span> <span class="s">'withdrawn'</span><span class="p">;</span>
+    provider<span class="p">: {</span>
+      id<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
+      name<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
+      avatarUrl<span class="p">?:</span> <span class="t">string</span><span class="p">;</span>
+      rating<span class="p">:</span> <span class="t">number</span><span class="p">;</span>            <span class="c">// 0–5</span>
+      reviewCount<span class="p">:</span> <span class="t">number</span><span class="p">;</span>
+      verifications<span class="p">: {</span> id<span class="p">:</span> <span class="t">boolean</span><span class="p">;</span> kvk<span class="p">:</span> <span class="t">boolean</span><span class="p">;</span> iban<span class="p">:</span> <span class="t">boolean</span> <span class="p">};</span>
+      fsValidated<span class="p">?:</span> <span class="t">boolean</span><span class="p">;</span>
+    <span class="p">};</span>
+    amount<span class="p">: {</span> type<span class="p">:</span> <span class="s">'fixed'</span> <span class="p">|</span> <span class="s">'hourly'</span><span class="p">;</span> value<span class="p">:</span> <span class="t">number</span><span class="p">;</span> note<span class="p">?:</span> <span class="t">string</span> <span class="p">};</span>
+    message<span class="p">?:</span> <span class="t">string</span><span class="p">;</span>
+    placedAt<span class="p">:</span> <span class="t">number</span><span class="p">;</span>
+  <span class="p">};</span>
+  onAccept<span class="p">:</span> <span class="p">() =&gt;</span> <span class="t">void</span><span class="p">;</span>
+  onDecline<span class="p">:</span> <span class="p">() =&gt;</span> <span class="t">void</span><span class="p">;</span>
+  loading<span class="p">?:</span> <span class="s">'accept'</span> <span class="p">|</span> <span class="s">'decline'</span> <span class="p">|</span> <span class="t">null</span><span class="p">;</span>
+<span class="p">}</span></pre>
+      </section>
+
+      <!-- ============== MediaCarousel ============== -->
+      <section class="demo" id="media-carousel">
+        <h2><span class="name">MediaCarousel</span> <span class="meta">photo · video · voice attachments</span></h2>
+        <p class="lead">
+          Horizontal scroller for the attachments on a job. Voice notes get the
+          chartreuse waveform treatment so they read as distinct from photos at
+          a glance. Tapping a tile opens the full-screen media viewer.
+        </p>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · mixed attachments</div>
+            <div class="media-carousel">
+              <div class="media-tile" style="background: linear-gradient(135deg, #5D4037 0%, #2D2A26 100%);">
+                <span class="media-tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>
+              </div>
+              <div class="media-tile media-tile--video" style="background: linear-gradient(135deg, #4A4A4A 0%, #1A1A1A 100%);">
+                <span class="media-tile-icon"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
+                <span class="media-tile-meta">0:42</span>
+              </div>
+              <div class="media-tile media-tile--voice">
+                <div class="waveform">
+                  <span class="waveform-bar" style="height: 30%"></span>
+                  <span class="waveform-bar" style="height: 60%"></span>
+                  <span class="waveform-bar" style="height: 80%"></span>
+                  <span class="waveform-bar" style="height: 50%"></span>
+                  <span class="waveform-bar" style="height: 70%"></span>
+                  <span class="waveform-bar" style="height: 40%"></span>
+                  <span class="waveform-bar" style="height: 90%"></span>
+                  <span class="waveform-bar" style="height: 65%"></span>
+                  <span class="waveform-bar" style="height: 35%"></span>
+                  <span class="waveform-bar" style="height: 55%"></span>
+                  <span class="waveform-bar" style="height: 75%"></span>
+                  <span class="waveform-bar" style="height: 45%"></span>
+                </div>
+                <span class="media-tile-meta" style="background: var(--brand-primary); color: var(--brand-accent);">0:24</span>
+              </div>
+              <div class="media-tile" style="background: linear-gradient(135deg, #6B6359 0%, #3A3530 100%);"></div>
+              <div class="media-tile" style="background: linear-gradient(135deg, #7B6E5F 0%, #4A4035 100%);"></div>
+            </div>
+          </div>
+
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · mixed attachments</div>
+            <div class="media-carousel">
+              <div class="media-tile" style="background: linear-gradient(135deg, #5D4037 0%, #2D2A26 100%);">
+                <span class="media-tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>
+              </div>
+              <div class="media-tile media-tile--video" style="background: linear-gradient(135deg, #4A4A4A 0%, #1A1A1A 100%);">
+                <span class="media-tile-icon"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
+                <span class="media-tile-meta">0:42</span>
+              </div>
+              <div class="media-tile media-tile--voice">
+                <div class="waveform">
+                  <span class="waveform-bar" style="height: 30%"></span>
+                  <span class="waveform-bar" style="height: 60%"></span>
+                  <span class="waveform-bar" style="height: 80%"></span>
+                  <span class="waveform-bar" style="height: 50%"></span>
+                  <span class="waveform-bar" style="height: 70%"></span>
+                  <span class="waveform-bar" style="height: 40%"></span>
+                  <span class="waveform-bar" style="height: 90%"></span>
+                  <span class="waveform-bar" style="height: 65%"></span>
+                  <span class="waveform-bar" style="height: 35%"></span>
+                  <span class="waveform-bar" style="height: 55%"></span>
+                  <span class="waveform-bar" style="height: 75%"></span>
+                  <span class="waveform-bar" style="height: 45%"></span>
+                </div>
+                <span class="media-tile-meta" style="background: var(--brand-primary); color: var(--brand-accent);">0:24</span>
+              </div>
+              <div class="media-tile" style="background: linear-gradient(135deg, #6B6359 0%, #3A3530 100%);"></div>
+              <div class="media-tile" style="background: linear-gradient(135deg, #7B6E5F 0%, #4A4035 100%);"></div>
+            </div>
+          </div>
+        </div>
+
+<pre class="code-block"><span class="c">// MediaCarousel.tsx</span>
+<span class="k">export type</span> <span class="t">MediaItem</span> <span class="p">=</span>
+  <span class="p">|</span> <span class="p">{</span> type<span class="p">:</span> <span class="s">'photo'</span><span class="p">;</span>  url<span class="p">:</span> <span class="t">string</span><span class="p">;</span> thumbnail<span class="p">?:</span> <span class="t">string</span> <span class="p">}</span>
+  <span class="p">|</span> <span class="p">{</span> type<span class="p">:</span> <span class="s">'video'</span><span class="p">;</span>  url<span class="p">:</span> <span class="t">string</span><span class="p">;</span> thumbnail<span class="p">:</span> <span class="t">string</span><span class="p">;</span> durationSec<span class="p">:</span> <span class="t">number</span> <span class="p">}</span>
+  <span class="p">|</span> <span class="p">{</span> type<span class="p">:</span> <span class="s">'voice'</span><span class="p">;</span>  url<span class="p">:</span> <span class="t">string</span><span class="p">;</span> durationSec<span class="p">:</span> <span class="t">number</span><span class="p">;</span> waveform<span class="p">?:</span> <span class="t">number</span><span class="p">[] };</span>
+
+<span class="k">export interface</span> <span class="t">MediaCarouselProps</span> <span class="p">{</span>
+  items<span class="p">:</span> <span class="t">MediaItem</span><span class="p">[];</span>
+  initialIndex<span class="p">?:</span> <span class="t">number</span><span class="p">;</span>
+  tileWidth<span class="p">?:</span> <span class="t">number</span><span class="p">;</span>          <span class="c">// default 120</span>
+  aspectRatio<span class="p">?:</span> <span class="t">number</span><span class="p">;</span>        <span class="c">// default 5/4</span>
+  onItemPress<span class="p">?:</span> <span class="p">(</span>index<span class="p">:</span> <span class="t">number</span><span class="p">,</span> item<span class="p">:</span> <span class="t">MediaItem</span><span class="p">) =&gt;</span> <span class="t">void</span><span class="p">;</span>
+<span class="p">}</span></pre>
+      </section>
+
+      <!-- ============== ProviderProfileHeader ============== -->
+      <section class="demo" id="provider-header">
+        <h2><span class="name">ProviderProfileHeader</span> <span class="meta">intro video · avatar · badges · ratings</span></h2>
+        <p class="lead">
+          Sits at the top of the Provider profile screen. The intro video
+          thumbnail is the hero; the avatar overlaps the video bottom to anchor
+          the identity. Verification chips and rating sit immediately below the
+          name so trust signals load instantly.
+        </p>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · with intro video · verified</div>
+            <div class="provider-header">
+              <div class="provider-intro" style="background: linear-gradient(135deg, #5D4037 0%, #2D2A26 100%);">
+                <button class="provider-intro-play" aria-label="Play intro">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </button>
+                <span class="provider-intro-duration">0:42</span>
+              </div>
+              <div class="provider-body">
+                <div class="provider-avatar-row">
+                  <span class="provider-avatar">JV</span>
+                </div>
+                <div class="provider-name">
+                  Jan de Vries
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div class="provider-headline">CV-monteur · Utrecht</div>
+                <div class="provider-stats">
+                  <span class="provider-rating">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                    4.9 <small>· 142 reviews</small>
+                  </span>
+                </div>
+                <div class="provider-verifications">
+                  <span class="verify-chip verify-chip--ok">ID verified</span>
+                  <span class="verify-chip verify-chip--ok">KvK 7812 4451</span>
+                  <span class="verify-chip verify-chip--ok">IBAN</span>
+                </div>
+                <div class="provider-sectors">
+                  <span class="chip" style="padding: 4px 10px; font-size: 11px;">CV &amp; ketels</span>
+                  <span class="chip" style="padding: 4px 10px; font-size: 11px;">Loodgieter</span>
+                  <span class="chip" style="padding: 4px 10px; font-size: 11px;">Sanitair</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · with intro video · new provider</div>
+            <div class="provider-header">
+              <div class="provider-intro" style="background: linear-gradient(135deg, #4A4035 0%, #1A1814 100%);">
+                <button class="provider-intro-play" aria-label="Play intro">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </button>
+                <span class="provider-intro-duration">0:31</span>
+              </div>
+              <div class="provider-body">
+                <div class="provider-avatar-row">
+                  <span class="provider-avatar" style="background: var(--brand-accent); color: var(--text-on-accent);">SM</span>
+                </div>
+                <div class="provider-name">Sander Meijer</div>
+                <div class="provider-headline">Loodgieter · Amsterdam</div>
+                <div class="provider-stats">
+                  <span class="provider-rating">
+                    <svg viewBox="0 0 24 24" style="opacity: 0.4;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                    <span style="color: var(--text-muted);">No reviews yet</span>
+                  </span>
+                </div>
+                <div class="provider-verifications">
+                  <span class="verify-chip verify-chip--ok">ID verified</span>
+                  <span class="verify-chip" style="color: var(--warning);">KvK pending</span>
+                </div>
+                <div class="provider-sectors">
+                  <span class="chip" style="padding: 4px 10px; font-size: 11px;">Loodgieter</span>
+                  <span class="chip" style="padding: 4px 10px; font-size: 11px;">Sanitair</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty intro video state (provider hasn't uploaded one) -->
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · no intro video · verified</div>
+            <div class="provider-header provider-header--no-intro">
+              <div class="provider-body">
+                <div class="provider-avatar-row">
+                  <span class="provider-avatar">MT</span>
+                </div>
+                <div class="provider-name">
+                  Marieke ten Have
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div class="provider-headline">Stukadoor · Rotterdam</div>
+                <div class="provider-stats">
+                  <span class="provider-rating">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                    4.6 <small>· 67 reviews</small>
+                  </span>
+                </div>
+                <div class="provider-verifications">
+                  <span class="verify-chip verify-chip--ok">ID verified</span>
+                  <span class="verify-chip verify-chip--ok">KvK 6122 0048</span>
+                  <span class="verify-chip verify-chip--ok">IBAN</span>
+                </div>
+                <div class="provider-sectors">
+                  <span class="chip" style="padding: 4px 10px; font-size: 11px;">Stucwerk</span>
+                  <span class="chip" style="padding: 4px 10px; font-size: 11px;">Voegwerk</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · no intro video · new provider</div>
+            <div class="provider-header provider-header--no-intro">
+              <div class="provider-body">
+                <div class="provider-avatar-row">
+                  <span class="provider-avatar" style="background: var(--brand-flame); color: #FFFFFF;">DB</span>
+                </div>
+                <div class="provider-name">David Bakker</div>
+                <div class="provider-headline">Schilder · Den Haag</div>
+                <div class="provider-stats">
+                  <span class="provider-rating">
+                    <svg viewBox="0 0 24 24" style="opacity: 0.4;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                    <span style="color: var(--text-muted);">No reviews yet</span>
+                  </span>
+                </div>
+                <div class="provider-verifications">
+                  <span class="verify-chip" style="color: var(--warning);">ID pending</span>
+                </div>
+                <div class="provider-sectors">
+                  <span class="chip" style="padding: 4px 10px; font-size: 11px;">Schilderwerk</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<pre class="code-block"><span class="c">// ProviderProfileHeader.tsx</span>
+<span class="k">export interface</span> <span class="t">ProviderProfileHeaderProps</span> <span class="p">{</span>
+  provider<span class="p">: {</span>
+    id<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
+    name<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
+    headline<span class="p">:</span> <span class="t">string</span><span class="p">;</span>             <span class="c">// e.g. "CV-monteur · Utrecht"</span>
+    avatarUrl<span class="p">?:</span> <span class="t">string</span><span class="p">;</span>
+    avatarInitials<span class="p">:</span> <span class="t">string</span><span class="p">;</span>       <span class="c">// fallback</span>
+    introVideo<span class="p">?: {</span> thumbnail<span class="p">:</span> <span class="t">string</span><span class="p">;</span> durationSec<span class="p">:</span> <span class="t">number</span> <span class="p">};</span>
+    rating<span class="p">:</span> <span class="t">number</span> <span class="p">|</span> <span class="t">null</span><span class="p">;</span>         <span class="c">// null = no reviews yet</span>
+    reviewCount<span class="p">:</span> <span class="t">number</span><span class="p">;</span>
+    verifications<span class="p">: {</span>
+      id<span class="p">:</span> <span class="t">VerificationStatus</span><span class="p">;</span>
+      kvk<span class="p">:</span> <span class="t">VerificationStatus</span><span class="p">;</span>
+      iban<span class="p">:</span> <span class="t">VerificationStatus</span><span class="p">;</span>
+    <span class="p">};</span>
+    fsValidated<span class="p">?:</span> <span class="t">boolean</span><span class="p">;</span>
+    sectors<span class="p">:</span> <span class="t">string</span><span class="p">[];</span>
+  <span class="p">};</span>
+  onPlayIntro<span class="p">?:</span> <span class="p">() =&gt;</span> <span class="t">void</span><span class="p">;</span>
+  onSectorPress<span class="p">?:</span> <span class="p">(</span>sector<span class="p">:</span> <span class="t">string</span><span class="p">) =&gt;</span> <span class="t">void</span><span class="p">;</span>
+<span class="p">}</span></pre>
+      </section>
+
+      <!-- ============== OtpInput ============== -->
+      <section class="demo" id="otp-input">
+        <h2><span class="name">OtpInput</span> <span class="meta">6-digit auto-submit · native keyboard suggestion support</span></h2>
+        <p class="lead">
+          Phone verification + email OTP. Uses
+          <code>textContentType="oneTimeCode"</code> on iOS and
+          <code>autoComplete="one-time-code"</code> on Android so the OS
+          surfaces the SMS code in the keyboard. Auto-submits when the last
+          cell is filled.
+        </p>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · partial + complete + error</div>
+            <div class="col" style="gap: var(--space-lg);">
+              <div>
+                <div class="preview-label" style="margin-bottom: 8px;">Partial — 3rd cell active</div>
+                <div class="otp-input">
+                  <input class="otp-cell" value="4" readonly />
+                  <input class="otp-cell" value="2" readonly />
+                  <input class="otp-cell otp-cell--active" value="" />
+                  <input class="otp-cell" value="" />
+                  <input class="otp-cell" value="" />
+                  <input class="otp-cell" value="" />
+                </div>
+              </div>
+              <div>
+                <div class="preview-label" style="margin-bottom: 8px;">Complete</div>
+                <div class="otp-input">
+                  <input class="otp-cell" value="4" readonly />
+                  <input class="otp-cell" value="2" readonly />
+                  <input class="otp-cell" value="9" readonly />
+                  <input class="otp-cell" value="1" readonly />
+                  <input class="otp-cell" value="3" readonly />
+                  <input class="otp-cell" value="7" readonly />
+                </div>
+              </div>
+              <div>
+                <div class="preview-label" style="margin-bottom: 8px;">Error</div>
+                <div class="otp-input otp-input--error">
+                  <input class="otp-cell" value="0" readonly />
+                  <input class="otp-cell" value="0" readonly />
+                  <input class="otp-cell" value="0" readonly />
+                  <input class="otp-cell" value="0" readonly />
+                  <input class="otp-cell" value="0" readonly />
+                  <input class="otp-cell" value="0" readonly />
+                </div>
+                <span class="field-helper error" style="margin-top: 6px; display: block;">Code expired. Tap "Resend" to try again.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · partial + complete + error</div>
+            <div class="col" style="gap: var(--space-lg);">
+              <div>
+                <div class="preview-label" style="margin-bottom: 8px;">Partial — 3rd cell active</div>
+                <div class="otp-input">
+                  <input class="otp-cell" value="4" readonly />
+                  <input class="otp-cell" value="2" readonly />
+                  <input class="otp-cell otp-cell--active" value="" />
+                  <input class="otp-cell" value="" />
+                  <input class="otp-cell" value="" />
+                  <input class="otp-cell" value="" />
+                </div>
+              </div>
+              <div>
+                <div class="preview-label" style="margin-bottom: 8px;">Complete</div>
+                <div class="otp-input">
+                  <input class="otp-cell" value="4" readonly />
+                  <input class="otp-cell" value="2" readonly />
+                  <input class="otp-cell" value="9" readonly />
+                  <input class="otp-cell" value="1" readonly />
+                  <input class="otp-cell" value="3" readonly />
+                  <input class="otp-cell" value="7" readonly />
+                </div>
+              </div>
+              <div>
+                <div class="preview-label" style="margin-bottom: 8px;">Error</div>
+                <div class="otp-input otp-input--error">
+                  <input class="otp-cell" value="0" readonly />
+                  <input class="otp-cell" value="0" readonly />
+                  <input class="otp-cell" value="0" readonly />
+                  <input class="otp-cell" value="0" readonly />
+                  <input class="otp-cell" value="0" readonly />
+                  <input class="otp-cell" value="0" readonly />
+                </div>
+                <span class="field-helper error" style="margin-top: 6px; display: block;">Code expired. Tap "Resend" to try again.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<pre class="code-block"><span class="c">// OtpInput.tsx</span>
+<span class="k">export interface</span> <span class="t">OtpInputProps</span> <span class="p">{</span>
+  value<span class="p">:</span> <span class="t">string</span><span class="p">;</span>
+  onChange<span class="p">: (</span>next<span class="p">:</span> <span class="t">string</span><span class="p">) =&gt;</span> <span class="t">void</span><span class="p">;</span>
+  <span class="c">/** Fires when value.length reaches `length`. Triggers auto-submit. */</span>
+  onComplete<span class="p">?: (</span>code<span class="p">:</span> <span class="t">string</span><span class="p">) =&gt;</span> <span class="t">void</span><span class="p">;</span>
+  length<span class="p">?:</span> <span class="t">number</span><span class="p">;</span>           <span class="c">// default 6</span>
+  autoFocus<span class="p">?:</span> <span class="t">boolean</span><span class="p">;</span>
+  error<span class="p">?:</span> <span class="t">boolean</span><span class="p">;</span>
+  disabled<span class="p">?:</span> <span class="t">boolean</span><span class="p">;</span>
+<span class="p">}</span></pre>
+
+<pre class="code-block"><span class="k">import</span> <span class="p">{</span> useRef <span class="p">}</span> <span class="k">from</span> <span class="s">'react'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> View<span class="p">,</span> TextInput<span class="p">,</span> Platform <span class="p">}</span> <span class="k">from</span> <span class="s">'react-native'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> useTheme <span class="p">}</span> <span class="k">from</span> <span class="s">'@/design-system/theme'</span><span class="p">;</span>
+
+<span class="k">export const</span> <span class="f">OtpInput</span> <span class="p">= ({</span> value<span class="p">,</span> onChange<span class="p">,</span> onComplete<span class="p">,</span> length <span class="p">=</span> <span class="s">6</span><span class="p">,</span> error<span class="p">,</span> disabled <span class="p">}:</span> <span class="t">OtpInputProps</span><span class="p">) =&gt; {</span>
+  <span class="k">const</span> t <span class="p">=</span> <span class="f">useTheme</span><span class="p">();</span>
+  <span class="k">const</span> hiddenRef <span class="p">=</span> useRef<span class="p">&lt;</span><span class="t">TextInput</span><span class="p">&gt;(</span><span class="t">null</span><span class="p">);</span>
+
+  <span class="k">const</span> <span class="f">handleChange</span> <span class="p">= (</span>raw<span class="p">:</span> <span class="t">string</span><span class="p">) =&gt; {</span>
+    <span class="k">const</span> next <span class="p">=</span> raw<span class="p">.</span><span class="f">replace</span><span class="p">(/[^0-9]/g,</span> <span class="s">''</span><span class="p">).</span><span class="f">slice</span><span class="p">(</span><span class="s">0</span><span class="p">,</span> length<span class="p">);</span>
+    <span class="f">onChange</span><span class="p">(</span>next<span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span>next<span class="p">.</span>length <span class="p">===</span> length<span class="p">)</span> onComplete<span class="p">?.(</span>next<span class="p">);</span>
+  <span class="p">};</span>
+
+  <span class="k">return</span> <span class="p">(</span>
+    <span class="p">&lt;</span><span class="t">View</span> style<span class="p">={{</span> flexDirection<span class="p">:</span> <span class="s">'row'</span><span class="p">,</span> gap<span class="p">:</span> t<span class="p">.</span>space<span class="p">.</span>sm <span class="p">}}</span> onTouchEnd<span class="p">={() =&gt;</span> hiddenRef<span class="p">.</span>current<span class="p">?.</span><span class="f">focus</span><span class="p">()}&gt;</span>
+      <span class="p">{</span><span class="t">Array</span><span class="p">.</span><span class="f">from</span><span class="p">({</span> length <span class="p">}).</span><span class="f">map</span><span class="p">((</span>_<span class="p">,</span> i<span class="p">) =&gt;</span> <span class="p">(</span>
+        <span class="p">&lt;</span><span class="t">View</span> key<span class="p">={</span>i<span class="p">}</span> style<span class="p">={</span>cellStyle<span class="p">(</span>t<span class="p">,</span> value<span class="p">,</span> i<span class="p">,</span> error<span class="p">)}&gt;</span>
+          <span class="p">&lt;</span><span class="t">Text</span> style<span class="p">={</span>digitStyle<span class="p">(</span>t<span class="p">)}&gt;{</span>value<span class="p">[</span>i<span class="p">]</span> <span class="p">??</span> <span class="s">''</span><span class="p">}&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+      <span class="p">))}</span>
+      <span class="p">&lt;</span><span class="t">TextInput</span>
+        ref<span class="p">={</span>hiddenRef<span class="p">}</span>
+        value<span class="p">={</span>value<span class="p">}</span>
+        onChangeText<span class="p">={</span>handleChange<span class="p">}</span>
+        keyboardType<span class="p">=</span><span class="s">"number-pad"</span>
+        textContentType<span class="p">=</span><span class="s">"oneTimeCode"</span>      <span class="c">// iOS — SMS suggestion</span>
+        autoComplete<span class="p">=</span><span class="s">"one-time-code"</span>       <span class="c">// Android — SMS suggestion</span>
+        maxLength<span class="p">={</span>length<span class="p">}</span>
+        editable<span class="p">={!</span>disabled<span class="p">}</span>
+        style<span class="p">={</span>hiddenInputStyle<span class="p">}</span>                <span class="c">// absolutely positioned, opacity 0</span>
+      <span class="p">/&gt;</span>
+    <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+  <span class="p">);</span>
+<span class="p">};</span></pre>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script>
+    // Theme toggle — mimics theme.tsx's useColorScheme() resolver.
+    const root = document.documentElement;
+    const toggle = document.getElementById('themeToggle');
+    const label  = document.getElementById('themeLabel');
+
+    const stored = localStorage.getItem('softpro-theme');
+    const initial = stored || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    apply(initial);
+
+    toggle.addEventListener('click', () => {
+      apply(root.dataset.theme === 'dark' ? 'light' : 'dark');
+    });
+
+    function apply(theme) {
+      root.dataset.theme = theme;
+      label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+      localStorage.setItem('softpro-theme', theme);
+    }
+  </script>
+
+</body>
+</html>

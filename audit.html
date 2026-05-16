@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soft Pro Token Audit — Spoedmarktplaats Mobile</title>
+  <style>
+    :root {
+      --ink:         #1A1814;
+      --ink-strong:  #0A0906;
+      --ink-soft:    #2D2A26;
+      --paper:       #FCFAF7;
+      --paper-100:   #F8F4EC;
+      --paper-200:   #F2EEE8;
+      --paper-300:   #EDE8E1;
+      --paper-400:   #D8D2CA;
+      --warm-500:    #A39B8E;
+      --warm-600:    #6B6359;
+      --chartreuse:  #E3FF00;
+      --chartreuse-soft: #F8FFB3;
+      --flame:       #FF5F1F;
+
+      --success:     #16A34A;
+      --warning:     #F59E0B;
+      --error:       #DC2626;
+      --info:        #0284C7;
+
+      --surface:     #FFFFFF;
+      --border:      var(--paper-400);
+      --border-subtle: var(--paper-300);
+
+      --radius-card: 16px;
+      --radius-chip: 999px;
+
+      /* Theme-aware consumer vars — flip in dark mode below */
+      --surface-bg:      var(--paper);
+      --page-text:       var(--ink);
+      --page-text-soft:  var(--ink-strong);
+      --text-secondary:  var(--warm-600);
+      --text-muted:      var(--warm-500);
+      --chip-bg:         var(--paper-200);
+    }
+
+    [data-theme="dark"] {
+      --surface-bg:      #15130F;
+      --surface:         #1A1814;
+      --page-text:       #F8F4EC;
+      --page-text-soft:  #FCFAF7;
+      --text-secondary:  #A39B8E;
+      --text-muted:      #6B6359;
+      --chip-bg:         #211E18;
+      --border:          rgba(248,244,236,0.12);
+      --border-subtle:   rgba(248,244,236,0.06);
+    }
+
+    /* Dark-mode overrides — only applied when data-theme="dark". The hero
+       and <pre> code blocks intentionally stay dark in both modes, so
+       they keep using var(--ink) / var(--paper-100) directly. */
+    [data-theme="dark"] body                  { background: var(--surface-bg); color: var(--page-text); }
+    [data-theme="dark"] .toc                  { background: var(--surface); border-color: var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.35); }
+    [data-theme="dark"] .toc h2               { color: var(--text-secondary); }
+    [data-theme="dark"] .toc ol li a          { color: var(--page-text); }
+    [data-theme="dark"] section.demo > h2,
+    [data-theme="dark"] section h3            { color: var(--page-text); border-color: var(--border-subtle); }
+    [data-theme="dark"] section p             { color: var(--page-text); }
+    [data-theme="dark"] section p.lead        { color: var(--text-secondary); }
+    [data-theme="dark"] section ul,
+    [data-theme="dark"] section ol            { color: var(--page-text); }
+    [data-theme="dark"] p code,
+    [data-theme="dark"] li code,
+    [data-theme="dark"] td code               { background: var(--chip-bg); color: var(--page-text-soft); }
+    [data-theme="dark"] table                 { background: var(--surface); border-color: var(--border); }
+    [data-theme="dark"] th, [data-theme="dark"] td  { border-color: var(--border-subtle); }
+    [data-theme="dark"] th                    { background: var(--chip-bg); color: var(--text-secondary); }
+    [data-theme="dark"] td.hex                { color: var(--page-text-soft); }
+    [data-theme="dark"] .palette-tile         { background: var(--surface); border-color: var(--border); }
+    [data-theme="dark"] .palette-meta .name   { color: var(--page-text); }
+    [data-theme="dark"] .palette-meta .hex    { color: var(--text-secondary); }
+    [data-theme="dark"] .callout              { background: var(--chip-bg); }
+    [data-theme="dark"] .callout.note         { border-left-color: var(--page-text); }
+    [data-theme="dark"] .callout.warn         { background: rgba(251,191,36,0.10); }
+    [data-theme="dark"] footer                { color: var(--text-secondary); border-top-color: var(--border); }
+    [data-theme="dark"] footer a              { color: var(--page-text); }
+
+    /* ── Sticky topbar (shared chrome) ───────────────────────────── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface-bg);
+      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(10px);
+      transition: background 210ms cubic-bezier(.2,0,0,1);
+    }
+    .topbar-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .crumb {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 130ms cubic-bezier(.2,0,0,1);
+    }
+    .crumb:hover { color: var(--page-text); }
+    .crumb-back {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .crumb-back svg { width: 14px; height: 14px; }
+
+    .theme-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--page-text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 130ms cubic-bezier(.2,0,0,1);
+    }
+    .theme-pill:hover { box-shadow: 0 2px 6px rgba(26,24,20,0.06); }
+    .theme-pill .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--chartreuse);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 96px;
+    }
+
+    /* ── Hero ─────────────────────────────────────────────────────── */
+    .hero {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 64px 32px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: -120px;
+      top: -120px;
+      width: 360px;
+      height: 360px;
+      background: var(--chartreuse);
+      border-radius: 999px;
+      opacity: 0.16;
+      filter: blur(40px);
+    }
+    .hero-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-eyebrow {
+      display: inline-block;
+      padding: 6px 12px;
+      background: var(--chartreuse);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 40px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      font-size: 17px;
+      max-width: 640px;
+      color: rgba(252,250,247,0.78);
+    }
+    .hero p code {
+      background: rgba(252,250,247,0.12);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--paper);
+    }
+
+    /* ── Layout ───────────────────────────────────────────────────── */
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 20px 24px;
+      margin: -32px auto 40px;
+      max-width: 980px;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 4px 24px rgba(26,24,20,0.06);
+    }
+    .toc h2 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--warm-600);
+      margin-bottom: 12px;
+    }
+    .toc ol {
+      list-style: none;
+      counter-reset: toc;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 8px 24px;
+    }
+    .toc ol li { counter-increment: toc; }
+    .toc ol li::before {
+      content: counter(toc) ". ";
+      color: var(--warm-500);
+      font-variant-numeric: tabular-nums;
+    }
+    .toc ol li a {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+    }
+    .toc ol li a:hover {
+      text-decoration: underline;
+      text-decoration-color: var(--chartreuse);
+      text-decoration-thickness: 3px;
+      text-underline-offset: 4px;
+    }
+
+    section {
+      margin-bottom: 56px;
+    }
+    section h2 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    section h2 .step {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      background: var(--chartreuse);
+      color: var(--ink);
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-right: 12px;
+      vertical-align: middle;
+    }
+    section h3 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      margin: 32px 0 12px;
+    }
+    section p {
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: var(--ink);
+    }
+    section p.lead {
+      font-size: 17px;
+      color: var(--warm-600);
+      margin-bottom: 24px;
+    }
+    section ul, section ol {
+      margin: 0 0 16px 20px;
+      font-size: 16px;
+    }
+    section li {
+      margin-bottom: 8px;
+    }
+
+    code, pre {
+      font-family: 'SF Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+      font-size: 14px;
+    }
+    p code, li code, td code {
+      background: var(--paper-200);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: var(--ink-strong);
+    }
+    pre {
+      background: var(--ink);
+      color: var(--paper-100);
+      padding: 20px 24px;
+      border-radius: var(--radius-card);
+      overflow-x: auto;
+      margin: 16px 0;
+      line-height: 1.6;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    /* ── Tables ───────────────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 16px 0 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    tr:last-child td { border-bottom: none; }
+    th {
+      background: var(--paper-200);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--warm-600);
+    }
+    td.count { font-variant-numeric: tabular-nums; text-align: right; width: 80px; }
+    td.hex {
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 13px;
+      color: var(--ink-strong);
+    }
+    td.token {
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 13px;
+      color: var(--flame);
+    }
+
+    /* ── Swatch chips ─────────────────────────────────────────────── */
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      vertical-align: middle;
+      margin-right: 8px;
+      border: 1px solid rgba(26,24,20,0.08);
+    }
+    .swatch-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin: 16px 0 24px;
+    }
+    .palette-tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .palette-color {
+      height: 64px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .palette-meta {
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .palette-meta .name {
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .palette-meta .hex {
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      color: var(--warm-600);
+    }
+
+    /* ── Callout boxes ────────────────────────────────────────────── */
+    .callout {
+      background: var(--chartreuse-soft);
+      border-left: 4px solid var(--chartreuse);
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin: 16px 0 24px;
+    }
+    .callout strong { font-weight: 600; }
+    .callout.note {
+      background: var(--paper-200);
+      border-left-color: var(--ink);
+    }
+    .callout.warn {
+      background: #FEF9C3;
+      border-left-color: var(--warning);
+    }
+
+    /* ── Footer ───────────────────────────────────────────────────── */
+    footer {
+      max-width: 980px;
+      margin: 64px auto 0;
+      padding: 24px 32px;
+      border-top: 1px solid var(--border);
+      color: var(--warm-600);
+      font-size: 13px;
+    }
+    footer a { color: var(--ink); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 40px 20px 32px; }
+      .hero h1 { font-size: 30px; }
+      .container { padding: 0 20px; }
+      .toc { margin: -24px 16px 32px; padding: 16px 18px; }
+      section h2 { font-size: 22px; }
+      th, td { padding: 10px 12px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+
+  <nav class="topbar">
+    <div class="topbar-inner">
+      <a class="crumb" href="./index.html">
+        <span class="crumb-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </span>
+        Back to design system
+      </a>
+      <button class="theme-pill" id="themeToggle" aria-label="Toggle theme">
+        <span class="dot"></span>
+        <span id="themeLabel">Light</span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="hero-eyebrow">Soft Pro Design System</span>
+      <h1>Token Audit</h1>
+      <p>
+        Archaeological pass over <code>spoedmarktplaats-mobile/src/{screens,components,navigation}</code>.
+        Goal: turn the de-facto style vocabulary already hiding in screens into a
+        declarative token system. <strong>No UI or component code was modified.</strong>
+        The output of this audit lives in <code>tokens.ts</code> and <code>theme.ts</code>
+        (same folder).
+      </p>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#found">What was found</a></li>
+      <li><a href="#colors">Colors</a></li>
+      <li><a href="#spacing">Spacing</a></li>
+      <li><a href="#font-size">Font size</a></li>
+      <li><a href="#radius">Border radius</a></li>
+      <li><a href="#border-width">Border width</a></li>
+      <li><a href="#font-weight">Font weight</a></li>
+      <li><a href="#sizes">Control / icon sizes</a></li>
+      <li><a href="#elevation">Elevation</a></li>
+      <li><a href="#correct">What was already correct</a></li>
+      <li><a href="#dark">How dark mode is derived</a></li>
+      <li><a href="#api">Public API</a></li>
+      <li><a href="#scope">What this audit did NOT do</a></li>
+    </ol>
+  </nav>
+
+  <main class="container">
+
+    <!-- ============ 1. What was found ============ -->
+    <section id="found">
+      <h2><span class="step">1</span>What was found</h2>
+      <p class="lead">
+        Every <code>#RRGGBB</code> hex literal, every StyleSheet magic number, every
+        <code>fontSize</code> that appears in <code>src/screens</code> and
+        <code>src/components</code> was tabulated and clustered.
+      </p>
+    </section>
+
+    <!-- ============ 1a. Colors ============ -->
+    <section id="colors">
+      <h2><span class="step">1a</span>Colors</h2>
+      <p>
+        Total distinct hex literals across screens + components: <strong>~60</strong>.
+        Top of the frequency table:
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Count</th><th>Hex</th><th>Role found in code</th><th>Mapped to</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="count">51</td><td class="hex"><span class="swatch" style="background:#FFFFFF"></span>#FFF</td><td>card / sheet / input background</td><td class="token">surface.primary / fixed.white</td></tr>
+          <tr><td class="count">31</td><td class="hex"><span class="swatch" style="background:#000000"></span>#000</td><td>overlay / icon</td><td class="token">fixed.black / overlay.*</td></tr>
+          <tr><td class="count">22</td><td class="hex"><span class="swatch" style="background:#E3FF00"></span>#E3FF00</td><td>accent / chartreuse highlights</td><td class="token">brand.accent</td></tr>
+          <tr><td class="count">21</td><td class="hex"><span class="swatch" style="background:#1A1814"></span>#1A1814</td><td>body text, primary buttons</td><td class="token">text.primary / brand.primary</td></tr>
+          <tr><td class="count">14</td><td class="hex"><span class="swatch" style="background:#FCFAF7"></span>#FCFAF7</td><td>screen background</td><td class="token">surface.background</td></tr>
+          <tr><td class="count">11</td><td class="hex"><span class="swatch" style="background:#6B6359"></span>#6B6359</td><td>caption / metadata text</td><td class="token">text.secondary</td></tr>
+          <tr><td class="count">9</td><td class="hex"><span class="swatch" style="background:#3B9C4F"></span>#3B9C4F</td><td>deal status, secondary green</td><td class="token">feedback.success.soft</td></tr>
+          <tr><td class="count">7</td><td class="hex"><span class="swatch" style="background:#F8FFB3"></span>#F8FFB3</td><td>accent-tinted callouts</td><td class="token">brand.accentSoft / surface.tinted</td></tr>
+          <tr><td class="count">7</td><td class="hex"><span class="swatch" style="background:#F8F4EC"></span>#F8F4EC</td><td>dark-mode text / light cards</td><td class="token">paper100 primitive</td></tr>
+          <tr><td class="count">7</td><td class="hex"><span class="swatch" style="background:#F2EEE8"></span>#F2EEE8</td><td>secondary surface (chips etc.)</td><td class="token">surface.secondary</td></tr>
+          <tr><td class="count">7</td><td class="hex"><span class="swatch" style="background:#16A34A"></span>#16A34A</td><td>verified badge / success</td><td class="token">feedback.success.default</td></tr>
+          <tr><td class="count">6</td><td class="hex"><span class="swatch" style="background:#FF5F1F"></span>#FF5F1F</td><td>Projectversterking brand</td><td class="token">brand.flame</td></tr>
+          <tr><td class="count">6</td><td class="hex"><span class="swatch" style="background:#FBBF24"></span>#FBBF24</td><td>boost / warning soft</td><td class="token">feedback.warning.soft</td></tr>
+          <tr><td class="count">6</td><td class="hex"><span class="swatch" style="background:#DC2626"></span>#DC2626</td><td>destructive / error</td><td class="token">feedback.error.default</td></tr>
+          <tr><td class="count">6</td><td class="hex"><span class="swatch" style="background:#15130F"></span>#15130F</td><td>dark-mode background</td><td class="token">dark900 primitive</td></tr>
+        </tbody>
+      </table>
+
+      <h3>The de-facto Soft Pro palette</h3>
+      <div class="palette-grid">
+        <div class="palette-tile"><div class="palette-color" style="background:#1A1814"></div><div class="palette-meta"><div class="name">ink</div><div class="hex">#1A1814</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#FCFAF7"></div><div class="palette-meta"><div class="name">paper</div><div class="hex">#FCFAF7</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#F2EEE8"></div><div class="palette-meta"><div class="name">paper.200</div><div class="hex">#F2EEE8</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#D8D2CA"></div><div class="palette-meta"><div class="name">paper.400</div><div class="hex">#D8D2CA</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#6B6359"></div><div class="palette-meta"><div class="name">warm.600</div><div class="hex">#6B6359</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#A39B8E"></div><div class="palette-meta"><div class="name">warm.500</div><div class="hex">#A39B8E</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#E3FF00"></div><div class="palette-meta"><div class="name">chartreuse</div><div class="hex">#E3FF00</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#F8FFB3"></div><div class="palette-meta"><div class="name">chartreuse.soft</div><div class="hex">#F8FFB3</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#FF5F1F"></div><div class="palette-meta"><div class="name">flame</div><div class="hex">#FF5F1F</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#16A34A"></div><div class="palette-meta"><div class="name">success</div><div class="hex">#16A34A</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#F59E0B"></div><div class="palette-meta"><div class="name">warning</div><div class="hex">#F59E0B</div></div></div>
+        <div class="palette-tile"><div class="palette-color" style="background:#DC2626"></div><div class="palette-meta"><div class="name">error</div><div class="hex">#DC2626</div></div></div>
+      </div>
+
+      <h3>Collapses made</h3>
+      <p>Where multiple hexes were doing the same job:</p>
+      <ul>
+        <li><strong>Flame variants</strong> — <code>#FF6B00</code> (1) + <code>#FF6B35</code> (4) + <code>#FF5F1F</code> (6) → single <code>brand.flame</code> (#FF5F1F)</li>
+        <li><strong>Greens</strong> — eight green variants → <code>feedback.success.{default,strong,soft,muted,onSurface}</code>. Kept <code>#3B9C4F</code> as <code>.soft</code> because it's used distinctly in the deal flow.</li>
+        <li><strong>Reds</strong> — four red variants → <code>feedback.error.{default,strong,soft,muted}</code></li>
+        <li><strong>Ambers</strong> — ten amber/yellow variants doing the same job → <code>feedback.warning.*</code> (5 buckets)</li>
+        <li><strong>Blues</strong> — six blue variants → <code>feedback.info.*</code> plus dedicated <code>urgency.today</code></li>
+        <li>
+          <strong>Cool grays leaking in</strong> — <code>#6B7280</code>, <code>#4A4A4A</code>, <code>#64748B</code>,
+          <code>#888</code>, <code>#111</code>, <code>#1A1A1A</code>, <code>#E0E0E0</code>, <code>#E8E8E8</code>,
+          <code>#F5F5F5</code>, <code>#E2E8F0</code>. These don't belong in Soft Pro and were collapsed to warm
+          equivalents (<code>text.secondary</code>, <code>border.subtle</code>, <code>surface.secondary</code>).
+          <strong>Anywhere a screen uses one of these today, it should switch to the warm token.</strong>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ============ 1b. Spacing ============ -->
+    <section id="spacing">
+      <h2><span class="step">1b</span>Spacing</h2>
+      <p>
+        Distinct integer literals on <code>padding*</code> / <code>margin*</code> / <code>gap</code>:
+        <strong>27 values</strong>. After clustering onto an 8pt grid:
+      </p>
+
+      <table>
+        <thead>
+          <tr><th class="count">Step (px)</th><th class="count">Hits</th><th>Token</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="count">2</td><td class="count">42</td><td class="token">space.hairline</td></tr>
+          <tr><td class="count">4</td><td class="count">63</td><td class="token">space.xs</td></tr>
+          <tr><td class="count">8</td><td class="count">54</td><td class="token">space.sm</td></tr>
+          <tr><td class="count">12</td><td class="count">51</td><td class="token">space.md</td></tr>
+          <tr><td class="count">16</td><td class="count">34</td><td class="token">space.lg</td></tr>
+          <tr><td class="count">20</td><td class="count">16</td><td class="token">space.xl</td></tr>
+          <tr><td class="count">24</td><td class="count">13</td><td class="token">space['2xl']</td></tr>
+          <tr><td class="count">32</td><td class="count">3</td><td class="token">space['3xl']</td></tr>
+          <tr><td class="count">48</td><td class="count">1</td><td class="token">space['4xl']</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Off-grid drift</h3>
+      <ul>
+        <li><code>3</code> (14×) → <code>xs</code> (4) — drift in chip internals</li>
+        <li><code>5</code> (9×) → <code>xs</code> (4)</li>
+        <li><code>6</code> (31×) → <code>sm</code> (8) — most common off-grid value</li>
+        <li><code>7</code>, <code>9</code> → <code>sm</code> (8)</li>
+        <li><code>10</code> (40×) → <code>md</code> (12) — heavy hitter; rounds up</li>
+        <li><code>14</code> (25×) → <code>lg</code> (16)</li>
+        <li><code>18</code> (19×) → <code>xl</code> (20)</li>
+        <li><code>22</code>, <code>28</code> → <code>2xl</code> (24)</li>
+      </ul>
+
+      <div class="callout">
+        The semantic aliases <code>inset.*</code> and <code>gap.*</code> layer over these,
+        so screens can express <em>intent</em> (<code>inset.card</code>) rather than
+        <em>step</em> (<code>space.lg</code>).
+      </div>
+    </section>
+
+    <!-- ============ 1c. Font size ============ -->
+    <section id="font-size">
+      <h2><span class="step">1c</span>Font size</h2>
+      <p>22 distinct sizes (11 → 80). Clustered into a clean ramp:</p>
+
+      <table>
+        <thead>
+          <tr><th>Token</th><th class="count">px</th><th class="count">Hits</th><th>Replaces drift</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="token">micro</td><td class="count">11</td><td class="count">44</td><td>tab labels</td></tr>
+          <tr><td class="token">caption</td><td class="count">12</td><td class="count">44</td><td>small captions</td></tr>
+          <tr><td class="token">captionLg</td><td class="count">13</td><td class="count">54</td><td>dominant caption variant</td></tr>
+          <tr><td class="token">label</td><td class="count">14</td><td class="count">40</td><td>field labels, button copy</td></tr>
+          <tr><td class="token">body</td><td class="count">16</td><td class="count">18</td><td>body</td></tr>
+          <tr><td class="token">bodyLg</td><td class="count">17</td><td class="count">9</td><td>emphasized body</td></tr>
+          <tr><td class="token">subheading</td><td class="count">18</td><td class="count">3</td><td>small section header</td></tr>
+          <tr><td class="token">heading</td><td class="count">22</td><td class="count">11</td><td>card title</td></tr>
+          <tr><td class="token">title</td><td class="count">26</td><td class="count">2</td><td>screen heading</td></tr>
+          <tr><td class="token">display</td><td class="count">32</td><td class="count">3</td><td>hero number</td></tr>
+          <tr><td class="token">hero</td><td class="count">40</td><td class="count">1</td><td>landing hero</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        Outliers collapsed: 9→11, 10 (8×)→11, 15 (33×)→14, 20→18, 24→22,
+        28 (5×)→26, 30 (2×)→32, 34 (2×)→32.
+      </p>
+    </section>
+
+    <!-- ============ 1d. Radius ============ -->
+    <section id="radius">
+      <h2><span class="step">1d</span>Border radius</h2>
+      <p>15 distinct values; <code>999</code> (pill) is its own thing. Clustered to:</p>
+
+      <table>
+        <thead>
+          <tr><th>Token</th><th class="count">px</th><th class="count">Hits</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="token">xs</td><td class="count">4</td><td class="count">16</td><td></td></tr>
+          <tr><td class="token">sm</td><td class="count">8</td><td class="count">4</td><td>chips prefer pill</td></tr>
+          <tr><td class="token">md</td><td class="count">12</td><td class="count">12</td><td>controls</td></tr>
+          <tr><td class="token">lg</td><td class="count">16</td><td class="count">21</td><td>cards</td></tr>
+          <tr><td class="token">xl</td><td class="count">20</td><td class="count">40</td><td>hero cards — biggest bucket</td></tr>
+          <tr><td class="token">2xl</td><td class="count">24</td><td class="count">0</td><td>sheet/modal</td></tr>
+          <tr><td class="token">pill</td><td class="count">999</td><td class="count">10</td><td>chips / avatars</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        Outliers collapsed: 3→4, 6→4, 10 (19×)→12, 13 (8×)→12, 14 (37×)→16,
+        17 (4×)→16, 18 (4×)→20, 22 (8×)→20, 28 (4×)→24.
+      </p>
+    </section>
+
+    <!-- ============ 1e. Border width ============ -->
+    <section id="border-width">
+      <h2><span class="step">1e</span>Border width</h2>
+      <table>
+        <thead><tr><th>Token</th><th class="count">px</th><th class="count">Hits</th></tr></thead>
+        <tbody>
+          <tr><td class="token">hairline</td><td class="count">1</td><td class="count">110</td></tr>
+          <tr><td class="token">thin</td><td class="count">1.5</td><td class="count">12</td></tr>
+          <tr><td class="token">thick</td><td class="count">2</td><td class="count">15</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============ 1f. Font weight ============ -->
+    <section id="font-weight">
+      <h2><span class="step">1f</span>Font weight</h2>
+      <p>
+        <code>'600'</code> (102) · <code>'700'</code> (80) · <code>'500'</code> (29) ·
+        <code>'400'</code> (5). Exposed as
+        <code>semibold | bold | medium | regular</code>.
+      </p>
+    </section>
+
+    <!-- ============ 1g. Sizes ============ -->
+    <section id="sizes">
+      <h2><span class="step">1g</span>Sizes (controls, icons, avatars)</h2>
+      <p>The width/height audit revealed a clear control + avatar ladder:</p>
+      <ul>
+        <li><strong>44</strong> (23×) — tap target minimum (Apple HIG) → <code>controlMd</code></li>
+        <li><strong>52</strong> (8×) — primary button height → <code>controlLg</code> (matches existing <code>buttonHeight</code>)</li>
+        <li><strong>56</strong> (14×) — large control / large avatar → <code>controlXl</code> / <code>avatarLg</code></li>
+        <li><strong>72</strong> (10×), <strong>80</strong> (14×) → <code>avatarXl</code>, <code>avatar2xl</code></li>
+        <li><strong>20</strong> (35× in icon-size grep) — default icon → <code>iconMd</code></li>
+      </ul>
+    </section>
+
+    <!-- ============ 1h. Elevation ============ -->
+    <section id="elevation">
+      <h2><span class="step">1h</span>Elevation</h2>
+      <div class="callout note">
+        Audit found <strong>4 hits</strong> of <code>shadow*</code> properties across the
+        entire mobile <code>src</code> tree. Soft Pro is intentionally flat; borders
+        carry hierarchy. The token set keeps <code>elevation.none</code> as the default
+        and offers <code>sheet</code> / <code>modal</code> for the two cases where lift
+        is genuinely needed.
+      </div>
+    </section>
+
+    <!-- ============ 2. What was already correct ============ -->
+    <section id="correct">
+      <h2><span class="step">2</span>What was already correct</h2>
+      <p>
+        The existing <code>src/theme/themes.ts</code> already had a coherent light/dark
+        split and most of the brand semantics. The audit kept its names where they
+        made sense:
+      </p>
+      <ul>
+        <li><code>lightColors.primary</code>, <code>.accent</code>, <code>.spoedChartreuse</code>, <code>.projectFlame</code> → carried over</li>
+        <li>Urgency tokens (<code>urgencyASAP/Today/Scheduled/Flexible</code>) → carried over. <strong>Scheduled and Today were identical hex; collapsed.</strong></li>
+        <li>Badge tokens (<code>verified</code>, <code>boosted</code>, <code>privatePool</code>) → carried over</li>
+        <li>Motion <code>quick/standard/slow</code> → carried over verbatim</li>
+      </ul>
+      <p>
+        The gap was that <strong>screens weren't using these tokens consistently</strong> —
+        they fell back to hardcoded hex and ad-hoc spacing. The new tokens file
+        makes the existing palette explicit and adds the missing buckets
+        (<code>feedback.success.soft</code>, <code>surface.tinted</code>,
+        <code>border.strong</code>, etc.) the screens were already inventing inline.
+      </p>
+    </section>
+
+    <!-- ============ 3. Dark mode ============ -->
+    <section id="dark">
+      <h2><span class="step">3</span>How dark mode is derived</h2>
+      <p>
+        Dark mode is built in <code>theme.ts</code>, not duplicated in tokens. Each
+        semantic key in <code>darkColor</code> re-maps to the same <code>palette</code>
+        primitives (paper, ink, warm, chartreuse) but inverted:
+      </p>
+      <ul>
+        <li><code>surface.background</code> → <code>dark900</code> (deep warm dark)</li>
+        <li><code>text.primary</code> → <code>paper100</code> (warm paper text)</li>
+        <li><code>text.link</code> → <code>chartreuse500</code> (links pop on dark)</li>
+        <li><code>border.default</code> → translucent paper at 12% opacity</li>
+        <li>Status colors shift one step lighter (<code>green600</code> → <code>green400</code>) for contrast on dark surfaces</li>
+      </ul>
+      <div class="callout">
+        The brand accent (<code>chartreuse500</code>) and flame (<code>flame500</code>)
+        intentionally stay identical across modes — they're the brand signal.
+      </div>
+    </section>
+
+    <!-- ============ 4. Public API ============ -->
+    <section id="api">
+      <h2><span class="step">4</span>Public API</h2>
+<pre><code>import { useTheme } from './theme';
+
+function MyScreen() {
+  const t = useTheme();
+  return (
+    &lt;View
+      style={{
+        backgroundColor: t.color.surface.primary,
+        padding: t.inset.card,
+        borderRadius: t.cornerRadius.card,
+        borderWidth: t.borderWidth.hairline,
+        borderColor: t.color.border.subtle,
+      }}
+    &gt;
+      &lt;Text style={[t.textStyle.heading, { color: t.color.text.primary }]}&gt;
+        Hello
+      &lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}</code></pre>
+      <ul>
+        <li><code>useTheme()</code> works with or without <code>&lt;ThemeProvider&gt;</code> — falls back to <code>useColorScheme()</code>.</li>
+        <li><code>&lt;ThemeProvider scheme="dark"&gt;</code> lets previews / screenshots force a specific mode.</li>
+        <li><code>useThemedStyles(t =&gt; ({...}))</code> is a memoized helper for screens that prefer <code>StyleSheet</code> ergonomics.</li>
+      </ul>
+    </section>
+
+    <!-- ============ 5. Scope ============ -->
+    <section id="scope">
+      <h2><span class="step">5</span>What this audit did NOT do</h2>
+      <div class="callout warn">
+        <strong>Per the brief:</strong>
+        <ul style="margin-top: 8px;">
+          <li>No screens or components were edited. Migrating screens to the new tokens is a separate pass.</li>
+          <li>No UI behavior was changed. This is purely additive.</li>
+          <li>The legacy <code>src/theme/{themes,theme,ThemeContext}.ts</code> files are untouched — they continue to work for existing imports.</li>
+        </ul>
+      </div>
+      <p>
+        A future migration pass would replace inline hex / magic numbers in screens
+        with <code>useTheme()</code> references, screen-by-screen.
+      </p>
+    </section>
+
+  </main>
+
+  <footer>
+    Generated archaeologically from <code>spoedmarktplaats-mobile/src/</code>.
+    The token and theme implementations (<code>tokens.ts</code>, <code>theme.tsx</code>) live in the mobile project.
+  </footer>
+
+  <script>
+    const root   = document.documentElement;
+    const body   = document.body;
+    const toggle = document.getElementById('themeToggle');
+    const label  = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('softpro-theme');
+    apply(stored || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+    toggle.addEventListener('click', () => apply(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+    function apply(theme) {
+      root.dataset.theme = theme;
+      body.dataset.theme = theme;
+      label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+      localStorage.setItem('softpro-theme', theme);
+    }
+  </script>
+
+</body>
+</html>
