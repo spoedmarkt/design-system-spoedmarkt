@@ -1324,6 +1324,57 @@
     .fs-badge--unlinked  { background: var(--surface-secondary); color: var(--text-muted); border-color: var(--border-default); }
 
     /* =========================================================
+       SIGNATURE: SectorPill — icon + sector title
+       One color scheme for all sectors. The only thing that varies
+       between sectors is the icon (Tabler outline) and the label.
+       Light + dark resolve automatically via the [data-theme] tokens
+       defined at the top of this file (mirrored from tokens.ts).
+       ========================================================= */
+    .sector-pill {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start; /* don't stretch when host is flex-column (e.g. JobCard body) */
+      gap: 6px;
+      padding: 5px 11px 5px 9px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1px;
+      line-height: 1;
+      white-space: nowrap;
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+    }
+    .sector-pill svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      color: var(--text-primary);
+    }
+    .sector-pill--sm { padding: 3px 9px 3px 7px; font-size: 11px; gap: 5px; }
+    .sector-pill--sm svg { width: 11px; height: 11px; }
+    .sector-pill--lg { padding: 7px 14px 7px 11px; font-size: 13px; gap: 7px; }
+    .sector-pill--lg svg { width: 15px; height: 15px; }
+
+    /* Accent variant — chartreuse brand surface.
+       Non-inverting: brand.accent + text.onAccent are the same hex in
+       light and dark (the chartreuse-on-ink combo IS the brand).
+       Icon gets bumped to stroke-width 2.5 and a 1px size bump for
+       prominence against the high-chroma background. */
+    .sector-pill--accent {
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+    }
+    .sector-pill--accent svg {
+      color: var(--text-on-accent);
+      stroke-width: 2.5;
+      width: 14px;
+      height: 14px;
+    }
+    .sector-pill--accent.sector-pill--sm svg { width: 12px; height: 12px; }
+    .sector-pill--accent.sector-pill--lg svg { width: 16px; height: 16px; }
+
+    /* =========================================================
        SIGNATURE: BoostFlame
        ========================================================= */
     .boost-flame {
@@ -1474,21 +1525,8 @@
       color: var(--text-secondary);
     }
     .job-card-bids svg { width: 14px; height: 14px; }
-    .job-card-sector {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      letter-spacing: 0.1px;
-    }
-    .job-card-sector svg {
-      width: 13px;
-      height: 13px;
-      flex-shrink: 0;
-      color: var(--text-muted);
-    }
+    /* JobCard sector slot is now rendered by the SectorPill component
+       (see SIGNATURE: SectorPill above). */
 
     /* =========================================================
        SIGNATURE: BidCard
@@ -1950,6 +1988,7 @@
       <ul class="sidebar-nav">
         <li><a href="#urgency-timer">UrgencyTimer</a></li>
         <li><a href="#fs-badge">FsBadge</a></li>
+        <li><a href="#sector-pill">SectorPill</a></li>
         <li><a href="#boost-flame">BoostFlame</a></li>
         <li><a href="#job-card">JobCard</a></li>
         <li><a href="#bid-card">BidCard</a></li>
@@ -2889,6 +2928,305 @@
 <span class="p">}</span></pre>
       </section>
 
+      <!-- ============== SectorPill ============== -->
+      <section class="demo" id="sector-pill">
+        <h2><span class="name">SectorPill</span> <span class="meta">10 sectors · 2 variants · 3 sizes · Tabler icons</span></h2>
+        <p class="lead">
+          Atomic representation of a job's trade. Lives inside JobCard, the
+          SectorChips filter, ProviderProfile specialties, and the Path3
+          registration wizard. Icons are Tabler outline (24×24).
+          Two variants, both routed through tokens in <code>tokens.ts</code>:
+          <b>neutral</b> (<code>surface.secondary</code> + <code>text.primary</code>) —
+          quiet, used in dense lists; and <b>accent</b>
+          (<code>brand.accent</code> + <code>text.onAccent</code>) —
+          chartreuse-on-ink, used to call attention to a featured or
+          recommended sector. Icon stroke bumps to 2.5 in the accent variant
+          for prominence against the high-chroma background. Light + dark
+          flips happen automatically through the theme tokens; the accent
+          variant is intentionally non-inverting because the chartreuse-on-ink
+          combo IS the brand.
+        </p>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · all 10 sectors (md)</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546"/></svg>
+                Loodgieter
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                Elektricien
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.414 10l-7.383 7.418a2.091 2.091 0 0 0 0 2.967a2.11 2.11 0 0 0 2.976 0l7.407 -7.385"/><path d="M18.121 15.293l2.586 -2.586a1 1 0 0 0 0 -1.414l-7.586 -7.586a1 1 0 0 0 -1.414 0l-2.586 2.586a1 1 0 0 0 0 1.414l7.586 7.586a1 1 0 0 0 1.414 0"/></svg>
+                Timmerman
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-4a4 4 0 1 1 4 4h-4"/><path d="M21 3a16 16 0 0 0 -12.8 10.2"/><path d="M21 3a16 16 0 0 1 -10.2 12.8"/><path d="M10.6 9a9 9 0 0 1 4.4 4.4"/></svg>
+                Schilder
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/><path d="M6 3v18"/><path d="M12 3v18"/><path d="M18 3v18"/></svg>
+                Tegels / Badkamer
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M10 12h4v4h-4l0 -4"/></svg>
+                Dak / Goten
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16a3 3 0 0 1 -3 3"/><path d="M16 16a3 3 0 0 0 3 3"/><path d="M12 16v4"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2l0 -4"/><path d="M7 13v-3a1 1 0 0 1 1 -1h8a1 1 0 0 1 1 1v3"/></svg>
+                HVAC / Installatie
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6"/><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"/><path d="M8 11v-4a4 4 0 1 1 8 0v4"/></svg>
+                Sloten / Beveiliging
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4"/><path d="M14.5 5.5l4 4"/><path d="M12 8l-5 -5l-4 4l5 5"/><path d="M7 8l-1.5 1.5"/><path d="M16 12l5 5l-4 4l-5 -5"/><path d="M16 17l-1.5 1.5"/></svg>
+                Klusjesman
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5"/></svg>
+                Kleine reparaties
+              </span>
+            </div>
+          </div>
+
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · all 10 sectors (md)</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546"/></svg>
+                Loodgieter
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                Elektricien
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.414 10l-7.383 7.418a2.091 2.091 0 0 0 0 2.967a2.11 2.11 0 0 0 2.976 0l7.407 -7.385"/><path d="M18.121 15.293l2.586 -2.586a1 1 0 0 0 0 -1.414l-7.586 -7.586a1 1 0 0 0 -1.414 0l-2.586 2.586a1 1 0 0 0 0 1.414l7.586 7.586a1 1 0 0 0 1.414 0"/></svg>
+                Timmerman
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-4a4 4 0 1 1 4 4h-4"/><path d="M21 3a16 16 0 0 0 -12.8 10.2"/><path d="M21 3a16 16 0 0 1 -10.2 12.8"/><path d="M10.6 9a9 9 0 0 1 4.4 4.4"/></svg>
+                Schilder
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/><path d="M6 3v18"/><path d="M12 3v18"/><path d="M18 3v18"/></svg>
+                Tegels / Badkamer
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M10 12h4v4h-4l0 -4"/></svg>
+                Dak / Goten
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16a3 3 0 0 1 -3 3"/><path d="M16 16a3 3 0 0 0 3 3"/><path d="M12 16v4"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2l0 -4"/><path d="M7 13v-3a1 1 0 0 1 1 -1h8a1 1 0 0 1 1 1v3"/></svg>
+                HVAC / Installatie
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6"/><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"/><path d="M8 11v-4a4 4 0 1 1 8 0v4"/></svg>
+                Sloten / Beveiliging
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4"/><path d="M14.5 5.5l4 4"/><path d="M12 8l-5 -5l-4 4l5 5"/><path d="M7 8l-1.5 1.5"/><path d="M16 12l5 5l-4 4l-5 -5"/><path d="M16 17l-1.5 1.5"/></svg>
+                Klusjesman
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5"/></svg>
+                Kleine reparaties
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · accent variant · all 10 sectors</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546"/></svg>
+                Loodgieter
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                Elektricien
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11.414 10l-7.383 7.418a2.091 2.091 0 0 0 0 2.967a2.11 2.11 0 0 0 2.976 0l7.407 -7.385"/><path d="M18.121 15.293l2.586 -2.586a1 1 0 0 0 0 -1.414l-7.586 -7.586a1 1 0 0 0 -1.414 0l-2.586 2.586a1 1 0 0 0 0 1.414l7.586 7.586a1 1 0 0 0 1.414 0"/></svg>
+                Timmerman
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-4a4 4 0 1 1 4 4h-4"/><path d="M21 3a16 16 0 0 0 -12.8 10.2"/><path d="M21 3a16 16 0 0 1 -10.2 12.8"/><path d="M10.6 9a9 9 0 0 1 4.4 4.4"/></svg>
+                Schilder
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/><path d="M6 3v18"/><path d="M12 3v18"/><path d="M18 3v18"/></svg>
+                Tegels / Badkamer
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M10 12h4v4h-4l0 -4"/></svg>
+                Dak / Goten
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16a3 3 0 0 1 -3 3"/><path d="M16 16a3 3 0 0 0 3 3"/><path d="M12 16v4"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2l0 -4"/><path d="M7 13v-3a1 1 0 0 1 1 -1h8a1 1 0 0 1 1 1v3"/></svg>
+                HVAC / Installatie
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6"/><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"/><path d="M8 11v-4a4 4 0 1 1 8 0v4"/></svg>
+                Sloten / Beveiliging
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4"/><path d="M14.5 5.5l4 4"/><path d="M12 8l-5 -5l-4 4l5 5"/><path d="M7 8l-1.5 1.5"/><path d="M16 12l5 5l-4 4l-5 -5"/><path d="M16 17l-1.5 1.5"/></svg>
+                Klusjesman
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5"/></svg>
+                Kleine reparaties
+              </span>
+            </div>
+          </div>
+
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · accent variant · all 10 sectors</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546"/></svg>
+                Loodgieter
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                Elektricien
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11.414 10l-7.383 7.418a2.091 2.091 0 0 0 0 2.967a2.11 2.11 0 0 0 2.976 0l7.407 -7.385"/><path d="M18.121 15.293l2.586 -2.586a1 1 0 0 0 0 -1.414l-7.586 -7.586a1 1 0 0 0 -1.414 0l-2.586 2.586a1 1 0 0 0 0 1.414l7.586 7.586a1 1 0 0 0 1.414 0"/></svg>
+                Timmerman
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-4a4 4 0 1 1 4 4h-4"/><path d="M21 3a16 16 0 0 0 -12.8 10.2"/><path d="M21 3a16 16 0 0 1 -10.2 12.8"/><path d="M10.6 9a9 9 0 0 1 4.4 4.4"/></svg>
+                Schilder
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/><path d="M6 3v18"/><path d="M12 3v18"/><path d="M18 3v18"/></svg>
+                Tegels / Badkamer
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M10 12h4v4h-4l0 -4"/></svg>
+                Dak / Goten
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16a3 3 0 0 1 -3 3"/><path d="M16 16a3 3 0 0 0 3 3"/><path d="M12 16v4"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2l0 -4"/><path d="M7 13v-3a1 1 0 0 1 1 -1h8a1 1 0 0 1 1 1v3"/></svg>
+                HVAC / Installatie
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6"/><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"/><path d="M8 11v-4a4 4 0 1 1 8 0v4"/></svg>
+                Sloten / Beveiliging
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4"/><path d="M14.5 5.5l4 4"/><path d="M12 8l-5 -5l-4 4l5 5"/><path d="M7 8l-1.5 1.5"/><path d="M16 12l5 5l-4 4l-5 -5"/><path d="M16 17l-1.5 1.5"/></svg>
+                Klusjesman
+              </span>
+              <span class="sector-pill sector-pill--accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5"/></svg>
+                Kleine reparaties
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · sm · md · lg</div>
+            <div class="col" style="gap: 10px; align-items: flex-start;">
+              <span class="sector-pill sector-pill--sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                Elektricien
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                Elektricien
+              </span>
+              <span class="sector-pill sector-pill--lg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                Elektricien
+              </span>
+            </div>
+          </div>
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · sm · md · lg</div>
+            <div class="col" style="gap: 10px; align-items: flex-start;">
+              <span class="sector-pill sector-pill--sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/><path d="M6 3v18"/><path d="M12 3v18"/><path d="M18 3v18"/></svg>
+                Tegels / Badkamer
+              </span>
+              <span class="sector-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/><path d="M6 3v18"/><path d="M12 3v18"/><path d="M18 3v18"/></svg>
+                Tegels / Badkamer
+              </span>
+              <span class="sector-pill sector-pill--lg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/><path d="M6 3v18"/><path d="M12 3v18"/><path d="M18 3v18"/></svg>
+                Tegels / Badkamer
+              </span>
+            </div>
+          </div>
+        </div>
+
+<pre class="code-block"><span class="c">// SectorPill.tsx — one neutral pill style for every sector.</span>
+<span class="c">// Only the icon and label vary; colors come from theme tokens and</span>
+<span class="c">// flip automatically between light + dark.</span>
+<span class="k">import</span> <span class="p">{</span>
+  IconDroplet<span class="p">,</span> IconBolt<span class="p">,</span> IconHammer<span class="p">,</span> IconBrush<span class="p">,</span>
+  IconGrid4x4<span class="p">,</span> IconHome2<span class="p">,</span> IconAirConditioning<span class="p">,</span>
+  IconLock<span class="p">,</span> IconTools<span class="p">,</span> IconTool<span class="p">,</span>
+<span class="p">}</span> <span class="k">from</span> <span class="s">'@tabler/icons-react-native'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> useTheme <span class="p">}</span> <span class="k">from</span> <span class="s">'../theme'</span><span class="p">;</span>
+
+<span class="k">export type</span> <span class="t">SectorKey</span> <span class="p">=</span>
+  <span class="p">|</span> <span class="s">'plumber'</span> <span class="p">|</span> <span class="s">'electrician'</span> <span class="p">|</span> <span class="s">'carpenter'</span> <span class="p">|</span> <span class="s">'painter'</span>
+  <span class="p">|</span> <span class="s">'tiling'</span> <span class="p">|</span> <span class="s">'roofing'</span> <span class="p">|</span> <span class="s">'hvac'</span> <span class="p">|</span> <span class="s">'locks'</span>
+  <span class="p">|</span> <span class="s">'handyman'</span> <span class="p">|</span> <span class="s">'repairs'</span><span class="p">;</span>
+
+<span class="k">export interface</span> <span class="t">SectorPillProps</span> <span class="p">{</span>
+  sector<span class="p">:</span> <span class="t">SectorKey</span><span class="p">;</span>
+  <span class="c">/** Override label (default: SECTOR_META[sector].labelNL). */</span>
+  label<span class="p">?:</span> <span class="t">string</span><span class="p">;</span>
+  size<span class="p">?:</span> <span class="s">'sm'</span> <span class="p">|</span> <span class="s">'md'</span> <span class="p">|</span> <span class="s">'lg'</span><span class="p">;</span>
+  <span class="c">/** 'neutral' = surface.secondary + text.primary (default).</span>
+<span class="c">   *  'accent'  = brand.accent + text.onAccent (chartreuse — non-inverting). */</span>
+  variant<span class="p">?:</span> <span class="s">'neutral'</span> <span class="p">|</span> <span class="s">'accent'</span><span class="p">;</span>
+  onPress<span class="p">?:</span> <span class="p">() =&gt;</span> <span class="t">void</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">// Per-sector data: icon glyph + Dutch label. No colors here —</span>
+<span class="c">// background and foreground are uniform across all sectors.</span>
+<span class="k">export const</span> SECTOR_META<span class="p">:</span> <span class="t">Record</span><span class="p">&lt;</span><span class="t">SectorKey</span><span class="p">, {</span> Icon<span class="p">:</span> <span class="t">TablerIcon</span><span class="p">;</span> labelNL<span class="p">:</span> <span class="t">string</span> <span class="p">}&gt; = {</span>
+  plumber<span class="p">:</span>     <span class="p">{</span> Icon<span class="p">:</span> IconDroplet<span class="p">,</span>         labelNL<span class="p">:</span> <span class="s">'Loodgieter'</span>           <span class="p">},</span>
+  electrician<span class="p">:</span> <span class="p">{</span> Icon<span class="p">:</span> IconBolt<span class="p">,</span>            labelNL<span class="p">:</span> <span class="s">'Elektricien'</span>          <span class="p">},</span>
+  carpenter<span class="p">:</span>   <span class="p">{</span> Icon<span class="p">:</span> IconHammer<span class="p">,</span>          labelNL<span class="p">:</span> <span class="s">'Timmerman'</span>            <span class="p">},</span>
+  painter<span class="p">:</span>     <span class="p">{</span> Icon<span class="p">:</span> IconBrush<span class="p">,</span>           labelNL<span class="p">:</span> <span class="s">'Schilder'</span>             <span class="p">},</span>
+  tiling<span class="p">:</span>      <span class="p">{</span> Icon<span class="p">:</span> IconGrid4x4<span class="p">,</span>         labelNL<span class="p">:</span> <span class="s">'Tegels / Badkamer'</span>    <span class="p">},</span>
+  roofing<span class="p">:</span>     <span class="p">{</span> Icon<span class="p">:</span> IconHome2<span class="p">,</span>           labelNL<span class="p">:</span> <span class="s">'Dak / Goten'</span>          <span class="p">},</span>
+  hvac<span class="p">:</span>        <span class="p">{</span> Icon<span class="p">:</span> IconAirConditioning<span class="p">,</span> labelNL<span class="p">:</span> <span class="s">'HVAC / Installatie'</span>   <span class="p">},</span>
+  locks<span class="p">:</span>       <span class="p">{</span> Icon<span class="p">:</span> IconLock<span class="p">,</span>            labelNL<span class="p">:</span> <span class="s">'Sloten / Beveiliging'</span> <span class="p">},</span>
+  handyman<span class="p">:</span>    <span class="p">{</span> Icon<span class="p">:</span> IconTools<span class="p">,</span>           labelNL<span class="p">:</span> <span class="s">'Klusjesman'</span>           <span class="p">},</span>
+  repairs<span class="p">:</span>     <span class="p">{</span> Icon<span class="p">:</span> IconTool<span class="p">,</span>            labelNL<span class="p">:</span> <span class="s">'Kleine reparaties'</span>    <span class="p">},</span>
+<span class="p">};</span>
+
+<span class="k">export const</span> <span class="f">SectorPill</span> <span class="p">= ({</span> sector<span class="p">,</span> label<span class="p">,</span> size <span class="p">=</span> <span class="s">'md'</span><span class="p">,</span> variant <span class="p">=</span> <span class="s">'neutral'</span><span class="p">,</span> onPress <span class="p">}:</span> <span class="t">SectorPillProps</span><span class="p">) =&gt; {</span>
+  <span class="k">const</span> <span class="p">{</span> color <span class="p">} =</span> useTheme<span class="p">();</span>
+  <span class="k">const</span> <span class="p">{</span> Icon<span class="p">,</span> labelNL <span class="p">} =</span> SECTOR_META<span class="p">[</span>sector<span class="p">];</span>
+
+  <span class="c">// Neutral: surface.secondary + text.primary (auto-flips light/dark).</span>
+  <span class="c">// Accent:  brand.accent + text.onAccent (chartreuse — non-inverting,</span>
+  <span class="c">// same hex in both themes; icon thickens to stroke 2.5 for prominence).</span>
+  <span class="k">const</span> bg <span class="p">=</span> variant <span class="p">===</span> <span class="s">'accent'</span> <span class="p">?</span> color<span class="p">.</span>brand<span class="p">.</span>accent      <span class="p">:</span> color<span class="p">.</span>surface<span class="p">.</span>secondary<span class="p">;</span>
+  <span class="k">const</span> fg <span class="p">=</span> variant <span class="p">===</span> <span class="s">'accent'</span> <span class="p">?</span> color<span class="p">.</span>text<span class="p">.</span>onAccent   <span class="p">:</span> color<span class="p">.</span>text<span class="p">.</span>primary<span class="p">;</span>
+  <span class="k">const</span> stroke <span class="p">=</span> variant <span class="p">===</span> <span class="s">'accent'</span> <span class="p">?</span> 2.5 <span class="p">:</span> 2<span class="p">;</span>
+  <span class="c">// ...render Pressable with bg + &lt;Icon color={fg} strokeWidth={stroke}/&gt; + &lt;Text&gt;{label ?? labelNL}&lt;/Text&gt;</span>
+<span class="p">};</span></pre>
+      </section>
+
       <!-- ============== BoostFlame ============== -->
       <section class="demo" id="boost-flame">
         <h2><span class="name">BoostFlame</span> <span class="meta">boost indicator · 3 sizes · subtle gamification</span></h2>
@@ -2952,22 +3290,21 @@
           The hero of the Feed tab. Media (photo or video thumbnail) covers the
           top half as a background. UrgencyTimer pins to the top-left;
           BoostFlame to the top-right; voice-note play button sits bottom-left
-          when the job has an attached voice note.
+          when the job has an attached voice note. The sector slot below the
+          title renders a <a href="#sector-pill">SectorPill</a> — neutral by
+          default, switched to <code>accent</code> for boosted / featured /
+          private-pool-eligible jobs so the trade reads at a glance.
         </p>
 
         <div class="preview-pair">
           <div class="preview" data-theme="light">
-            <div class="preview-label">Light · boosted + voice note</div>
+            <div class="preview-label">Light · neutral SectorPill · standard job</div>
             <div class="job-card">
               <div class="job-card-media" style="background: linear-gradient(135deg, #5D4037 0%, #2D2A26 100%);">
                 <div class="job-card-overlay">
                   <span class="urgency-timer urgency-timer--near">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     42m left
-                  </span>
-                  <span class="boost-flame boost-flame--sm">
-                    <span class="flame"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
-                    BOOST
                   </span>
                 </div>
                 <div class="job-card-overlay-bottom">
@@ -2979,10 +3316,10 @@
               </div>
               <div class="job-card-body">
                 <div class="job-card-title">Boiler defect — geen warm water</div>
-                <div class="job-card-sector">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                <span class="sector-pill">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546"/></svg>
                   Loodgieter
-                </div>
+                </span>
                 <div class="job-card-meta">
                   <span>Utrecht Oost</span>
                   <span class="job-card-meta-dot"></span>
@@ -3000,7 +3337,7 @@
           </div>
 
           <div class="preview" data-theme="dark">
-            <div class="preview-label">Dark · standard photo</div>
+            <div class="preview-label">Dark · neutral SectorPill · standard job</div>
             <div class="job-card">
               <div class="job-card-media" style="background: linear-gradient(135deg, #4A4A4A 0%, #1A1814 100%);">
                 <div class="job-card-overlay">
@@ -3012,10 +3349,10 @@
               </div>
               <div class="job-card-body">
                 <div class="job-card-title">Lekkende kraan keuken</div>
-                <div class="job-card-sector">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                <span class="sector-pill">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546"/></svg>
                   Loodgieter
-                </div>
+                </span>
                 <div class="job-card-meta">
                   <span>Amsterdam Zuid</span>
                   <span class="job-card-meta-dot"></span>
@@ -3026,6 +3363,82 @@
                   <span class="job-card-bids">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     3 bids
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-pair">
+          <div class="preview" data-theme="light">
+            <div class="preview-label">Light · accent SectorPill · boosted job</div>
+            <div class="job-card">
+              <div class="job-card-media" style="background: linear-gradient(135deg, #2D2A26 0%, #1A1814 100%);">
+                <div class="job-card-overlay">
+                  <span class="urgency-timer urgency-timer--halfway">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    4h left
+                  </span>
+                  <span class="boost-flame boost-flame--sm">
+                    <span class="flame"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                    BOOST
+                  </span>
+                </div>
+              </div>
+              <div class="job-card-body">
+                <div class="job-card-title">Spoed: stoppenkast defect — geen stroom</div>
+                <span class="sector-pill sector-pill--accent">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                  Elektricien
+                </span>
+                <div class="job-card-meta">
+                  <span>Rotterdam Centrum</span>
+                  <span class="job-card-meta-dot"></span>
+                  <span>2 km</span>
+                </div>
+                <div class="job-card-footer">
+                  <div class="job-card-price">€180<small> fixed</small></div>
+                  <span class="job-card-bids">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    8 bids
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview" data-theme="dark">
+            <div class="preview-label">Dark · accent SectorPill · boosted job</div>
+            <div class="job-card">
+              <div class="job-card-media" style="background: linear-gradient(135deg, #3A2618 0%, #1A1814 100%);">
+                <div class="job-card-overlay">
+                  <span class="urgency-timer urgency-timer--halfway">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    4h left
+                  </span>
+                  <span class="boost-flame boost-flame--sm">
+                    <span class="flame"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                    BOOST
+                  </span>
+                </div>
+              </div>
+              <div class="job-card-body">
+                <div class="job-card-title">Spoed: stoppenkast defect — geen stroom</div>
+                <span class="sector-pill sector-pill--accent">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                  Elektricien
+                </span>
+                <div class="job-card-meta">
+                  <span>Rotterdam Centrum</span>
+                  <span class="job-card-meta-dot"></span>
+                  <span>2 km</span>
+                </div>
+                <div class="job-card-footer">
+                  <div class="job-card-price">€180<small> fixed</small></div>
+                  <span class="job-card-bids">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    8 bids
                   </span>
                 </div>
               </div>
