@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- cspell:disable -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -251,7 +252,7 @@
     }
     thead {
       position: sticky;
-      top: 57px;
+      top: 0px; /* set dynamically by JS to match actual topbar height */
       z-index: 10;
     }
     thead tr {
@@ -1160,6 +1161,15 @@
   </div>
 
   <script>
+    // Pin thead exactly under the topbar
+    const topbarEl = document.querySelector('.topbar');
+    const theadEl  = document.querySelector('thead');
+    function syncTheadTop() {
+      theadEl.style.top = topbarEl.getBoundingClientRect().height + 'px';
+    }
+    syncTheadTop();
+    window.addEventListener('resize', syncTheadTop);
+
     // Theme
     const root = document.documentElement;
     const toggle = document.getElementById('themeToggle');
