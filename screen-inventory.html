@@ -174,16 +174,22 @@
       margin: 0 auto;
       padding: 0 24px 20px;
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .filter-row {
+      display: flex;
       align-items: center;
+      gap: 10px;
     }
     .filter-label {
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.5px;
+      width: 64px;
+      flex-shrink: 0;
     }
     .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
     .filter-btn {
@@ -205,7 +211,6 @@
       color: var(--paper);
     }
     [data-theme="dark"] .filter-btn.active { background: var(--ink); color: #15130F; }
-    .filter-sep { width: 1px; height: 24px; background: var(--border); align-self: center; }
 
     /* ── Search ── */
     .search-wrap {
@@ -244,21 +249,44 @@
       margin: 0 auto;
       padding: 0 24px 80px;
       overflow-x: auto;
+      scrollbar-width: none; /* hide native — replaced by #h-scrollbar */
     }
+    .table-wrap::-webkit-scrollbar { display: none; }
+
+    /* ── Persistent floating scrollbar ── */
+    #h-scrollbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 14px;
+      z-index: 300;
+      background: var(--paper-200);
+      border-top: 1px solid var(--paper-400);
+      cursor: pointer;
+    }
+    #h-scrollbar-thumb {
+      position: absolute;
+      top: 4px;
+      left: 0;
+      height: 6px;
+      min-width: 40px;
+      border-radius: 999px;
+      background: var(--paper-400);
+      transition: background 0.15s;
+      cursor: grab;
+    }
+    #h-scrollbar:hover #h-scrollbar-thumb { background: var(--warm-600); }
+    #h-scrollbar-thumb:active { cursor: grabbing; background: var(--warm-600); }
     table {
-      width: 100%;
+      width: max-content;
+      min-width: 100%;
       border-collapse: collapse;
       font-size: 13px;
     }
-    thead {
-      position: sticky;
-      top: 0px; /* set dynamically by JS to match actual topbar height */
-      z-index: 10;
-    }
-    thead tr {
-      background: var(--paper-200);
-    }
     th {
+      /* vertical sticky handled by JS transform on thead */
+      background: var(--paper-200);
       padding: 10px 14px;
       text-align: left;
       font-size: 11px;
@@ -276,6 +304,97 @@
     }
     tr:hover td { background: var(--paper-200); }
     tr[data-hidden="true"] { display: none; }
+
+    /* ── Horizontal sticky: expand, #, and Screen ID columns ── */
+    /* Transform applied per-th (not on thead) so position:sticky left
+       and translateY compose on the same element without conflict.
+       Classes injected by buildAuditRows so nth-child fragility is avoided. */
+    th { z-index: 10; }
+    th.col-expand, th.col-num, th.col-id {
+      position: sticky;
+      z-index: 25;
+      background: var(--paper-200);
+    }
+    td.col-expand, td.col-num, td.col-id {
+      position: sticky;
+      z-index: 5;
+      background: var(--paper);
+    }
+    th.col-expand, td.col-expand { left: 0; width: 36px; min-width: 36px; }
+    th.col-num, td.col-num { left: 36px;  /* updated by syncStickyLeft on load */ }
+    th.col-id,  td.col-id  { left: 80px;  /* updated by syncStickyLeft on load */ }
+    th.col-id, td.col-id {
+      box-shadow: 1px 0 0 var(--border-subtle); /* subtle separator from scrolling cols */
+    }
+    tr:hover td.col-expand, tr:hover td.col-num, tr:hover td.col-id { background: var(--paper-200); }
+
+    /* ── Expand toggle ── */
+    .expand-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-radius: 6px;
+      transition: background 100ms, color 100ms, transform 150ms;
+      font-size: 12px;
+      padding: 0;
+    }
+    .expand-btn:hover { background: var(--paper-400); color: var(--text-primary); }
+    .expand-btn[aria-expanded="true"] { transform: rotate(90deg); color: var(--text-primary); }
+
+    /* ── Audit detail panel ── */
+    .detail-row td {
+      padding: 0;
+      border-bottom: 2px solid var(--chartreuse);
+      background: var(--paper) !important;
+    }
+    .detail-row[data-hidden="true"] { display: none; }
+    .audit-panel {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      padding: 20px 24px 24px;
+    }
+    .audit-section {
+      padding: 0 20px 0 0;
+      border-right: 1px solid var(--border-subtle);
+    }
+    .audit-section:last-child { border-right: none; padding-right: 0; }
+    .audit-section + .audit-section { padding-left: 20px; }
+    .audit-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .audit-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .audit-section ul li {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      padding-left: 10px;
+      position: relative;
+    }
+    .audit-section ul li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--text-muted);
+    }
 
     /* Screen ID */
     .screen-id {
@@ -462,33 +581,37 @@
 
   <!-- Filters -->
   <div class="filters">
-    <span class="filter-label">Cluster</span>
-    <div class="filter-group" id="cluster-filters">
-      <button class="filter-btn active" data-filter="cluster" data-value="all">All</button>
-      <button class="filter-btn" data-filter="cluster" data-value="auth">Auth</button>
-      <button class="filter-btn" data-filter="cluster" data-value="registration">Registration</button>
-      <button class="filter-btn" data-filter="cluster" data-value="feed">Feed</button>
-      <button class="filter-btn" data-filter="cluster" data-value="jobs">Jobs &amp; Bids</button>
-      <button class="filter-btn" data-filter="cluster" data-value="deals">Deals &amp; Chat</button>
-      <button class="filter-btn" data-filter="cluster" data-value="calendar">Calendar</button>
-      <button class="filter-btn" data-filter="cluster" data-value="profile">Profile</button>
-      <button class="filter-btn" data-filter="cluster" data-value="company">Company</button>
+    <div class="filter-row">
+      <span class="filter-label">Cluster</span>
+      <div class="filter-group" id="cluster-filters">
+        <button class="filter-btn active" data-filter="cluster" data-value="all">All</button>
+        <button class="filter-btn" data-filter="cluster" data-value="auth">Auth</button>
+        <button class="filter-btn" data-filter="cluster" data-value="registration">Registration</button>
+        <button class="filter-btn" data-filter="cluster" data-value="feed">Feed</button>
+        <button class="filter-btn" data-filter="cluster" data-value="jobs">Jobs &amp; Bids</button>
+        <button class="filter-btn" data-filter="cluster" data-value="deals">Deals &amp; Chat</button>
+        <button class="filter-btn" data-filter="cluster" data-value="calendar">Calendar</button>
+        <button class="filter-btn" data-filter="cluster" data-value="profile">Profile</button>
+        <button class="filter-btn" data-filter="cluster" data-value="company">Company</button>
+      </div>
     </div>
-    <span class="filter-sep"></span>
-    <span class="filter-label">Role</span>
-    <div class="filter-group" id="role-filters">
-      <button class="filter-btn active" data-filter="role" data-value="all">All</button>
-      <button class="filter-btn" data-filter="role" data-value="client">Client</button>
-      <button class="filter-btn" data-filter="role" data-value="provider">Provider</button>
-      <button class="filter-btn" data-filter="role" data-value="company">Company</button>
+    <div class="filter-row">
+      <span class="filter-label">Role</span>
+      <div class="filter-group" id="role-filters">
+        <button class="filter-btn active" data-filter="role" data-value="all">All</button>
+        <button class="filter-btn" data-filter="role" data-value="client">Client</button>
+        <button class="filter-btn" data-filter="role" data-value="provider">Provider</button>
+        <button class="filter-btn" data-filter="role" data-value="company">Company</button>
+      </div>
     </div>
-    <span class="filter-sep"></span>
-    <span class="filter-label">Priority</span>
-    <div class="filter-group" id="priority-filters">
-      <button class="filter-btn active" data-filter="priority" data-value="all">All</button>
-      <button class="filter-btn" data-filter="priority" data-value="p0">P0</button>
-      <button class="filter-btn" data-filter="priority" data-value="p1">P1</button>
-      <button class="filter-btn" data-filter="priority" data-value="p2">P2</button>
+    <div class="filter-row">
+      <span class="filter-label">Priority</span>
+      <div class="filter-group" id="priority-filters">
+        <button class="filter-btn active" data-filter="priority" data-value="all">All</button>
+        <button class="filter-btn" data-filter="priority" data-value="p0">P0</button>
+        <button class="filter-btn" data-filter="priority" data-value="p1">P1</button>
+        <button class="filter-btn" data-filter="priority" data-value="p2">P2</button>
+      </div>
     </div>
   </div>
 
@@ -497,8 +620,8 @@
     <table id="inventory-table">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Screen ID</th>
+          <th class="col-num">#</th>
+          <th class="col-id">Screen ID</th>
           <th>Screen name</th>
           <th>Cluster</th>
           <th>User role</th>
@@ -1154,21 +1277,106 @@
 
         <!-- Empty state row (hidden by default) -->
         <tr class="empty-row" id="empty-row" style="display:none;">
-          <td colspan="10">No screens match the current filters.</td>
+          <td colspan="11">No screens match the current filters.</td>
         </tr>
       </tbody>
     </table>
-  </div>
+  </div><!-- /.table-wrap -->
+
+  <div id="h-scrollbar"><div id="h-scrollbar-thumb"></div></div>
 
   <script>
-    // Pin thead exactly under the topbar
-    const topbarEl = document.querySelector('.topbar');
-    const theadEl  = document.querySelector('thead');
-    function syncTheadTop() {
-      theadEl.style.top = topbarEl.getBoundingClientRect().height + 'px';
+    // Vertical sticky via per-th transform (transform on thead conflicts with child position:sticky)
+    const topbarEl    = document.querySelector('.topbar');
+    const tableWrapEl = document.querySelector('.table-wrap');
+
+    function onScroll() {
+      const thEls   = document.querySelectorAll('thead th');
+      const topH    = Math.round(topbarEl.getBoundingClientRect().height);
+      const wrapTop = tableWrapEl.getBoundingClientRect().top;
+      if (wrapTop < topH) {
+        const translateVal = `translateY(${topH - wrapTop}px)`;
+        thEls.forEach(th => { th.style.transform = translateVal; });
+      } else {
+        thEls.forEach(th => { th.style.transform = ''; });
+      }
     }
-    syncTheadTop();
-    window.addEventListener('resize', syncTheadTop);
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Sync .col-num + .col-id left offsets to actual rendered column widths.
+    // Must run after layout (called on load + resize, not immediately).
+    function syncStickyLeft() {
+      const expandTh = document.querySelector('th.col-expand');
+      const numTh    = document.querySelector('th.col-num');
+      if (!expandTh || !numTh) return;
+      const expandW = Math.round(expandTh.getBoundingClientRect().width);
+      const numW    = Math.round(numTh.getBoundingClientRect().width);
+      document.querySelectorAll('.col-num').forEach(el => {
+        el.style.left = expandW + 'px';
+      });
+      document.querySelectorAll('.col-id').forEach(el => {
+        el.style.left = (expandW + numW) + 'px';
+      });
+    }
+    window.addEventListener('resize', syncStickyLeft);
+
+    // ── Persistent floating horizontal scrollbar ──
+    const hBar   = document.getElementById('h-scrollbar');
+    const hThumb = document.getElementById('h-scrollbar-thumb');
+
+    function updateHScrollbar() {
+      const rect       = tableWrapEl.getBoundingClientRect();
+      const trackW     = rect.width;
+      const scrollMax  = tableWrapEl.scrollWidth - tableWrapEl.clientWidth;
+
+      // Align track to table-wrap horizontal bounds
+      hBar.style.left  = rect.left + 'px';
+      hBar.style.right = 'auto';
+      hBar.style.width = trackW + 'px';
+
+      // Size and position thumb
+      const thumbPct  = tableWrapEl.clientWidth / tableWrapEl.scrollWidth;
+      const thumbW    = Math.max(40, Math.round(thumbPct * trackW));
+      const scrollPct = scrollMax > 0 ? tableWrapEl.scrollLeft / scrollMax : 0;
+      const thumbLeft = Math.round(scrollPct * (trackW - thumbW));
+
+      hThumb.style.width = thumbW + 'px';
+      hThumb.style.left  = thumbLeft + 'px';
+    }
+
+    tableWrapEl.addEventListener('scroll', updateHScrollbar, { passive: true });
+    window.addEventListener('resize', updateHScrollbar);
+    updateHScrollbar();
+
+    // Click track to jump
+    hBar.addEventListener('click', e => {
+      if (e.target === hThumb) return;
+      const barRect   = hBar.getBoundingClientRect();
+      const thumbW    = hThumb.offsetWidth;
+      const clickPos  = e.clientX - barRect.left - thumbW / 2;
+      const ratio     = Math.max(0, Math.min(1, clickPos / (barRect.width - thumbW)));
+      tableWrapEl.scrollLeft = ratio * (tableWrapEl.scrollWidth - tableWrapEl.clientWidth);
+    });
+
+    // Drag thumb to scroll
+    let dragStart = null;
+    hThumb.addEventListener('pointerdown', e => {
+      dragStart = { x: e.clientX, scrollLeft: tableWrapEl.scrollLeft };
+      hThumb.setPointerCapture(e.pointerId);
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    hThumb.addEventListener('pointermove', e => {
+      if (!dragStart) return;
+      const barRect   = hBar.getBoundingClientRect();
+      const thumbW    = hThumb.offsetWidth;
+      const dx        = e.clientX - dragStart.x;
+      const scrollMax = tableWrapEl.scrollWidth - tableWrapEl.clientWidth;
+      const ratio     = scrollMax / (barRect.width - thumbW);
+      tableWrapEl.scrollLeft = Math.max(0, Math.min(scrollMax, dragStart.scrollLeft + dx * ratio));
+    });
+    hThumb.addEventListener('pointerup',    () => { dragStart = null; });
+    hThumb.addEventListener('pointercancel', () => { dragStart = null; });
 
     // Theme
     const root = document.documentElement;
@@ -1184,15 +1392,468 @@
       localStorage.setItem('softpro-theme', t);
     }
 
-    // Scroll
+    // Scroll reset + sync layout-dependent values after full layout is ready
     window.addEventListener('load', () => {
       document.documentElement.style.scrollBehavior = 'auto';
       window.scrollTo(0, 0);
+      syncStickyLeft();
+      updateHScrollbar();
+      onScroll();
       requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = ''; });
     });
 
+    // ── Functional audit data ─────────────────────────────────────────────────
+    const AUDIT = {
+      'auth.welcome': {
+        does:       ['Entry point — presents brand, trust chips, and CTAs for signup or login'],
+        displays:   ['Brand logo, hero illustration', 'Trust chips: 65k bedrijven, 12k klussen/mnd, 100% compliant', 'Primary CTA + login link', 'Language switcher'],
+        actions:    ['"Aan de slag" → RegistrationHub', '"Inloggen" link → Login', 'Language switcher'],
+        navigation: ['Entry: root auth stack (unauthenticated)', 'Exit → RegistrationHub, Login'],
+        edge_cases: ['Dark mode colors applied inline', 'No loading/error states', 'i18n-aware copy'],
+      },
+      'auth.login': {
+        does:       ['Email + password login with optional Face ID biometric fallback'],
+        displays:   ['Logo, "Welkom terug" headline', 'Email + password inputs', 'Error banner on failure', 'Face ID button (if hardware + enabled)', 'Register link'],
+        actions:    ['Email + password submit', 'Face ID login', '"Nog geen account?" → Signup', 'Back button'],
+        navigation: ['Entry: Welcome or any auth redirect', 'Exit → Main (success), Signup, stays on error'],
+        edge_cases: ['Face ID button hidden if no biometric hardware', 'Session expired alert on failed biometric', 'API error shows banner', 'Form reset on nav away'],
+      },
+      'auth.signup': {
+        does:       ['Multi-step account creation: role selection → profile details → optional company details → submit'],
+        displays:   ['Role cards (client/provider/company)', 'B2C/B2B toggle (client)', 'Avatar picker + initials fallback', 'Name, email, phone, password inputs', 'KvK + company fields (company role)', 'Terms checkbox'],
+        actions:    ['Role card tap', 'B2C/B2B toggle', 'Avatar/logo picker (library/camera)', 'Phone dial selector', 'Form field inputs', 'Terms checkbox', 'Submit', '"Inloggen" → Login'],
+        navigation: ['Entry: RegistrationHub', 'Exit → PhoneVerification (success), error banner stays'],
+        edge_cases: ['Avatar/logo upload non-blocking', 'Company KvK fields only shown for company role', 'Phone sanitises non-digits', 'Country selector via iOS Alert'],
+      },
+      'auth.otp': {
+        does:       ['6-digit SMS OTP verification after signup or triggered post-login'],
+        displays:   ['Phone emoji badge', '"Verificatie" title', 'Phone number highlighted', '6 individual OTP input boxes', 'Error banner', 'Resend button with 30s countdown', 'Change number / logout link'],
+        actions:    ['Digit input (auto-advances)', 'Backspace (focuses previous box)', 'Verify button (manual)', 'Resend code', 'Change number / logout link'],
+        navigation: ['Entry: after signup or login OTP trigger', 'Exit → Main (success), back on change/logout'],
+        edge_cases: ['Auto-submits on 6th digit', 'Backspace on empty field focuses previous', 'Error clears on new input', 'Countdown timer precision'],
+      },
+      'auth.onboarding.client': {
+        does:       ['Post-signup client onboarding: account tier + ERP integration selection'],
+        displays:   ['Free vs enterprise option cards ("Aanbevolen" badge)', 'ERP system chips (SAP, Tobias AX, Aareon, 4PS, Nétive, Procore, Anders)', 'Info card about onboarding team'],
+        actions:    ['Option card tap', 'ERP chip selection', '"Voltooien" button', 'Back button'],
+        navigation: ['Entry: auth stack after client signup with pendingOnboarding=true', 'Exit → Main on completion'],
+        edge_cases: ['Enterprise light (no ERP) vs enterprise full (with ERP) branching', 'Non-blocking API calls'],
+      },
+      'auth.onboarding.provider': {
+        does:       ['Post-signup provider onboarding: KvK → categories → location/radius → rate + availability'],
+        displays:   ['Progress dots (3 steps)', 'KvK decision cards', 'Profession chips grouped by sector', 'Postcode input', 'Radius chips (10/15/25/50 km)', 'Min rate input', 'Availability toggle'],
+        actions:    ['KvK decision (yes/no/skip)', 'KvK entry + async lookup', 'Profession chip toggles (multi)', 'Radius chip select', 'Rate input', 'Availability toggle', 'Back/Next'],
+        navigation: ['Entry: auth stack after provider signup with pendingOnboarding=true', 'Exit → Main (paths A/C) or FS invitation (path B)'],
+        edge_cases: ['Profession loading state', 'KvK lookup non-blocking post-entry', 'Can skip categories', 'Back on step 2 alerts if OTP exists'],
+      },
+      'auth.registration.hub': {
+        does:       ['Central path-selection hub: choose registration type (urgent job, workforce, provider, corp/VvE)'],
+        displays:   ['Logo', '"Hoe kan Spoedmarkt jou helpen?" heading', '4 path cards with icons + descriptions', '"Corporatie / VvE" pill', 'Resume draft modal (if draft exists)'],
+        actions:    ['Path card taps → Path1/2/3/4Wizard', 'Corporatie pill → Path4Wizard', 'Resume modal "Doorgaan" or "Opnieuw beginnen"'],
+        navigation: ['Entry: Welcome → RegistrationHub', 'Exit → Path1/2/3/4Wizard'],
+        edge_cases: ['Draft loaded on mount (unauthenticated only)', 'Analytics tracked on resume', 'Modal dismiss clears draft state'],
+      },
+      'auth.registration.path1': {
+        does:       ['3-step urgent job client registration: phone → OTP → details (company/individual, KvK, email, terms)'],
+        displays:   ['Step indicator (1/3)', 'Phone input with dial selector', '6-cell OTP', 'Company/individual toggle', 'KvK/name fields with async lookup', 'Email, terms checkbox', 'Error banners'],
+        actions:    ['Phone input + dial selector', 'OTP input (auto-focus + auto-submit)', 'KvK lookup on blur', 'Company/individual toggle', 'Back (alerts on step 2)', 'Submit'],
+        navigation: ['Entry: RegistrationHub', 'Exit → RegistrationMidConfirm on success'],
+        edge_cases: ['Draft resume on mount', 'KvK lookup non-blocking', 'Back from step 2 triggers OTP reset alert', 'AppState abandon tracking'],
+      },
+      'auth.registration.path2': {
+        does:       ['3-step workforce-hire client registration (identical flow to Path1 with activeRole=post_workforce)'],
+        displays:   ['Identical to Path1: step indicator, phone, OTP, company/individual toggle, form fields'],
+        actions:    ['Identical to Path1: phone, OTP, toggle, form submission, back'],
+        navigation: ['Entry: RegistrationHub', 'Exit → RegistrationMidConfirm on success'],
+        edge_cases: ['Identical to Path1 except registrationPath=path_2 and activeRoles=[post_workforce]'],
+      },
+      'auth.registration.path3': {
+        does:       ['8-step (conditional) provider registration: email → OTP → role select → company type → details → preferences'],
+        displays:   ['Dynamic step indicator', 'Email + OTP inputs', 'Role checkboxes (seek_workforce/post_jobs/find_jobs)', 'Company type cards', 'KvK + name fields', 'Sector chips, postcode, radius, rate', 'Availability + urgency buttons', 'Terms checkbox'],
+        actions:    ['Email submit (async)', 'OTP auto-submit', 'Role multi-select', 'Company type tap', 'KvK lookup', 'Sector chips toggle', 'Availability/urgency select', 'Back (alerts step 2)', 'Submit'],
+        navigation: ['Entry: RegistrationHub', 'Exit → RegistrationMidConfirm; InformalWorkerWarning on informal_worker selection'],
+        edge_cases: ['Draft resume on mount', 'Multiple role selection changes step count', 'Sectors load on first entry to step 6', 'AppState abandon tracking'],
+      },
+      'auth.registration.path4': {
+        does:       ['5-6 step corporate/housing/VvE lead capture: phone → OTP → org type → employee vs resident → details → needs assessment'],
+        displays:   ['Dynamic step indicator (5-6 steps)', 'Phone + dial', 'OTP single large field', 'Org type buttons', 'Employee/resident toggle', 'Org name, KvK, contact fields', 'Challenge/timeline/system buttons', 'Terms checkbox'],
+        actions:    ['Phone input', 'OTP auto-verify on 6 digits', 'Org type tap', 'Employee/resident tap', 'Form field inputs', 'KvK async lookup', 'Challenge/timeline/system select', 'Back (alerts step 2)', 'Submit lead'],
+        navigation: ['Entry: RegistrationHub', 'Exit → LeadThankYou; org type + employee/resident determines remaining steps'],
+        edge_cases: ['KvK shows loading + success/error icon', 'OTP auto-verifies with loading', 'Resident vs employee changes step 5 form entirely', 'Non-blocking API submit'],
+      },
+      'auth.registration.informal_warning': {
+        does:       ['Disclaimer screen for informal workers (no KvK): 5 legal warnings + explicit acknowledgment required'],
+        displays:   ['Alert icon', '"Informale medewerker zonder KvK" title', 'Intro text', 'Yellow warning card with 5 bullet disclaimers', 'Footer disclaimer', 'Accept + decline buttons'],
+        actions:    ['"Ik begrijp het en ga verder" (accept, logs analytics)', '"Terug" (decline)'],
+        navigation: ['Entry: Path3Wizard (on informal_worker company type)', 'Exit → Path3Wizard step 5 (accept) or step 4 (decline)'],
+        edge_cases: ['Analytics tracked on accept/decline', 'Warning version pinned (v1.0)', 'Non-blocking API log call'],
+      },
+      'auth.registration.mid_confirm': {
+        does:       ['Post-signup interstitial: confirms account created, offers to complete settings or skip to main app'],
+        displays:   ['Check circle icon', 'Dynamic title (based on path: urgent/workforce/provider)', 'Confirmation body + hint text', '"Instelling voltooien" + "Later afronden" buttons'],
+        actions:    ['"Instelling voltooien" → FsCheck', '"Later afronden" → Main (sets status=account_only non-blocking)'],
+        navigation: ['Entry: Path1/2/3 Wizard post-signup', 'Exit → FsCheck or Main (skip)'],
+        edge_cases: ['Title dynamic per path', 'Status update to account_only is non-blocking'],
+      },
+      'auth.registration.fs_check': {
+        does:       ['For Suppliers linkage decision: yes/no with success/neutral banner and auto-navigation after 1.5s'],
+        displays:   ['Title + body (FS explanation)', 'Yes/No buttons', 'Conditional success/neutral banner (1.5s before nav)'],
+        actions:    ['"Ja, ik wil gekoppeld worden"', '"Nee, niet nu"'],
+        navigation: ['Entry: RegistrationMidConfirm', 'Exit → SoftwareIntegration (path3 + not informal) or Main'],
+        edge_cases: ['Buttons disabled post-choice', 'Banner shows then auto-navigates after 1.5s', 'Choice recorded via API non-blocking'],
+      },
+      'auth.registration.software_integration': {
+        does:       ['Software integration offer for providers: yes/no + optional system name field + lead submit'],
+        displays:   ['Title + body (integration explanation)', 'Yes/No buttons (initial)', 'Software name text input (if yes)', '"Aanvraag versturen" button'],
+        actions:    ['"Ja, ik wil een koppeling" → show input, enter name, submit', '"Nee, bedankt" → Main'],
+        navigation: ['Entry: FsCheck (path3 + not informal)', 'Exit → Main'],
+        edge_cases: ['Input conditionally shown on yes choice', 'Submitting state on button', 'Lead non-blocking API'],
+      },
+      'auth.registration.lead_thankyou': {
+        does:       ['Final confirmation screen for Path4 corporate lead capture: thanks + next steps messaging'],
+        displays:   ['Check circle icon', '"Bedankt voor je aanvraag!" title', 'Body (1 workday response)', 'Conditional resident-specific message (2 workday escalation)'],
+        actions:    ['None — read-only exit screen'],
+        navigation: ['Entry: Path4Wizard post-submit', 'Exit: back (stack pops) or timeout to Main'],
+        edge_cases: ['Conditional resident message (isResident param)', 'No exit buttons — auto-pop or timeout'],
+      },
+      'auth.registration.date_picker': {
+        does:       ['Reusable date picker modal for scheduling (workforce or job); callback-driven'],
+        displays:   ['"Wanneer heb je arbeidskracht nodig?" title', 'Date display button (nl-NL formatted)', '"Datum wijzigen" link', 'DatePicker modal', 'Confirm button'],
+        actions:    ['Date display tap → open DatePicker', 'Date selection + confirm', '"Datum bevestigen" → callback + goBack'],
+        navigation: ['Entry: parameterised — any stack (reg/job)', 'Exit → goBack triggers route.params.onDateSelected if provided'],
+        edge_cases: ['Minimum date = tomorrow', 'Callback-driven (optional param)', 'Reusable across navigation stacks'],
+      },
+      'auth.avatar_upload': {
+        does:       ['Optional profile photo step after signup — preview, library/camera picker, S3 upload, then advance'],
+        displays:   ['Camera-account icon badge', '"Voeg een profielfoto toe" title + subtitle', 'Avatar preview (image) or initials fallback in tinted circle', 'Camera overlay on avatar', '"Andere foto kiezen" link (if image picked)', 'Primary CTA ("Foto kiezen" → "Opslaan en doorgaan")', '"Overslaan" link'],
+        actions:    ['Tap avatar/CTA → Alert sheet (Fotobibliotheek / Camera / Annuleren)', 'Pick image from library or take photo (1:1 crop, 0.8 quality)', '"Opslaan en doorgaan" → presigned URL → S3 upload (POST or PUT) → updateAvatar + clear pendingAvatarSetup', '"Overslaan" → clear pendingAvatarSetup'],
+        navigation: ['Entry: auth stack when authStore.pendingAvatarSetup=true (post-signup)', 'Exit → Main on save or skip (cleared flag drives RootNavigator)'],
+        edge_cases: ['Library/camera permission denied → Dutch Alert pointing to Settings', 'Upload failure → "Upload mislukt" alert, button re-enabled', 'No user name → "?" initials fallback', 'Skip button hidden while uploading', 'fetch+blob used to size file before requesting presigned URL'],
+      },
+      'auth.kvk_entry': {
+        does:       ['Reusable 8-digit KvK input + For Suppliers verification — callback-driven, embedded inside provider onboarding flows'],
+        displays:   ['"KvK-nummer" title + explainer subtitle', 'Numeric input with domain icon (8-digit max, auto-strips non-digits)', 'Inline error text under input', 'Loading spinner (verifying)', '"Controleren" primary button (disabled until 8 digits)', '"Ik heb geen KvK-nummer" ghost button'],
+        actions:    ['Type KvK (auto-sanitises to digits, clears prior error)', '"Controleren" → forSuppliersApi.verifyKvk → onResult({found, kvkNumber})', '"Ik heb geen KvK-nummer" → onSkip callback'],
+        navigation: ['Entry: rendered as a step inside Path3Wizard / provider onboarding (not a standalone route)', 'Exit: parent callback onResult / onSkip decides next step'],
+        edge_cases: ['Length < 8 → "Voer een geldig 8-cijferig KvK-nummer in" error', 'API failure → "Verificatie mislukt" error, button re-enabled', 'Non-digits stripped on input', 'Verify button disabled while loading'],
+      },
+      'auth.fs_invitation': {
+        does:       ['For Suppliers upsell screen — pitches Trusted Supplier subscription after KvK match, with accept/skip callbacks'],
+        displays:   ['Bordered surface card', 'Shield-star icon', '"Word een Trusted Supplier" title', 'Benefits body (40% more revenue, private pools, priority ranking)', 'Price row "~€200 / jaar" with tag icon', 'Revenue-split hint (50/50 FS / Spoedmarkt)', 'Accept primary button + "Niet nu" ghost button'],
+        actions:    ['"Ja, ik wil Trusted Supplier worden →" → onAccept callback', '"Niet nu" → onSkip callback'],
+        navigation: ['Entry: rendered as a step inside Path3Wizard / provider onboarding after KvkEntry returns found=true', 'Exit: parent callback decides next step (continue onboarding either way)'],
+        edge_cases: ['Pure display + decision — no loading, no validation, no error states', 'kvkNumber prop accepted but not rendered (reserved for future copy)'],
+      },
+      'feed.job_feed': {
+        does:       ['Paginated feed of available jobs with real-time search, filters, and urgency indicators'],
+        displays:   ['Job cards (title, budget, urgency, boosted status, bid count, location)', 'Greeting header with avatar + online status', 'Filter chips', 'Search input'],
+        actions:    ['Tap job card → JobDetail', 'Search by title', 'Apply/clear filters', 'Pull-to-refresh', 'Create job FAB (clients)', 'Profile/notification header button'],
+        navigation: ['Entry: Feed tab home', 'Exit → JobDetail, CreateJob (parent nav), ProviderSearch (company header)'],
+        edge_cases: ['Loading skeleton on init', 'Empty state when no jobs match', 'Pagination with loading indicator', 'Company header button hidden for non-companies'],
+      },
+      'feed.job_detail': {
+        does:       ['Full job information with bid controls, media carousel, urgency timer, and requirements'],
+        displays:   ['Media carousel', 'Urgency timer', 'Title + location', 'Fact pills (budget/location/deadline/bids)', 'Description', 'Voice memos', 'Compliance badge', 'Requirements', 'Staffing progress', 'Attachments'],
+        actions:    ['Place bid (providers/companies)', 'Manage job (owner)', 'View attachments', 'Accept/reject bids (owner)'],
+        navigation: ['Entry: JobFeed, ProviderSearch', 'Exit → back to feed, PlaceBid, JobManagement'],
+        edge_cases: ['Bid window expired disables "place bid"', 'Already bid shows confirmation state', 'Missing sections omitted', 'Expired staffing progress hidden'],
+      },
+      'feed.place_bid': {
+        does:       ['Bid submission modal: price quote with presets, ETA selector, optional message, live competing bids'],
+        displays:   ['Job context (title, reference budget)', 'Price input with presets (85-115% of ref)', 'ETA selector (4 options)', 'Optional message field', 'Live competing bids'],
+        actions:    ['Input price', 'Select ETA', 'Write optional message', 'Submit bid (confirmation alert)'],
+        navigation: ['Entry: JobDetail (non-owners)', 'Exit → confirmation back to JobDetail or MyBids'],
+        edge_cases: ['Verification gate before submit → VerificationCenter', 'Invalid price rejected', 'Competing bids update per user input'],
+      },
+      'feed.provider_search': {
+        does:       ['Search and filter available providers by name, sector, and sort order'],
+        displays:   ['Provider cards (name, rating, verification badges, specialties)', 'Search input', 'Sector chip filter', 'Sort modal'],
+        actions:    ['Search by name (debounced 400ms)', 'Select sector filter', 'Open sort modal (rating/verified/newest)', 'Tap provider card'],
+        navigation: ['Entry: JobFeed header (companies), SelectJobForInvite', 'Exit → ProviderDetail, back'],
+        edge_cases: ['Loading state', 'Empty results state', 'Name search debounced 400ms', 'Sort modal with selection feedback'],
+      },
+      'feed.provider_detail': {
+        does:       ['Provider public profile: ratings, portfolio, certifications, specialties, reviews, and invite controls'],
+        displays:   ['Hero card (name, avatar, location, availability, rating, hourly rate)', 'Specialties', 'Verification badges', 'Portfolio grid', 'Certification list', 'Service area', 'Reviews (3 preview + modal)'],
+        actions:    ['Invite button → SelectJobForInvite', 'Report flag → ReportSheet', 'View portfolio items (lightbox)', 'View certification (modal)', 'View all reviews (modal)', 'Load more reviews (paginated)'],
+        navigation: ['Entry: ProviderSearch, MatchedProviders', 'Exit → SelectJobForInvite, ReportSheet, back'],
+        edge_cases: ['Empty portfolio/certifications show emoji state', 'Expired certs visually indicated', 'No reviews shows empty pill', 'Missing avatar falls back to initials'],
+      },
+      'feed.select_job_invite': {
+        does:       ['Lets clients/companies choose which open job to invite a specific provider to'],
+        displays:   ['Header (provider name)', 'List of client\'s open jobs (title, location, budget)', 'Invite buttons per job'],
+        actions:    ['Tap invite button (confirmation alert)', 'Confirm send invite'],
+        navigation: ['Entry: ProviderDetail via header button (providerId param)', 'Exit → back to ProviderDetail on success'],
+        edge_cases: ['No open jobs → empty state', 'Pending state per job (loading spinner)', 'Invitation failure via alert', 'Success alert auto-closes on OK'],
+      },
+      'jobs.my_jobs': {
+        does:       ['Lists the client\'s own posted jobs grouped by status with create FAB'],
+        displays:   ['Job cards (title, location, budget, status)', 'Tab selector (All/Open/Closed)'],
+        actions:    ['Tap tab to filter', 'Tap job card → JobManagement', 'Create job FAB', 'Header bids button (companies)'],
+        navigation: ['Entry: JobsTab home', 'Exit → JobManagement, CreateJob, MyBids (header)'],
+        edge_cases: ['Empty state with action button', 'Loading state', 'Duplicate deduplication on pagination', 'FAB always visible'],
+      },
+      'jobs.create_job': {
+        does:       ['9-step job creation form: profession, urgency, location, title, media, budget, requirements, workers, visibility, review'],
+        displays:   ['Progress header (step/total)', 'Dynamic step content per step', 'Footer with back/next/publish buttons'],
+        actions:    ['Next/back with per-step validation', 'Urgency pre-question (urgent vs. scheduled)', 'Select profession/urgency/location/budget', 'Toggle requirements', 'Adjust worker count stepper', 'Set visibility (public/private pool)', 'Set spillover preference', 'Publish'],
+        navigation: ['Entry: MyJobs/JobFeed FAB', 'Exit → MatchedProviders (publish), ScheduledDatePicker modal (scheduled jobs)'],
+        edge_cases: ['Rate-limit cooldown (disabled button + timer)', 'OTP verification gate', 'Unsaved changes guard blocks tab switch', 'Spillover step skipped for public jobs', 'Validation errors per field'],
+      },
+      'jobs.management': {
+        does:       ['Job owner controls: bid management (accept/reject), boost, spillover, and cancellation'],
+        displays:   ['Media carousel', 'Hero card (title, location, status chip, urgency)', 'Fact grid (budget/category/staffing/boost)', 'Description', 'Bids section', 'Action buttons (boost/spillover/cancel)'],
+        actions:    ['Accept bid (staffing confirmation alert)', 'Reject bid (destructive confirm)', 'Boost job (BoostSheet)', 'Manual spillover to market (private pool, no bids)', 'Cancel job (destructive)', 'View matched providers', 'View provider profile'],
+        navigation: ['Entry: MyJobs, JobDetail', 'Exit → MatchedProviders, ProviderDetail, back'],
+        edge_cases: ['No bids → empty message', 'Fully staffed: reject disabled, accept message changes', 'Already boosted: indicator + timer', 'Spillover only shows for private pool with no bids'],
+      },
+      'jobs.matched_providers': {
+        does:       ['AI-matched providers for a newly created job with invite/profile controls and fallback browse'],
+        displays:   ['Job title context', 'Provider cards (rank, avatar, name, rating, specialties, AI reason, match tags)', '"No match" browse CTA', 'Manage job link'],
+        actions:    ['Invite provider (confirmation alert)', 'View profile', 'Browse all providers → ProviderSearch', 'Manage job'],
+        navigation: ['Entry: CreateJob publish success, JobManagement', 'Exit → ProviderDetail, ProviderSearch, JobManagement'],
+        edge_cases: ['Matches from cache (immediate) or WebSocket (15s timeout → message)', 'Timeout shows message but allows manual browse', 'No matches shows browse CTA', 'Invite loading per card'],
+      },
+      'bids.my_bids': {
+        does:       ['Lists the provider\'s placed bids grouped by status with status-dependent navigation'],
+        displays:   ['Bid cards (status chip, job title, location, time, price)', 'Tab filter (All/Pending/Accepted/Rejected)'],
+        actions:    ['Tap tab to filter', 'Tap bid card → status-dependent destination', 'Pull-to-refresh', 'Infinite scroll'],
+        navigation: ['Entry: BidsTab, MyJobs header (companies)', 'Exit → accepted → ActiveDeals, pending/rejected → JobDetail or MyJobs'],
+        edge_cases: ['Empty state', 'Loading on infinite scroll', 'Accepted bids show "Deal bekijken" CTA'],
+      },
+      'deals.active_deals': {
+        does:       ['Lists the user\'s active and closed deals with status grouping'],
+        displays:   ['Deal cards (DealCard component)', 'Tab selector (Actief/Afgerond)'],
+        actions:    ['Tap tab to filter', 'Tap deal card → DealDetail', 'Pull-to-refresh', 'Infinite scroll'],
+        navigation: ['Entry: DealsTab home, MyBids (accepted bids)', 'Exit → DealDetail'],
+        edge_cases: ['Empty state (active vs. closed messaging)', 'Loading state', 'Duplicate prevention via flatMap + filter'],
+      },
+      'deals.deal_detail': {
+        does:       ['Deal hub: status timeline, counterparty info, completion proof, dossier download, and actions per status'],
+        displays:   ['Hero card (title, location, price, status chip)', 'Timeline (created/started/completed/confirmed/closed)', 'Counterparty card (avatar, name, rating)', 'Completion photos + note', 'Dossier card (PDF link)', 'Action buttons', 'Chat FAB'],
+        actions:    ['Start work (accepted → in progress)', 'Mark complete with photos/note', 'Confirm completion (client)', 'Write review (pending reviews status)', 'Download dossier PDF', 'Chat via FAB', 'Report issue'],
+        navigation: ['Entry: MyBids, ActiveDeals', 'Exit → CompletionUpload, Review, Chat (FAB), ReportSheet'],
+        edge_cases: ['Timeline updates on status', 'PDF generating placeholder', 'No completion photos/note omits section', 'Confirm/start disabled while pending', 'Chat FAB always available'],
+      },
+      'deals.chat': {
+        does:       ['Real-time Socket.IO deal chat scoped to a specific deal room'],
+        displays:   ['Message bubbles (owned/other distinction)', 'Message input + send button'],
+        actions:    ['Type message', 'Send message', 'Scroll to latest'],
+        navigation: ['Entry: DealDetail (chat button or FAB)', 'Exit → back'],
+        edge_cases: ['Empty state: "Start the conversation"', 'Loading on init', 'Error state (can\'t load messages)', 'Auto-scroll on message arrival', 'Keyboard avoidance (iOS padding)'],
+      },
+      'deals.completion_upload': {
+        does:       ['Provider work completion submission: before/during/after photos, materials table, note, signature placeholder'],
+        displays:   ['Progress stepper (4 steps)', 'Photo grid (3 phases, max 2 each, with count badges)', 'Materials table (item/qty/price rows)', 'Note textarea (min 10 chars)', 'Signature placeholder', 'Submit button'],
+        actions:    ['Add photos per phase', 'Add/remove/edit material rows', 'Write completion note', 'Submit (with photo + note validation)'],
+        navigation: ['Entry: DealDetail (in progress status)', 'Exit → back (success alert)'],
+        edge_cases: ['Validation: 1+ photo + 10+ char note required', 'Uploading spinner state', 'Signature is placeholder only', 'Materials optional'],
+      },
+      'deals.review': {
+        does:       ['Post-deal review submission: star rating, role-dependent tags, optional text comment'],
+        displays:   ['Star rating selector (1–5)', 'Positive tags grid (provider/client role-dependent)', 'Negative tags grid', 'Optional text input', 'Submit button'],
+        actions:    ['Tap star (required)', 'Tap tag (toggle)', 'Write optional comment', 'Submit'],
+        navigation: ['Entry: DealDetail (completed_pending_reviews, role check)', 'Exit → back (success alert)'],
+        edge_cases: ['Stars required — submit disabled at 0', 'Tag set is role-dependent', 'Optional text', 'Error handling via hook'],
+      },
+      'calendar.main': {
+        does:       ['Month/week/day personal and workforce calendar with deal events and custom event creation'],
+        displays:   ['Month/week/day view toggle', 'Marked dates with color dots', 'Day event list with times', 'FS badge (providers)', 'Workforce grid (company)'],
+        actions:    ['Toggle view mode', 'Tap day', 'Tap event → detail sheet', 'Create event FAB', 'Toggle workforce view (company)'],
+        navigation: ['Entry: Agenda tab', 'Exit → CalendarEventDetailSheet, CreateEventModal'],
+        edge_cases: ['No events: "Geen afspraken"', 'Loading state (ActivityIndicator)', 'Workforce view only for company role with calMode=workforce'],
+      },
+      'profile.main': {
+        does:       ['User profile hub: avatar, role stats, verification badges (providers), and navigation menu for all profile sub-screens'],
+        displays:   ['Avatar (editable)', 'Name + role badge', 'FS validation badges (providers: KvK/IBAN/VCA/WKA/Verzekering)', 'Stats grid (klussen/rating/compliant)', 'Unread notification count', 'Role-conditional menu sections'],
+        actions:    ['Tap avatar → upload (camera/library)', 'Tap menu item → sub-screens', 'Logout'],
+        navigation: ['Entry: Profile tab', 'Exit → VerificationCenter, Referral, Notifications, PathExpansion, IntroVideo, Preferences, Portfolio, Certifications, CompanyProfile, PrivatePool, OrgRole, Settings, auth flow (logout)'],
+        edge_cases: ['FS pending shows "In behandeling" + 14-day message', 'Badge count >99 shows "99+"', 'Role-based section visibility (provider/company/B2B)'],
+      },
+      'profile.settings': {
+        does:       ['Account security, language, calendar integrations, and profile content settings'],
+        displays:   ['Email', 'Phone (verified badge)', 'About/website inputs (clients)', '2FA toggle', 'Face ID toggle', 'Language picker', 'Google/Apple calendar connect status', 'Legal/support links', 'App version'],
+        actions:    ['Edit phone (OTP modal)', 'Toggle 2FA (OTP modal)', 'Toggle Face ID', 'Select language', 'Connect/disconnect Google Calendar', 'Request Apple Calendar permission', 'Edit about/website (clients)'],
+        navigation: ['Entry: Profile menu', 'Exit → phone OTP modal, 2FA OTP modal, language picker modal, back'],
+        edge_cases: ['2FA disabled if no phone number', 'Face ID hidden if no biometric hardware', 'Website requires https://', 'OTP cooldown 30s resend'],
+      },
+      'profile.verification_center': {
+        does:       ['KYC dashboard: progress tracking and document uploads for ID, KvK, IBAN, and certifications'],
+        displays:   ['Progress bar (n/m verified)', 'Phone verification status', 'ID + selfie upload status', 'KvK/IBAN fields (ZZP only)', 'Document list (VCA/WKA/etc.)', 'FS badges'],
+        actions:    ['Resend phone verification', 'Upload ID/selfie (camera/library)', 'Enter KvK (modal, regex /^\\d{8}$/)', 'Enter IBAN (modal, regex /^[A-Z]{2}[A-Z0-9]{13,32}$/)', 'Upload certification docs'],
+        navigation: ['Entry: Profile menu', 'Exit → camera/photo library, KvK/IBAN modals, back'],
+        edge_cases: ['Progress total = 5 (ZZP) or 3 (non-ZZP)', 'Phone already verified shows info alert', 'Documents from DOCUMENT_TYPES constant'],
+      },
+      'profile.referral': {
+        does:       ['Share referral link and display free boost balance earned from successful referrals'],
+        displays:   ['Referral invite link (BASE_INVITE_URL + referralCode)', 'Free boosts available count', 'Invitation copy', 'Share button'],
+        actions:    ['Copy link → alert with link', 'Share → system share sheet with custom message'],
+        navigation: ['Entry: Profile menu', 'Exit → system share dialog, back'],
+        edge_cases: ['No referralCode falls back to base URL', 'Boosts count only shown if > 0', 'Plural handling (boost/boosts)'],
+      },
+      'profile.preferences': {
+        does:       ['Provider work preferences: specializations, service area, availability, and minimum rate'],
+        displays:   ['Specialization chip grid (sectors API)', 'Postcode input', 'Radius chips (10/15/25/50 km)', 'Min rate input (€/uur)', 'Availability toggle', 'Save button'],
+        actions:    ['Toggle specialization chips', 'Change postcode', 'Select radius preset', 'Enter min rate', 'Toggle availability', 'Save'],
+        navigation: ['Entry: Profile menu (providers only)', 'Exit → invalidates provider query, back'],
+        edge_cases: ['Loading spinner while fetching profile', 'Sectors from useSectors hook', 'Availability off disables notifications'],
+      },
+      'profile.private_pool': {
+        does:       ['Manage private pool of trusted providers/workers: add, invite, and remove members'],
+        displays:   ['Member list (avatar initials, name, email, status badge)', '"Vakman toevoegen" + "CSV importeren" buttons', 'Empty state if no members'],
+        actions:    ['Tap "Vakman toevoegen" → add modal (name, email, phone)', 'Tap member close → remove with confirm', 'CSV import (template shown, not yet implemented)'],
+        navigation: ['Entry: Profile menu (B2B/company only)', 'Exit → add modal, confirm dialog, back'],
+        edge_cases: ['Name/email required, phone optional', 'Status variants: invited/accepted/declined (color badges)', 'Remove requires confirmation alert'],
+      },
+      'profile.notifications': {
+        does:       ['Notification centre: history list with read state, type filtering, and mark-all-read'],
+        displays:   ['Notification list (icon, title, body, relative timestamp, unread dot)', 'Filter tabs (all/post/bid — hybrid users only)', '"Alles gelezen" button (if unread > 0)'],
+        actions:    ['Tap notification → mark read + navigate to target', '"Alles gelezen" → mark all read', 'Tap filter tab'],
+        navigation: ['Entry: Profile menu', 'Exit → DealDetail or JobDetail (target from notification), back'],
+        edge_cases: ['Empty state if no notifications', 'Filter tabs only for users with both bidding + posting roles', 'Unread highlighted (primary+15% bg)', 'Relative time formatting'],
+      },
+      'profile.company': {
+        does:       ['Edit company profile info: name, KvK, VAT, address, website, contact details'],
+        displays:   ['Company name (required)', 'KvK number', 'VAT number', 'Address, postcode, city', 'Website, email, phone', 'Save button'],
+        actions:    ['Edit text fields', 'Save (validates name not empty, trims whitespace)'],
+        navigation: ['Entry: Profile menu (B2B/company)', 'Exit → invalidates org query, back'],
+        edge_cases: ['Loading while fetching org', 'All fields except name optional', 'Error alert if save fails'],
+      },
+      'profile.intro_video': {
+        does:       ['Record and upload a 30–60s provider introduction video for the public profile'],
+        displays:   ['Header with icon', 'Title + description', 'Tips checklist', 'VideoRecorder component', 'Upload button (if video selected)'],
+        actions:    ['Record video (max 45s)', 'Upload video → post to provider endpoint', 'Back to cancel'],
+        navigation: ['Entry: Profile menu (providers only)', 'Exit → navigate back on success or cancel'],
+        edge_cases: ['Upload loading state', 'Error alert on failure', 'Video capped at 45 seconds'],
+      },
+      'profile.portfolio': {
+        does:       ['Manage portfolio items with photos, videos, or voice memos, each tagged by subcategory'],
+        displays:   ['Item count status banner (≥3 complete / <3 incomplete)', 'Existing items list (title, desc, tags, delete)', 'Add form (title, desc, media type, picker, voice recorder, subcategory tags)'],
+        actions:    ['Select media type (photo/video/voice)', 'Pick media from library', 'Record voice memo (start/stop)', 'Toggle subcategory tags', 'Enter title/description', '"Project toevoegen"', 'Delete item (with confirm)'],
+        navigation: ['Entry: Profile menu (providers only)', 'Exit → media picker, back'],
+        edge_cases: ['Empty state if no items', 'Upload loading', 'Title required', 'Tags only shown if provider has subcategories'],
+      },
+      'profile.certifications': {
+        does:       ['Add and manage professional certifications (VCA, KOMO, ISO etc.) with dates and metadata'],
+        displays:   ['Certification list (icon, type, issuing body, expiry, cert number)', 'Add form (type dropdown, cert number, body, issued/expiry dates)', 'Type picker sheet', 'Date picker modal'],
+        actions:    ['Open type picker sheet', 'Select type (OTHER → custom label)', 'Enter cert number/body', 'Tap date fields → DatePicker', '"Certificering toevoegen"', 'Delete cert (confirm)'],
+        navigation: ['Entry: Profile menu (providers only)', 'Exit → type sheet, date modal, back'],
+        edge_cases: ['Empty state if no certs', 'Type formatted display (KOMO → "KOMO")', 'Delete requires confirmation'],
+      },
+      'profile.org_role': {
+        does:       ['Read-only display of the user\'s organisation role and associated permissions'],
+        displays:   ['Role badge (owner/manager/dispatcher/bidder/viewer)', 'Organisation name', 'Permissions list (icon + permission text)', 'Hint: roles managed via web dashboard'],
+        actions:    ['None — read-only view'],
+        navigation: ['Entry: Profile menu (company role only)', 'Exit → back'],
+        edge_cases: ['Owner determined by absence from members list', 'Primary role from first role in array', 'Permissions mapped from ROLE_PERMISSIONS constant'],
+      },
+      'profile.path_expansion': {
+        does:       ['Add an additional account role (bidding or posting) to a single-role account'],
+        displays:   ['Step UI: choose path → select business type → confirmation', 'Bidding/posting option buttons', 'Business type selector (ZZP/subcontractor/main contractor)', 'Success message'],
+        actions:    ['Tap bidding → business type step', 'Tap posting → submit directly', 'Select business type → submit', 'Back', '"Naar profiel" after success'],
+        navigation: ['Entry: Profile menu (if eligible)', 'Exit → back (success)'],
+        edge_cases: ['If no eligible paths: "all roles available" message', 'Eligibility based on role/path/activeRoles', 'Analytics tracked on path added'],
+      },
+      'company.overview': {
+        does:       ['Company dashboard: stats, upgrade banner, private pool gate, team preview, and job creation CTA'],
+        displays:   ['Company header (name, type, member count)', 'Stats row (active jobs, monthly total, avg price)', 'Monthly spend (if available)', 'Upgrade banner (free tier)', 'Private pool section (gated)', 'Team members preview (first 3 + N more)', 'CTA "Opdracht plaatsen"'],
+        actions:    ['"Opdracht plaatsen" → CreateJob', '"Beheren" → Members (owner/manager)', '"+N meer bekijken" → Members', 'Retry on error'],
+        navigation: ['Entry: Company tab', 'Exit → CreateJob, Members'],
+        edge_cases: ['Loading spinner', 'Error state with retry', '401 handled globally', 'Private pool gated by tier', 'canManage = owner or manager role'],
+      },
+      'company.members': {
+        does:       ['Manage organisation members: roles, invitations, and permissions (owner/manager only)'],
+        displays:   ['Member list (avatar initial, name, email, role badges, edit/delete)', 'Invite button (if canManage)', 'Invite modal (email + role multi-select)', 'Role edit modal', 'Permissions confirmation modal'],
+        actions:    ['Tap edit → role modal', 'Toggle roles', 'Save → permissions confirm → update', 'Delete member (confirm)', 'Invite → email + roles → send'],
+        navigation: ['Entry: CompanyOverview', 'Exit → invite/edit/confirm modals, back'],
+        edge_cases: ['Loading/error states with retry', 'Owner cannot be edited', 'Must have ≥1 role', 'Invite success shows email in alert', 'canManage = owner or MANAGER role'],
+      },
+    };
+
+    // ── Inject expand header + buttons + detail rows ─────────────────────────
+    (function buildAuditRows() {
+      // Inject expand <th> as the very first column in the header
+      const theadTr  = document.querySelector('thead tr');
+      const expandTh = document.createElement('th');
+      expandTh.className = 'col-expand';
+      theadTr.insertBefore(expandTh, theadTr.firstChild);
+
+      const tbody    = document.getElementById('inventory-body');
+      const dataRows = Array.from(tbody.querySelectorAll('tr[data-cluster]'));
+      const COLS     = 11;
+
+      dataRows.forEach(row => {
+        // Tag the # and Screen ID cells so CSS can make them sticky
+        const numTd = row.firstElementChild;
+        if (numTd) numTd.classList.add('col-num');
+
+        const idSpan = row.querySelector('.screen-id');
+        if (!idSpan) return;
+        const idTd = idSpan.closest('td');
+        if (idTd) idTd.classList.add('col-id');
+
+        const screenId = idSpan.textContent.trim();
+        const audit    = AUDIT[screenId];
+
+        // Prepend expand-btn cell (class handles sticky via CSS)
+        const expandCell = document.createElement('td');
+        expandCell.className = 'col-expand';
+        expandCell.style.padding = '8px 6px';
+        if (audit) {
+          const btn = document.createElement('button');
+          btn.className = 'expand-btn';
+          btn.setAttribute('aria-expanded', 'false');
+          btn.setAttribute('aria-label', 'Toggle audit details');
+          btn.innerHTML = '▶';
+          expandCell.appendChild(btn);
+        }
+        row.insertBefore(expandCell, row.firstChild);
+
+        if (!audit) return;
+
+        // Build detail row
+        const detail = document.createElement('tr');
+        detail.className = 'detail-row';
+        detail.dataset.hidden = 'true';
+        detail.dataset.parentCluster = row.dataset.cluster;
+
+        const cell = document.createElement('td');
+        cell.colSpan = COLS;
+
+        const sections = [
+          { label: 'What it does',   items: audit.does },
+          { label: 'Data displayed', items: audit.displays },
+          { label: 'Actions',        items: audit.actions },
+          { label: 'Navigation',     items: audit.navigation },
+          { label: 'Edge cases',     items: audit.edge_cases },
+        ];
+
+        cell.innerHTML = `<div class="audit-panel">${
+          sections.map(s => `
+            <div class="audit-section">
+              <div class="audit-label">${s.label}</div>
+              <ul>${s.items.map(i => `<li>${i}</li>`).join('')}</ul>
+            </div>`).join('')
+        }</div>`;
+
+        detail.appendChild(cell);
+        row.after(detail);
+
+        const btn = expandCell.querySelector('.expand-btn');
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+          detail.dataset.hidden = expanded ? 'true' : 'false';
+        });
+      });
+    })();
+
+    // Now that expand <th> exists, fire the initial scroll/sticky sync
+    onScroll();
+
     // Filters + search
-    const rows = Array.from(document.querySelectorAll('#inventory-body tr:not(.empty-row)'));
+    const rows = Array.from(document.querySelectorAll('#inventory-body tr[data-cluster]:not(.detail-row)'));
     const emptyRow = document.getElementById('empty-row');
     const visibleCount = document.getElementById('visible-count');
 
@@ -1233,11 +1894,17 @@
 
         const show = matchCluster && matchRole && matchPriority && matchSearch;
         row.dataset.hidden = show ? 'false' : 'true';
+        // Keep detail row in sync with parent visibility
+        const detail = row.nextElementSibling;
+        if (detail && detail.classList.contains('detail-row')) {
+          if (!show) detail.dataset.hidden = 'true';
+        }
         if (show) visible++;
       });
       visibleCount.textContent = visible;
       emptyRow.style.display = visible === 0 ? '' : 'none';
     }
   </script>
+
 </body>
 </html>
