@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Screen Inventory — Spoedmarkt Redesign</title>
+  <script>if (history.scrollRestoration) history.scrollRestoration = 'manual';</script>
+  <style>
+    :root {
+      --ink:              #1A1814;
+      --ink-strong:       #0A0906;
+      --paper:            #FCFAF7;
+      --paper-200:        #F2EEE8;
+      --paper-300:        #EDE8E1;
+      --paper-400:        #D8D2CA;
+      --warm-600:         #6B6359;
+      --chartreuse:       #E3FF00;
+      --surface:          #FFFFFF;
+      --border:           #D8D2CA;
+      --border-subtle:    #EDE8E1;
+      --border-strong:    #1A1814;
+      --text-primary:     #1A1814;
+      --text-secondary:   #6B6359;
+      --text-muted:       #9C9489;
+      --shadow-sm:        0 1px 3px rgba(26,24,20,0.08);
+      --shadow-md:        0 4px 16px rgba(26,24,20,0.10);
+      --radius-sm:        8px;
+      --radius-md:        12px;
+      --radius-lg:        16px;
+      --radius-pill:      999px;
+    }
+    [data-theme="dark"] {
+      --ink:              #F8F4EC;
+      --ink-strong:       #FCFAF7;
+      --paper:            #15130F;
+      --paper-200:        #1A1814;
+      --paper-300:        #211E18;
+      --paper-400:        rgba(248,244,236,0.12);
+      --warm-600:         #A09488;
+      --surface:          #1A1814;
+      --border:           rgba(248,244,236,0.12);
+      --border-subtle:    rgba(248,244,236,0.06);
+      --border-strong:    #F8F4EC;
+      --text-primary:     #F8F4EC;
+      --text-secondary:   #A09488;
+      --text-muted:       #6B6359;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+      background: var(--paper);
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--paper);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .topbar-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .crumb {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+    .crumb:hover { color: var(--text-primary); }
+    .crumb::before { content: '←'; }
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--chartreuse);
+      border: 1.5px solid var(--ink);
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 24px 24px;
+    }
+    .eyebrow {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--chartreuse);
+      color: var(--ink);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border-radius: var(--radius-pill);
+      margin-bottom: 16px;
+    }
+    [data-theme="dark"] .eyebrow { color: #1A1814; }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 640px;
+    }
+
+    /* ── Stats bar ── */
+    .stats {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px 24px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      min-width: 120px;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Filters ── */
+    .filters {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 100ms ease;
+    }
+    .filter-btn:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .filter-btn.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper);
+    }
+    [data-theme="dark"] .filter-btn.active { background: var(--ink); color: #15130F; }
+    .filter-sep { width: 1px; height: 24px; background: var(--border); align-self: center; }
+
+    /* ── Search ── */
+    .search-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px 16px;
+    }
+    .search-input {
+      width: 100%;
+      max-width: 360px;
+      padding: 8px 14px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus { border-color: var(--border-strong); }
+    .search-wrap-inner { position: relative; display: inline-block; width: 100%; max-width: 360px; }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .search-icon svg { width: 14px; height: 14px; display: block; }
+
+    /* ── Table ── */
+    .table-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead {
+      position: sticky;
+      top: 57px;
+      z-index: 10;
+    }
+    thead tr {
+      background: var(--paper-200);
+    }
+    th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: top;
+    }
+    tr:hover td { background: var(--paper-200); }
+    tr[data-hidden="true"] { display: none; }
+
+    /* Screen ID */
+    .screen-id {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--warm-600);
+      white-space: nowrap;
+    }
+
+    /* Cluster badge */
+    .cluster {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .cluster--auth        { background: rgba(139,92,246,0.12); color: #7C3AED; }
+    .cluster--registration{ background: rgba(59,130,246,0.12); color: #1D4ED8; }
+    .cluster--feed        { background: rgba(16,185,129,0.12); color: #047857; }
+    .cluster--jobs        { background: rgba(245,158,11,0.12); color: #B45309; }
+    .cluster--deals       { background: rgba(239,68,68,0.12);  color: #B91C1C; }
+    .cluster--calendar    { background: rgba(14,165,233,0.12); color: #0369A1; }
+    .cluster--profile     { background: rgba(107,99,133,0.12); color: #4C3D8F; }
+    .cluster--company     { background: rgba(26,24,20,0.08);   color: #1A1814; }
+    [data-theme="dark"] .cluster--auth         { background: rgba(167,139,250,0.15); color: #A78BFA; }
+    [data-theme="dark"] .cluster--registration { background: rgba(96,165,250,0.15);  color: #60A5FA; }
+    [data-theme="dark"] .cluster--feed         { background: rgba(52,211,153,0.15);  color: #34D399; }
+    [data-theme="dark"] .cluster--jobs         { background: rgba(251,191,36,0.15);  color: #FCD34D; }
+    [data-theme="dark"] .cluster--deals        { background: rgba(248,113,113,0.15); color: #F87171; }
+    [data-theme="dark"] .cluster--calendar     { background: rgba(56,189,248,0.15);  color: #38BDF8; }
+    [data-theme="dark"] .cluster--profile      { background: rgba(167,139,250,0.15); color: #C4B5FD; }
+    [data-theme="dark"] .cluster--company      { background: rgba(248,244,236,0.10); color: #F8F4EC; }
+
+    /* Role badges */
+    .roles { display: flex; gap: 4px; flex-wrap: wrap; }
+    .role {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: var(--radius-pill);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .role--client   { border-color: #FCD34D; color: #B45309; background: rgba(251,191,36,0.08); }
+    .role--provider { border-color: #6EE7B7; color: #047857; background: rgba(16,185,129,0.08); }
+    .role--company  { border-color: #A5B4FC; color: #4338CA; background: rgba(99,102,241,0.08); }
+    .role--all      { border-color: var(--border); color: var(--text-muted); }
+    [data-theme="dark"] .role--client   { border-color: #FCD34D; color: #FCD34D; background: rgba(251,191,36,0.10); }
+    [data-theme="dark"] .role--provider { border-color: #6EE7B7; color: #6EE7B7; background: rgba(16,185,129,0.10); }
+    [data-theme="dark"] .role--company  { border-color: #A5B4FC; color: #A5B4FC; background: rgba(99,102,241,0.10); }
+
+    /* Priority */
+    .priority {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .priority--p0 { background: rgba(239,68,68,0.12);  color: #B91C1C; }
+    .priority--p1 { background: rgba(245,158,11,0.12); color: #B45309; }
+    .priority--p2 { background: rgba(107,114,128,0.10); color: #6B7280; }
+    [data-theme="dark"] .priority--p0 { background: rgba(248,113,113,0.15); color: #F87171; }
+    [data-theme="dark"] .priority--p1 { background: rgba(251,191,36,0.15);  color: #FCD34D; }
+    [data-theme="dark"] .priority--p2 { background: rgba(156,163,175,0.15); color: #9CA3AF; }
+
+    /* Status */
+    .status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status--not-started { background: var(--paper-200); color: var(--text-muted); }
+    .status--in-design   { background: rgba(139,92,246,0.12); color: #7C3AED; }
+    .status--in-code     { background: rgba(245,158,11,0.12); color: #B45309; }
+    .status--in-review   { background: rgba(14,165,233,0.12); color: #0369A1; }
+    .status--done        { background: rgba(16,185,129,0.12); color: #047857; }
+    [data-theme="dark"] .status--not-started { background: rgba(248,244,236,0.06); color: var(--text-muted); }
+    [data-theme="dark"] .status--in-design   { background: rgba(167,139,250,0.15); color: #A78BFA; }
+    [data-theme="dark"] .status--in-code     { background: rgba(251,191,36,0.15);  color: #FCD34D; }
+    [data-theme="dark"] .status--in-review   { background: rgba(56,189,248,0.15);  color: #38BDF8; }
+    [data-theme="dark"] .status--done        { background: rgba(52,211,153,0.15);  color: #34D399; }
+
+    /* File path */
+    .filepath {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Reg path */
+    .reg-path {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Notes */
+    .notes { color: var(--text-secondary); max-width: 240px; font-size: 12px; }
+
+    .empty-row td {
+      padding: 48px 14px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    /* Modal indicator */
+    .modal-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--paper-200);
+      color: var(--text-muted);
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <script>if (history.scrollRestoration) history.scrollRestoration = 'manual';</script>
+
+  <!-- Topbar -->
+  <nav class="topbar">
+    <div class="topbar-inner">
+      <a class="crumb" href="./index.html">Soft Pro Design System</a>
+      <button class="theme-toggle" id="themeToggle">
+        <span class="dot"></span><span id="themeLabel">Light</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="page-header">
+    <span class="eyebrow">1.1 Screen Inventory</span>
+    <h1>Screen inventory</h1>
+    <p>Complete map of every screen in the SpoedMarktplaats mobile app — extracted from the navigation tree and screen files. Source of truth for the redesign.</p>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value" id="total-count">52</div>
+      <div class="stat-label">Total screens</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" style="color:#B91C1C;">12</div>
+      <div class="stat-label">P0 — Critical</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" style="color:#B45309;">22</div>
+      <div class="stat-label">P1 — Important</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" style="color:#6B7280;">18</div>
+      <div class="stat-label">P2 — Nice to have</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="visible-count">52</div>
+      <div class="stat-label">Showing</div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <div class="search-wrap-inner">
+      <span class="search-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </span>
+      <input class="search-input" type="search" id="searchInput" placeholder="Search screens…" />
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <span class="filter-label">Cluster</span>
+    <div class="filter-group" id="cluster-filters">
+      <button class="filter-btn active" data-filter="cluster" data-value="all">All</button>
+      <button class="filter-btn" data-filter="cluster" data-value="auth">Auth</button>
+      <button class="filter-btn" data-filter="cluster" data-value="registration">Registration</button>
+      <button class="filter-btn" data-filter="cluster" data-value="feed">Feed</button>
+      <button class="filter-btn" data-filter="cluster" data-value="jobs">Jobs &amp; Bids</button>
+      <button class="filter-btn" data-filter="cluster" data-value="deals">Deals &amp; Chat</button>
+      <button class="filter-btn" data-filter="cluster" data-value="calendar">Calendar</button>
+      <button class="filter-btn" data-filter="cluster" data-value="profile">Profile</button>
+      <button class="filter-btn" data-filter="cluster" data-value="company">Company</button>
+    </div>
+    <span class="filter-sep"></span>
+    <span class="filter-label">Role</span>
+    <div class="filter-group" id="role-filters">
+      <button class="filter-btn active" data-filter="role" data-value="all">All</button>
+      <button class="filter-btn" data-filter="role" data-value="client">Client</button>
+      <button class="filter-btn" data-filter="role" data-value="provider">Provider</button>
+      <button class="filter-btn" data-filter="role" data-value="company">Company</button>
+    </div>
+    <span class="filter-sep"></span>
+    <span class="filter-label">Priority</span>
+    <div class="filter-group" id="priority-filters">
+      <button class="filter-btn active" data-filter="priority" data-value="all">All</button>
+      <button class="filter-btn" data-filter="priority" data-value="p0">P0</button>
+      <button class="filter-btn" data-filter="priority" data-value="p1">P1</button>
+      <button class="filter-btn" data-filter="priority" data-value="p2">P2</button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table id="inventory-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Screen ID</th>
+          <th>Screen name</th>
+          <th>Cluster</th>
+          <th>User role</th>
+          <th>Reg. path</th>
+          <th>File path</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="inventory-body">
+        <!-- AUTH -->
+        <tr data-cluster="auth" data-roles="all" data-priority="p0">
+          <td>1</td>
+          <td><span class="screen-id">auth.welcome</span></td>
+          <td>Welcome</td>
+          <td><span class="cluster cluster--auth">Auth</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/auth/WelcomeScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Entry point of the app. Login / signup CTAs + language switcher</td>
+        </tr>
+        <tr data-cluster="auth" data-roles="all" data-priority="p0">
+          <td>2</td>
+          <td><span class="screen-id">auth.login</span></td>
+          <td>Login</td>
+          <td><span class="cluster cluster--auth">Auth</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/auth/LoginScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Email/phone login, biometric (Face ID) support</td>
+        </tr>
+        <tr data-cluster="auth" data-roles="all" data-priority="p0">
+          <td>3</td>
+          <td><span class="screen-id">auth.signup</span></td>
+          <td>Signup</td>
+          <td><span class="cluster cluster--auth">Auth</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/auth/SignupScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Registration form — name, phone, avatar upload, account type</td>
+        </tr>
+        <tr data-cluster="auth" data-roles="all" data-priority="p0">
+          <td>4</td>
+          <td><span class="screen-id">auth.otp</span></td>
+          <td>Phone Verification (OTP)</td>
+          <td><span class="cluster cluster--auth">Auth</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/auth/PhoneVerificationScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">6-digit SMS OTP with resend cooldown. Also injected at root for post-signup verification</td>
+        </tr>
+        <tr data-cluster="auth" data-roles="client" data-priority="p0">
+          <td>5</td>
+          <td><span class="screen-id">auth.onboarding.client</span></td>
+          <td>Client Onboarding</td>
+          <td><span class="cluster cluster--auth">Auth</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/auth/ClientOnboardingScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Post-login setup wizard — enterprise status, ERP system</td>
+        </tr>
+        <tr data-cluster="auth" data-roles="provider" data-priority="p0">
+          <td>6</td>
+          <td><span class="screen-id">auth.onboarding.provider</span></td>
+          <td>Provider Onboarding</td>
+          <td><span class="cluster cluster--auth">Auth</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/auth/ProviderOnboardingScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Post-login setup — KVK, categories, location, business type</td>
+        </tr>
+        <tr data-cluster="auth" data-roles="all" data-priority="p0">
+          <td>7</td>
+          <td><span class="screen-id">auth.registration.hub</span></td>
+          <td>Registration Hub</td>
+          <td><span class="cluster cluster--auth">Auth</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">1 · 2 · 3 · 4</span></td>
+          <td><span class="filepath">src/screens/auth/RegistrationHubScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Decision screen — 4 registration paths with icons and descriptions</td>
+        </tr>
+
+        <!-- REGISTRATION -->
+        <tr data-cluster="registration" data-roles="provider" data-priority="p0">
+          <td>8</td>
+          <td><span class="screen-id">auth.registration.path1</span></td>
+          <td>Path 1 Wizard — ZZP</td>
+          <td><span class="cluster cluster--registration">Registration</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">Path 1</span></td>
+          <td><span class="filepath">src/screens/auth/registration/Path1WizardScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Formal ZZP provider multi-step registration with KVK verification</td>
+        </tr>
+        <tr data-cluster="registration" data-roles="provider" data-priority="p0">
+          <td>9</td>
+          <td><span class="screen-id">auth.registration.path2</span></td>
+          <td>Path 2 Wizard — Subcontractor</td>
+          <td><span class="cluster cluster--registration">Registration</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">Path 2</span></td>
+          <td><span class="filepath">src/screens/auth/registration/Path2WizardScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Subcontractors/suppliers with KVK lookup</td>
+        </tr>
+        <tr data-cluster="registration" data-roles="provider client" data-priority="p1">
+          <td>10</td>
+          <td><span class="screen-id">auth.registration.path3</span></td>
+          <td>Path 3 Wizard — Hybrid</td>
+          <td><span class="cluster cluster--registration">Registration</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span><span class="role role--client">Client</span></div></td>
+          <td><span class="reg-path">Path 3</span></td>
+          <td><span class="filepath">src/screens/auth/registration/Path3WizardScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Hybrid path — workforce search or job posting with sectors/location</td>
+        </tr>
+        <tr data-cluster="registration" data-roles="client" data-priority="p1">
+          <td>11</td>
+          <td><span class="screen-id">auth.registration.path4</span></td>
+          <td>Path 4 Wizard — Property Manager</td>
+          <td><span class="cluster cluster--registration">Registration</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span></div></td>
+          <td><span class="reg-path">Path 4</span></td>
+          <td><span class="filepath">src/screens/auth/registration/Path4WizardScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Property managers, housing corps, VVE managers, maintenance companies</td>
+        </tr>
+        <tr data-cluster="registration" data-roles="provider" data-priority="p1">
+          <td>12</td>
+          <td><span class="screen-id">auth.registration.informal_warning</span></td>
+          <td>Informal Worker Warning</td>
+          <td><span class="cluster cluster--registration">Registration</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">Path 1 · 2</span></td>
+          <td><span class="filepath">src/screens/auth/registration/InformalWorkerWarningScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Legal disclaimer about informal worker tax implications</td>
+        </tr>
+        <tr data-cluster="registration" data-roles="provider client" data-priority="p1">
+          <td>13</td>
+          <td><span class="screen-id">auth.registration.mid_confirm</span></td>
+          <td>Mid-flow Confirmation</td>
+          <td><span class="cluster cluster--registration">Registration</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span><span class="role role--client">Client</span></div></td>
+          <td><span class="reg-path">1 · 2 · 3 · 4</span></td>
+          <td><span class="filepath">src/screens/auth/registration/RegistrationMidConfirmScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Congratulates user mid-flow and explains next steps</td>
+        </tr>
+        <tr data-cluster="registration" data-roles="provider" data-priority="p2">
+          <td>14</td>
+          <td><span class="screen-id">auth.registration.fs_check</span></td>
+          <td>FS Check</td>
+          <td><span class="cluster cluster--registration">Registration</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">Path 1 · 2</span></td>
+          <td><span class="filepath">src/screens/auth/registration/FsCheckScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">For Suppliers (FS) badge interest prompt</td>
+        </tr>
+        <tr data-cluster="registration" data-roles="client" data-priority="p2">
+          <td>15</td>
+          <td><span class="screen-id">auth.registration.software_integration</span></td>
+          <td>Software Integration</td>
+          <td><span class="cluster cluster--registration">Registration</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span></div></td>
+          <td><span class="reg-path">Path 4</span></td>
+          <td><span class="filepath">src/screens/auth/registration/SoftwareIntegrationScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">ERP system integration setup for enterprise clients</td>
+        </tr>
+        <tr data-cluster="registration" data-roles="client" data-priority="p2">
+          <td>16</td>
+          <td><span class="screen-id">auth.registration.lead_thankyou</span></td>
+          <td>Lead Thank You</td>
+          <td><span class="cluster cluster--registration">Registration</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span></div></td>
+          <td><span class="reg-path">Path 4</span></td>
+          <td><span class="filepath">src/screens/auth/registration/LeadThankYouScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Confirmation after lead submission — 1-day response expectation</td>
+        </tr>
+        <tr data-cluster="registration" data-roles="all" data-priority="p2">
+          <td>17</td>
+          <td><span class="screen-id">auth.registration.date_picker</span></td>
+          <td>Scheduled Date Picker <span class="modal-tag">modal</span></td>
+          <td><span class="cluster cluster--registration">Registration</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">3 · 4</span></td>
+          <td><span class="filepath">src/screens/auth/registration/ScheduledDatePickerScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Reusable date picker modal — used in registration and company navigator</td>
+        </tr>
+
+        <!-- FEED -->
+        <tr data-cluster="feed" data-roles="provider" data-priority="p0">
+          <td>18</td>
+          <td><span class="screen-id">feed.job_feed</span></td>
+          <td>Job Feed</td>
+          <td><span class="cluster cluster--feed">Feed</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/feed/JobFeedScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Primary feed tab — urgent job cards with filters and search</td>
+        </tr>
+        <tr data-cluster="feed" data-roles="provider client" data-priority="p0">
+          <td>19</td>
+          <td><span class="screen-id">feed.job_detail</span></td>
+          <td>Job Detail</td>
+          <td><span class="cluster cluster--feed">Feed</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span><span class="role role--client">Client</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/feed/JobDetailScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Full job info — budget, description, media, bid count, urgency timer</td>
+        </tr>
+        <tr data-cluster="feed" data-roles="provider" data-priority="p0">
+          <td>20</td>
+          <td><span class="screen-id">feed.place_bid</span></td>
+          <td>Place Bid <span class="modal-tag">modal</span></td>
+          <td><span class="cluster cluster--feed">Feed</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/feed/PlaceBidScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Bid submission modal — amount, ETA, comments. Consumes 1 credit</td>
+        </tr>
+        <tr data-cluster="feed" data-roles="client" data-priority="p1">
+          <td>21</td>
+          <td><span class="screen-id">feed.provider_search</span></td>
+          <td>Provider Search</td>
+          <td><span class="cluster cluster--feed">Feed</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/feed/ProviderSearchScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Search and filter available providers with sort options</td>
+        </tr>
+        <tr data-cluster="feed" data-roles="client" data-priority="p1">
+          <td>22</td>
+          <td><span class="screen-id">feed.provider_detail</span></td>
+          <td>Provider Detail</td>
+          <td><span class="cluster cluster--feed">Feed</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/feed/ProviderDetailScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Provider profile — ratings, reviews, portfolio, certifications, intro video</td>
+        </tr>
+        <tr data-cluster="feed" data-roles="client" data-priority="p2">
+          <td>23</td>
+          <td><span class="screen-id">feed.select_job_invite</span></td>
+          <td>Select Job for Invite <span class="modal-tag">modal</span></td>
+          <td><span class="cluster cluster--feed">Feed</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/feed/SelectJobForInviteScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Modal to choose which job to invite a provider for</td>
+        </tr>
+
+        <!-- JOBS & BIDS -->
+        <tr data-cluster="jobs" data-roles="client" data-priority="p0">
+          <td>24</td>
+          <td><span class="screen-id">jobs.my_jobs</span></td>
+          <td>My Jobs</td>
+          <td><span class="cluster cluster--jobs">Jobs &amp; Bids</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/jobs/MyJobsScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Posted jobs list — tabs: all / open / closed. Floating create button</td>
+        </tr>
+        <tr data-cluster="jobs" data-roles="client" data-priority="p0">
+          <td>25</td>
+          <td><span class="screen-id">jobs.create_job</span></td>
+          <td>Create Job <span class="modal-tag">modal</span></td>
+          <td><span class="cluster cluster--jobs">Jobs &amp; Bids</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/jobs/CreateJobScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Full create-job modal — title, description, sector, urgency, media, budget</td>
+        </tr>
+        <tr data-cluster="jobs" data-roles="client" data-priority="p0">
+          <td>26</td>
+          <td><span class="screen-id">jobs.management</span></td>
+          <td>Job Management</td>
+          <td><span class="cluster cluster--jobs">Jobs &amp; Bids</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/jobs/JobManagementScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Job management — bids list, boost options, accept/reject actions</td>
+        </tr>
+        <tr data-cluster="jobs" data-roles="client" data-priority="p1">
+          <td>27</td>
+          <td><span class="screen-id">jobs.matched_providers</span></td>
+          <td>Matched Providers</td>
+          <td><span class="cluster cluster--jobs">Jobs &amp; Bids</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/jobs/MatchedProvidersScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Real-time matched providers list via socket.io</td>
+        </tr>
+        <tr data-cluster="jobs" data-roles="provider" data-priority="p0">
+          <td>28</td>
+          <td><span class="screen-id">bids.my_bids</span></td>
+          <td>My Bids</td>
+          <td><span class="cluster cluster--jobs">Jobs &amp; Bids</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/bids/MyBidsScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">All placed bids — tabs: pending / accepted / rejected</td>
+        </tr>
+
+        <!-- DEALS & CHAT -->
+        <tr data-cluster="deals" data-roles="all" data-priority="p0">
+          <td>29</td>
+          <td><span class="screen-id">deals.active_deals</span></td>
+          <td>Active Deals</td>
+          <td><span class="cluster cluster--deals">Deals &amp; Chat</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/deals/ActiveDealsScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Deals list — tabs: active / closed, deal status timeline</td>
+        </tr>
+        <tr data-cluster="deals" data-roles="all" data-priority="p0">
+          <td>30</td>
+          <td><span class="screen-id">deals.deal_detail</span></td>
+          <td>Deal Detail</td>
+          <td><span class="cluster cluster--deals">Deals &amp; Chat</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/deals/DealDetailScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Deal timeline, actions, dossier, complete / dispute buttons</td>
+        </tr>
+        <tr data-cluster="deals" data-roles="all" data-priority="p0">
+          <td>31</td>
+          <td><span class="screen-id">deals.chat</span></td>
+          <td>Chat</td>
+          <td><span class="cluster cluster--deals">Deals &amp; Chat</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/deals/ChatScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">In-deal real-time messaging (Socket.IO, deal-scoped room)</td>
+        </tr>
+        <tr data-cluster="deals" data-roles="provider" data-priority="p1">
+          <td>32</td>
+          <td><span class="screen-id">deals.completion_upload</span></td>
+          <td>Completion Upload <span class="modal-tag">modal</span></td>
+          <td><span class="cluster cluster--deals">Deals &amp; Chat</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/deals/CompletionUploadScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Work completion modal — photos, materials used, timeline steps</td>
+        </tr>
+        <tr data-cluster="deals" data-roles="all" data-priority="p1">
+          <td>33</td>
+          <td><span class="screen-id">deals.review</span></td>
+          <td>Review <span class="modal-tag">modal</span></td>
+          <td><span class="cluster cluster--deals">Deals &amp; Chat</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/reviews/ReviewScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Post-deal review modal — star rating, tags, comments</td>
+        </tr>
+
+        <!-- CALENDAR -->
+        <tr data-cluster="calendar" data-roles="all" data-priority="p1">
+          <td>34</td>
+          <td><span class="screen-id">calendar.main</span></td>
+          <td>Calendar</td>
+          <td><span class="cluster cluster--calendar">Calendar</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/calendar/CalendarScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Month/week/day view — deals + custom events. Company has workforce view</td>
+        </tr>
+
+        <!-- PROFILE -->
+        <tr data-cluster="profile" data-roles="all" data-priority="p0">
+          <td>35</td>
+          <td><span class="screen-id">profile.main</span></td>
+          <td>Profile</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/ProfileScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Profile overview — sections linking to settings, verification, portfolio</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="all" data-priority="p1">
+          <td>36</td>
+          <td><span class="screen-id">profile.settings</span></td>
+          <td>Settings</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/SettingsScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Language, notifications, calendar sync, password change, logout</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="all" data-priority="p1">
+          <td>37</td>
+          <td><span class="screen-id">profile.verification_center</span></td>
+          <td>Verification Center</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/VerificationCenterScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">KYC dashboard — selfie, KVK, IBAN. Three independent verification tracks</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="all" data-priority="p2">
+          <td>38</td>
+          <td><span class="screen-id">profile.referral</span></td>
+          <td>Referral</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/ReferralScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Shareable referral link with invite friends section</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="provider" data-priority="p1">
+          <td>39</td>
+          <td><span class="screen-id">profile.preferences</span></td>
+          <td>Preferences</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/PreferencesScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Category/sector preferences, availability radius, language</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="client" data-priority="p1">
+          <td>40</td>
+          <td><span class="screen-id">profile.private_pool</span></td>
+          <td>Private Pool</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--client">Client</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/PrivatePoolScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Manage private workforce pool — member list, roles, CSV import</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="all" data-priority="p1">
+          <td>41</td>
+          <td><span class="screen-id">profile.notifications</span></td>
+          <td>Notifications</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/NotificationsScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Notification history/center with read state</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="company" data-priority="p1">
+          <td>42</td>
+          <td><span class="screen-id">profile.company</span></td>
+          <td>Company Profile</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/CompanyProfileScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Company info edit — name, KVK, VAT number, description</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="provider" data-priority="p2">
+          <td>43</td>
+          <td><span class="screen-id">profile.intro_video</span></td>
+          <td>Intro Video</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/IntroVideoScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Record and upload 30–60 s intro video</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="provider" data-priority="p1">
+          <td>44</td>
+          <td><span class="screen-id">profile.portfolio</span></td>
+          <td>Portfolio</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/PortfolioScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Portfolio items — photos, videos, voice recordings, descriptions</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="provider" data-priority="p1">
+          <td>45</td>
+          <td><span class="screen-id">profile.certifications</span></td>
+          <td>Certifications</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/CertificationsScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Add/manage certifications — VCA, NEN, KOMO, with dates and numbers</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="company" data-priority="p2">
+          <td>46</td>
+          <td><span class="screen-id">profile.org_role</span></td>
+          <td>Org Role</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/OrgRoleScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">User's org role display — owner / manager / dispatcher / bidder, with permissions</td>
+        </tr>
+        <tr data-cluster="profile" data-roles="provider client" data-priority="p2">
+          <td>47</td>
+          <td><span class="screen-id">profile.path_expansion</span></td>
+          <td>Path Expansion</td>
+          <td><span class="cluster cluster--profile">Profile</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span><span class="role role--client">Client</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/profile/PathExpansionScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Add additional role (bidding or posting) with business type selection</td>
+        </tr>
+
+        <!-- COMPANY -->
+        <tr data-cluster="company" data-roles="company" data-priority="p0">
+          <td>48</td>
+          <td><span class="screen-id">company.overview</span></td>
+          <td>Company Overview</td>
+          <td><span class="cluster cluster--company">Company</span></td>
+          <td><div class="roles"><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/company/CompanyOverviewScreen.tsx</span></td>
+          <td><span class="priority priority--p0">P0</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Company dashboard — stats, feature gates, upgrade banner, quick actions</td>
+        </tr>
+        <tr data-cluster="company" data-roles="company" data-priority="p1">
+          <td>49</td>
+          <td><span class="screen-id">company.members</span></td>
+          <td>Members</td>
+          <td><span class="cluster cluster--company">Company</span></td>
+          <td><div class="roles"><span class="role role--company">Company</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/company/MembersScreen.tsx</span></td>
+          <td><span class="priority priority--p1">P1</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Team member list — role management: owner / manager / dispatcher / bidder / viewer</td>
+        </tr>
+
+        <!-- NOT YET WIRED -->
+        <tr data-cluster="auth" data-roles="all" data-priority="p2">
+          <td>50</td>
+          <td><span class="screen-id">auth.avatar_upload</span></td>
+          <td>Avatar Upload</td>
+          <td><span class="cluster cluster--auth">Auth</span></td>
+          <td><div class="roles"><span class="role role--all">All</span></div></td>
+          <td><span class="reg-path">—</span></td>
+          <td><span class="filepath">src/screens/auth/AvatarUploadScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Referenced in signup flow but not a named nav route yet</td>
+        </tr>
+        <tr data-cluster="auth" data-roles="provider" data-priority="p2">
+          <td>51</td>
+          <td><span class="screen-id">auth.kvk_entry</span></td>
+          <td>KVK Entry</td>
+          <td><span class="cluster cluster--auth">Auth</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">Path 1 · 2</span></td>
+          <td><span class="filepath">src/screens/auth/KvkEntryScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">Subcomponent of ProviderOnboardingScreen — not yet a named route</td>
+        </tr>
+        <tr data-cluster="auth" data-roles="provider" data-priority="p2">
+          <td>52</td>
+          <td><span class="screen-id">auth.fs_invitation</span></td>
+          <td>FS Invitation</td>
+          <td><span class="cluster cluster--auth">Auth</span></td>
+          <td><div class="roles"><span class="role role--provider">Provider</span></div></td>
+          <td><span class="reg-path">Path 1 · 2</span></td>
+          <td><span class="filepath">src/screens/auth/FsInvitationScreen.tsx</span></td>
+          <td><span class="priority priority--p2">P2</span></td>
+          <td><span class="status status--not-started">Not started</span></td>
+          <td class="notes">For Suppliers invitation screen — subcomponent, not yet a named route</td>
+        </tr>
+
+        <!-- Empty state row (hidden by default) -->
+        <tr class="empty-row" id="empty-row" style="display:none;">
+          <td colspan="10">No screens match the current filters.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Theme
+    const root = document.documentElement;
+    const toggle = document.getElementById('themeToggle');
+    const label  = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('softpro-theme');
+    const initial = stored || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(initial);
+    toggle.addEventListener('click', () => applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+    function applyTheme(t) {
+      root.dataset.theme = t;
+      label.textContent = t === 'dark' ? 'Dark' : 'Light';
+      localStorage.setItem('softpro-theme', t);
+    }
+
+    // Scroll
+    window.addEventListener('load', () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = ''; });
+    });
+
+    // Filters + search
+    const rows = Array.from(document.querySelectorAll('#inventory-body tr:not(.empty-row)'));
+    const emptyRow = document.getElementById('empty-row');
+    const visibleCount = document.getElementById('visible-count');
+
+    let activeCluster  = 'all';
+    let activeRole     = 'all';
+    let activePriority = 'all';
+    let searchQuery    = '';
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.filter;
+        document.querySelectorAll(`.filter-btn[data-filter="${group}"]`).forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (group === 'cluster')  activeCluster  = btn.dataset.value;
+        if (group === 'role')     activeRole     = btn.dataset.value;
+        if (group === 'priority') activePriority = btn.dataset.value;
+        applyFilters();
+      });
+    });
+
+    document.getElementById('searchInput').addEventListener('input', e => {
+      searchQuery = e.target.value.toLowerCase();
+      applyFilters();
+    });
+
+    function applyFilters() {
+      let visible = 0;
+      rows.forEach(row => {
+        const cluster  = row.dataset.cluster;
+        const roles    = row.dataset.roles;
+        const priority = row.dataset.priority;
+        const text     = row.textContent.toLowerCase();
+
+        const matchCluster  = activeCluster  === 'all' || cluster === activeCluster;
+        const matchRole     = activeRole     === 'all' || roles.includes(activeRole);
+        const matchPriority = activePriority === 'all' || priority === activePriority;
+        const matchSearch   = !searchQuery   || text.includes(searchQuery);
+
+        const show = matchCluster && matchRole && matchPriority && matchSearch;
+        row.dataset.hidden = show ? 'false' : 'true';
+        if (show) visible++;
+      });
+      visibleCount.textContent = visible;
+      emptyRow.style.display = visible === 0 ? '' : 'none';
+    }
+  </script>
+</body>
+</html>
