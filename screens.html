@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<!-- cspell:disable -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soft Pro — Screen Mockups</title>
+  <script>if (history.scrollRestoration) history.scrollRestoration = 'manual';</script>
+  <style>
+    /* =========================================================
+       SOFT PRO TOKENS — mirrors design-system/tokens.ts
+       ========================================================= */
+    :root[data-theme="light"], :root {
+      --brand-primary:        #1A1814;
+      --brand-primary-strong: #0A0906;
+      --brand-primary-soft:   #2D2A26;
+      --brand-accent:         #E3FF00;
+      --brand-accent-soft:    #F8FFB3;
+      --brand-flame:          #FF5F1F;
+
+      --surface-bg:           #FCFAF7;
+      --surface-primary:      #FFFFFF;
+      --surface-secondary:    #F2EEE8;
+      --surface-tertiary:     #EDE8E1;
+      --surface-inverse:      #1A1814;
+      --surface-tinted:       #F8FFB3;
+
+      --text-primary:         #1A1814;
+      --text-secondary:       #6B6359;
+      --text-muted:           #A39B8E;
+      --text-inverse:         #FFFFFF;
+      --text-link:            #1A1814;
+      --text-on-accent:       #1A1814;
+      --text-on-brand:        #FFFFFF;
+
+      --border-default:       #D8D2CA;
+      --border-subtle:        #EDE8E1;
+      --border-strong:        #1A1814;
+      --border-accent:        #E3FF00;
+
+      --success:              #16A34A;
+      --success-soft:         #3B9C4F;
+      --success-muted:        #DCFCE7;
+      --warning:              #F59E0B;
+      --warning-soft:         #FBBF24;
+      --warning-muted:        #FEF9C3;
+      --error:                #DC2626;
+      --error-soft:           #F87171;
+      --error-muted:          #FEE2E2;
+      --info:                 #0284C7;
+      --info-soft:            #60A5FA;
+      --info-muted:           #DBEAFE;
+
+      --urgency-critical:     #EF4444;
+      --urgency-high:         #3B82F6;
+      --urgency-flexible:     #16A34A;
+
+      --overlay-scrim:        rgba(26,24,20,0.52);
+      --overlay-soft:         rgba(26,24,20,0.06);
+
+      --cta-primary-bg:       #1A1814;
+      --cta-primary-bg-hover: #0A0906;
+
+      --shadow-xs:  0 1px 2px  rgba(26,24,20,0.04);
+      --shadow-sm:  0 2px 6px  rgba(26,24,20,0.06);
+      --shadow-md:  0 4px 12px rgba(26,24,20,0.08);
+      --shadow-lg:  0 8px 20px rgba(26,24,20,0.10);
+      --shadow-xl:  0 12px 28px rgba(26,24,20,0.12);
+      --shadow-2xl: 0 16px 36px rgba(26,24,20,0.16);
+
+      --space-xs:  4px;
+      --space-sm:  8px;
+      --space-md:  12px;
+      --space-lg:  16px;
+      --space-xl:  24px;
+      --space-2xl: 32px;
+      --space-3xl: 48px;
+
+      --radius-xs:   4px;
+      --radius-sm:   8px;
+      --radius-md:   12px;
+      --radius-lg:   16px;
+      --radius-xl:   20px;
+      --radius-2xl:  24px;
+      --radius-pill: 999px;
+
+      --motion-quick: 130ms;
+      --motion-std:   210ms;
+      --ease:         cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    [data-theme="dark"] {
+      --brand-primary:        #F8F4EC;
+      --brand-primary-strong: #FCFAF7;
+      --brand-primary-soft:   #F2EEE8;
+      --brand-accent:         #E3FF00;
+      --brand-accent-soft:    rgba(227,255,0,0.16);
+      --brand-flame:          #FF5F1F;
+
+      --surface-bg:           #15130F;
+      --surface-primary:      #1A1814;
+      --surface-secondary:    #211E18;
+      --surface-tertiary:     rgba(248,244,236,0.04);
+      --surface-inverse:      #FCFAF7;
+      --surface-tinted:       rgba(227,255,0,0.08);
+
+      --text-primary:         #F8F4EC;
+      --text-secondary:       #A39B8E;
+      --text-muted:           #6B6359;
+      --text-inverse:         #1A1814;
+      --text-link:            #E3FF00;
+      --text-on-accent:       #1A1814;
+      --text-on-brand:        #1A1814;
+
+      --border-default:       rgba(248,244,236,0.12);
+      --border-subtle:        rgba(248,244,236,0.06);
+      --border-strong:        #F8F4EC;
+      --border-accent:        #E3FF00;
+
+      --success:              #4ADE80;
+      --success-soft:         #3B9C4F;
+      --success-muted:        rgba(74,222,128,0.15);
+      --warning:              #FBBF24;
+      --warning-soft:         #F59E0B;
+      --warning-muted:        rgba(251,191,36,0.15);
+      --error:                #F87171;
+      --error-soft:           #EF4444;
+      --error-muted:          rgba(248,113,113,0.15);
+      --info:                 #60A5FA;
+      --info-soft:            #93C5FD;
+      --info-muted:           rgba(96,165,250,0.15);
+
+      --urgency-critical:     #F87171;
+      --urgency-high:         #60A5FA;
+      --urgency-flexible:     #4ADE80;
+
+      --overlay-scrim:        rgba(0,0,0,0.7);
+      --overlay-soft:         rgba(248,244,236,0.08);
+
+      --cta-primary-bg:       #1A1814;
+      --cta-primary-bg-hover: #0A0906;
+
+      --shadow-xs:  0 1px 2px  rgba(0,0,0,0.20);
+      --shadow-sm:  0 2px 6px  rgba(0,0,0,0.28);
+      --shadow-md:  0 4px 12px rgba(0,0,0,0.36);
+      --shadow-lg:  0 8px 20px rgba(0,0,0,0.42);
+      --shadow-xl:  0 12px 28px rgba(0,0,0,0.50);
+      --shadow-2xl: 0 16px 36px rgba(0,0,0,0.58);
+    }
+
+    /* =========================================================
+       BASE / PAGE CHROME
+       ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+      background: var(--surface-bg);
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background var(--motion-std) var(--ease), color var(--motion-std) var(--ease);
+      overflow-x: hidden;
+    }
+    code { font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;
+      background: var(--surface-secondary); padding: 2px 6px;
+      border-radius: var(--radius-xs); color: var(--text-primary); }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--surface-bg);
+      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(10px);
+      transition: background var(--motion-std) var(--ease);
+    }
+    .topbar-inner {
+      max-width: 1440px; margin: 0 auto;
+      padding: 14px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .crumb {
+      display: inline-flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text-secondary);
+      font-size: 13px; font-weight: 500;
+      transition: color var(--motion-quick) var(--ease);
+      min-height: 36px;
+    }
+    .crumb:hover { color: var(--text-primary); }
+    .crumb-back {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-default);
+    }
+    .crumb-back svg { width: 14px; height: 14px; }
+    .theme-toggle {
+      display: inline-flex; align-items: center; gap: var(--space-sm);
+      padding: 9px 14px;
+      background: var(--surface-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-pill);
+      cursor: pointer; font-size: 13px; font-weight: 600;
+      color: var(--text-primary); font-family: inherit;
+      min-height: 36px;
+      transition: all var(--motion-quick) var(--ease);
+    }
+    .theme-toggle:hover { box-shadow: var(--shadow-sm); }
+    .theme-toggle .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--brand-accent);
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      max-width: 1440px;
+      margin: 0 auto;
+      gap: var(--space-3xl);
+      padding: var(--space-xl) var(--space-xl) var(--space-3xl);
+    }
+
+    /* =========================================================
+       SIDEBAR
+       ========================================================= */
+    .sidebar {
+      position: sticky;
+      top: 76px;
+      align-self: start;
+      max-height: calc(100vh - 92px);
+      overflow-y: auto;
+      padding-right: var(--space-sm);
+    }
+    .sidebar::-webkit-scrollbar { width: 6px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: var(--radius-pill); }
+
+    .sidebar-group { margin-bottom: var(--space-lg); }
+    .sidebar-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--text-muted);
+      margin-bottom: var(--space-sm);
+      padding: 0 var(--space-md);
+      display: flex; align-items: baseline; gap: var(--space-sm);
+    }
+    .sidebar-title .count {
+      font-size: 10px; font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0;
+    }
+    .sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 1px; }
+    .sidebar-nav a {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px var(--space-md);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      min-height: 36px;
+      transition: background var(--motion-quick) var(--ease), color var(--motion-quick) var(--ease);
+    }
+    .sidebar-nav a:hover {
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+    }
+    .sidebar-nav a.active {
+      background: var(--brand-primary);
+      color: var(--text-on-brand);
+      font-weight: 600;
+    }
+    .sidebar-nav a.active .status-dot { background: var(--brand-accent); }
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border-default);
+      flex-shrink: 0;
+    }
+    .status-dot--done { background: var(--success); }
+
+    /* Mobile sidebar toggle — hidden on desktop */
+    .sidebar-toggle {
+      display: none;
+      align-items: center; justify-content: space-between;
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--surface-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: var(--space-lg);
+      min-height: 44px;
+    }
+    .sidebar-toggle svg { width: 18px; height: 18px; transition: transform var(--motion-quick) var(--ease); }
+    .sidebar-toggle[aria-expanded="true"] svg { transform: rotate(90deg); }
+
+    /* =========================================================
+       MAIN
+       ========================================================= */
+    main { min-width: 0; }
+
+    .screen-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .screen-header h1 {
+      font-size: 30px; font-weight: 700; letter-spacing: -0.4px;
+      margin-bottom: 4px;
+    }
+    .screen-header .screen-id {
+      display: inline-block;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--surface-secondary);
+      color: var(--text-secondary);
+      padding: 3px 8px;
+      border-radius: var(--radius-xs);
+      margin-bottom: var(--space-sm);
+    }
+    .screen-header .desc {
+      color: var(--text-secondary);
+      font-size: 15px;
+      max-width: 580px;
+    }
+    .screen-header .meta-pills {
+      display: flex; gap: var(--space-sm); flex-wrap: wrap;
+      margin-top: var(--space-sm);
+    }
+    .meta-pill {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-secondary);
+      color: var(--text-secondary);
+    }
+    .meta-pill--p0 { background: var(--error-muted); color: var(--error); }
+    .meta-pill--client { background: var(--info-muted); color: var(--info); }
+    .meta-pill--done { background: var(--success-muted); color: var(--success); }
+
+    /* =========================================================
+       PREVIEW LAYOUT
+       ========================================================= */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .preview-frame {
+      background: var(--surface-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-xl);
+      display: flex; flex-direction: column; align-items: center;
+      gap: var(--space-md);
+    }
+    .preview-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    /* =========================================================
+       PHONE FRAME — 360×740
+       ========================================================= */
+    .phone {
+      width: 360px;
+      height: 740px;
+      border-radius: 44px;
+      background: var(--surface-bg);
+      box-shadow: 0 20px 40px rgba(26,24,20,0.18), 0 0 0 10px #0A0906, 0 0 0 11px #2D2A26;
+      overflow: hidden;
+      position: relative;
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+      display: flex; flex-direction: column;
+      flex-shrink: 0;
+    }
+    [data-theme="dark"] .phone {
+      box-shadow: 0 20px 40px rgba(0,0,0,0.42), 0 0 0 10px #0A0906, 0 0 0 11px #3A3A3A;
+    }
+
+    .status-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex-shrink: 0;
+    }
+    .status-bar-right { display: inline-flex; align-items: center; gap: 6px; }
+    .status-bar-right svg { width: 16px; height: 14px; }
+    .battery {
+      width: 26px; height: 13px;
+      border: 1.3px solid var(--text-primary);
+      border-radius: 4px;
+      position: relative;
+      padding: 1.5px;
+    }
+    .battery::after {
+      content: ''; position: absolute;
+      top: 50%; right: -3px; transform: translateY(-50%);
+      width: 2px; height: 5px;
+      background: var(--text-primary);
+      border-radius: 0 1px 1px 0;
+    }
+    .battery .fill {
+      display: block; height: 100%; width: 26%;
+      background: var(--text-primary);
+      border-radius: 1px;
+    }
+
+    .mob-header {
+      padding: 12px 20px 4px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .mob-header h2 {
+      font-size: 22px; font-weight: 700; letter-spacing: -0.3px;
+      color: var(--text-primary);
+    }
+    .mob-header-actions { display: inline-flex; align-items: center; gap: var(--space-sm); }
+    .mob-icon-btn {
+      width: 36px; height: 36px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-pill);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      color: var(--text-primary);
+      position: relative;
+    }
+    .mob-icon-btn svg { width: 18px; height: 18px; }
+    .mob-icon-btn .badge-dot {
+      position: absolute;
+      top: 5px; right: 5px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--brand-accent);
+      border: 2px solid var(--surface-primary);
+    }
+
+    .mob-filters {
+      padding: 12px 20px 4px;
+      display: flex; gap: var(--space-sm);
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex-shrink: 0;
+    }
+    .mob-filters::-webkit-scrollbar { display: none; }
+    .mob-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--surface-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all var(--motion-quick) var(--ease);
+    }
+    .mob-chip:hover { border-color: var(--border-default); }
+    .mob-chip--active {
+      background: var(--brand-primary);
+      color: var(--text-on-brand);
+      border-color: var(--brand-primary);
+    }
+    .mob-chip--alert {
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+      border-color: var(--brand-accent);
+      font-weight: 600;
+    }
+    .mob-chip .chip-count {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      background: rgba(255,255,255,0.18);
+    }
+    .mob-chip:not(.mob-chip--active):not(.mob-chip--alert) .chip-count {
+      background: var(--surface-secondary);
+      color: var(--text-secondary);
+    }
+    .mob-chip--alert .chip-count {
+      background: rgba(26,24,20,0.16);
+      color: var(--text-on-accent);
+    }
+
+    .mob-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 20px 100px;
+      scrollbar-width: none;
+    }
+    .mob-scroll::-webkit-scrollbar { display: none; }
+
+    /* =========================================================
+       MyJobCard
+       ========================================================= */
+    .myjob-card {
+      background: var(--surface-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      margin-bottom: var(--space-md);
+      box-shadow: var(--shadow-xs);
+      transition: all var(--motion-quick) var(--ease);
+    }
+    .myjob-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--border-default);
+    }
+    .myjob-card--awaiting {
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 3px var(--brand-accent-soft), var(--shadow-xs);
+    }
+    .myjob-card--draft {
+      background: var(--surface-secondary);
+      border-style: dashed;
+      border-color: var(--border-default);
+      box-shadow: none;
+    }
+
+    .myjob-top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--space-sm);
+      margin-bottom: 10px;
+    }
+    .myjob-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.1px;
+      color: var(--text-primary);
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+    .myjob-meta {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .myjob-meta .dot-sep {
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .myjob-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: var(--surface-secondary);
+      border-radius: var(--radius-md);
+      padding: 10px 4px;
+    }
+    .myjob-stat {
+      padding: 0 10px;
+      border-right: 1px solid var(--border-subtle);
+      min-width: 0;
+    }
+    .myjob-stat:last-child { border-right: none; }
+    .myjob-stat-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    .myjob-stat-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex; align-items: baseline; gap: 4px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .myjob-stat-value .unit {
+      font-size: 11px; font-weight: 500;
+      color: var(--text-secondary);
+    }
+    .myjob-stat-value .new-flag {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+      padding: 2px 6px;
+      border-radius: var(--radius-pill);
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+      margin-left: 2px;
+    }
+    .myjob-stat-value .new-flag::before {
+      content: ''; width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--text-on-accent);
+    }
+    .myjob-stat--urgent .myjob-stat-value { color: var(--error); }
+    .myjob-stat--flexible .myjob-stat-value { color: var(--success); }
+    .myjob-stat--warning .myjob-stat-value { color: var(--warning); }
+
+    .myjob-cta {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--space-sm);
+      background: var(--brand-primary);
+      color: var(--text-on-brand);
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      font-size: 14px; font-weight: 600;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      font-family: inherit;
+      transition: all var(--motion-quick) var(--ease);
+    }
+    .myjob-cta:hover { background: var(--brand-primary-strong); }
+    .myjob-cta .cta-meta {
+      display: inline-flex; align-items: center; gap: var(--space-sm);
+      font-size: 12px; font-weight: 500;
+      opacity: 0.7;
+    }
+    .myjob-cta svg { width: 16px; height: 16px; }
+    .myjob-cta--ghost { background: var(--surface-secondary); color: var(--text-primary); }
+    .myjob-cta--ghost:hover { background: var(--surface-tertiary); }
+    .myjob-cta--accent { background: var(--brand-accent); color: var(--text-on-accent); }
+    .myjob-cta--accent:hover { box-shadow: var(--shadow-sm); }
+    .myjob-cta--accent .cta-meta { color: rgba(26,24,20,0.7); opacity: 1; }
+
+    /* SectorPill */
+    .sector-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px 3px 7px;
+      border-radius: var(--radius-pill);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1px;
+      line-height: 1;
+      white-space: nowrap;
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+    }
+    .sector-pill svg { width: 11px; height: 11px; flex-shrink: 0; color: var(--text-primary); }
+    .sector-pill--accent { background: var(--brand-accent); color: var(--text-on-accent); }
+    .sector-pill--accent svg { color: var(--text-on-accent); stroke-width: 2.5; }
+
+    /* Status pill */
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px;
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.4px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+    }
+    .pill .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .pill--success { background: var(--success-muted); color: var(--success); }
+    .pill--warning { background: var(--warning-muted); color: var(--warning); }
+    .pill--error   { background: var(--error-muted);   color: var(--error); }
+    .pill--info    { background: var(--info-muted);    color: var(--info); }
+    .pill--ink     { background: var(--brand-primary); color: var(--text-on-brand); }
+    .pill--accent  { background: var(--brand-accent);  color: var(--text-on-accent); }
+    .pill--muted   { background: var(--surface-tertiary); color: var(--text-muted); }
+
+    .fab {
+      position: absolute;
+      right: 20px;
+      bottom: 88px;
+      width: 56px; height: 56px;
+      border-radius: var(--radius-pill);
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+      border: none;
+      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 20px rgba(227,255,0,0.45), 0 2px 8px rgba(26,24,20,0.18);
+      z-index: 5;
+      transition: transform var(--motion-quick) var(--ease);
+    }
+    .fab:hover { transform: translateY(-2px); }
+    .fab svg { width: 22px; height: 22px; stroke-width: 3; }
+
+    .tab-bar {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 18px));
+      background: var(--surface-primary);
+      border-top: 1px solid var(--border-subtle);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+    }
+    .tab-bar::after {
+      content: '';
+      position: absolute;
+      bottom: 6px; left: 50%;
+      transform: translateX(-50%);
+      width: 124px; height: 4px;
+      border-radius: 999px;
+      background: var(--text-primary);
+      opacity: 0.32;
+    }
+    .tab-btn {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 3px;
+      padding: 6px 4px;
+      border-radius: var(--radius-md);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-family: inherit;
+      transition: color var(--motion-quick) var(--ease);
+    }
+    .tab-btn svg { width: 22px; height: 22px; }
+    .tab-btn span { font-size: 10.5px; font-weight: 500; letter-spacing: 0.3px; }
+    .tab-btn--active { color: var(--text-primary); }
+    .tab-btn--active .tab-icon {
+      width: 44px; height: 28px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-pill);
+      background: var(--brand-accent);
+      color: var(--text-on-accent);
+    }
+    .tab-btn--active .tab-icon svg { width: 18px; height: 18px; }
+    .tab-btn--active span { font-weight: 600; }
+
+    .placeholder {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: var(--space-md);
+      padding: var(--space-3xl);
+      background: var(--surface-secondary);
+      border: 2px dashed var(--border-default);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      min-height: 320px;
+    }
+    .placeholder h3 { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+    .placeholder p { font-size: 14px; color: var(--text-secondary); max-width: 380px; }
+    .placeholder svg { width: 36px; height: 36px; color: var(--text-muted); }
+
+    .notes {
+      margin-top: var(--space-2xl);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+    }
+    .notes h3 {
+      font-size: 18px; font-weight: 700;
+      letter-spacing: -0.2px;
+      margin-bottom: var(--space-md);
+    }
+    .notes h4 {
+      font-size: 13px; font-weight: 700; letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: var(--space-lg) 0 var(--space-sm);
+    }
+    .notes ul { list-style: none; display: flex; flex-direction: column; gap: var(--space-sm); }
+    .notes li {
+      display: flex; align-items: flex-start; gap: var(--space-sm);
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    .notes li::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--brand-accent);
+      margin-top: 9px;
+      flex-shrink: 0;
+    }
+    .notes strong { color: var(--text-primary); font-weight: 600; }
+    .notes .diff-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: var(--space-lg);
+      margin-top: var(--space-md);
+    }
+    .diff-col h4 { margin-top: 0; }
+    .diff-col--before h4 { color: var(--error); }
+    .diff-col--after h4 { color: var(--success); }
+
+    /* =========================================================
+       RESPONSIVE — laptops, tablets, phones
+       ========================================================= */
+
+    /* Laptop / small desktop — one preview frame per row */
+    @media (max-width: 1200px) {
+      .preview-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Tablet — collapse sidebar above content, expose toggle */
+    @media (max-width: 900px) {
+      .page {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+        padding: var(--space-lg);
+      }
+      .sidebar-toggle { display: inline-flex; }
+      .sidebar {
+        position: static;
+        max-height: 0;
+        overflow: hidden;
+        padding-right: 0;
+        margin-bottom: 0;
+        transition: max-height var(--motion-std) var(--ease);
+      }
+      .sidebar.open {
+        max-height: 70vh;
+        overflow-y: auto;
+        margin-bottom: var(--space-lg);
+      }
+      /* Smaller header pills on tablet */
+      .screen-header h1 { font-size: 26px; }
+      .topbar-inner { padding: 12px 20px; }
+      .notes .diff-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Phone — shrink phone frame and tighten chrome */
+    @media (max-width: 640px) {
+      .topbar-inner { padding: 10px 16px; }
+      .crumb { font-size: 12px; gap: 8px; }
+      .crumb span:not(.crumb-back) { display: none; }
+      .crumb::after { content: 'Back'; }
+      .theme-toggle { padding: 7px 12px; font-size: 12px; }
+
+      .page { padding: var(--space-md); gap: var(--space-md); }
+      .screen-header { gap: var(--space-md); padding-bottom: var(--space-md); margin-bottom: var(--space-md); }
+      .screen-header h1 { font-size: 22px; }
+      .screen-header .desc { font-size: 14px; }
+
+      .preview-frame {
+        padding: var(--space-md);
+        border-radius: var(--radius-lg);
+      }
+      .preview-grid { gap: var(--space-md); }
+
+      .notes { padding: var(--space-lg); }
+      .notes h3 { font-size: 16px; }
+    }
+
+    /* Very small phones — scale the phone frame down so the 360px
+       device + 11px bezel + frame padding fits a 360px viewport. */
+    @media (max-width: 420px) {
+      .phone {
+        transform: scale(0.86);
+        transform-origin: top center;
+        margin-bottom: calc(740px * -0.14); /* compensate scaled height */
+      }
+    }
+    @media (max-width: 380px) {
+      .phone {
+        transform: scale(0.78);
+        margin-bottom: calc(740px * -0.22);
+      }
+      .preview-frame { padding: var(--space-sm); }
+    }
+  </style>
+</head>
+<body data-theme="light">
+
+  <nav class="topbar">
+    <div class="topbar-inner">
+      <a class="crumb" href="./index.html">
+        <span class="crumb-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </span>
+        <span>Back to design system</span>
+      </a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span class="dot"></span>
+        <span id="themeLabel">Light</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- Mobile-only sidebar toggle -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-expanded="false" aria-controls="sidebar">
+      <span>Browse all 52 screens</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-title">Auth &amp; Onboarding <span class="count">12</span></div>
+        <ul class="sidebar-nav">
+          <li><a href="#auth.welcome"><span>Welcome</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.login"><span>Login</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.signup"><span>Signup</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.otp"><span>Phone OTP</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.onboarding.client"><span>Client onboarding</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.onboarding.provider"><span>Provider onboarding</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.avatar_upload"><span>Avatar upload</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.kvk_entry"><span>KVK entry</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.registration.hub"><span>Registration hub</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.registration.fs_check"><span>FS check</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.registration.date_picker"><span>Date picker</span><span class="status-dot"></span></a></li>
+          <li><a href="#auth.fs_invitation"><span>FS invitation</span><span class="status-dot"></span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title">Feed &amp; Discovery <span class="count">5</span></div>
+        <ul class="sidebar-nav">
+          <li><a href="#feed.job_feed"><span>Job feed</span><span class="status-dot"></span></a></li>
+          <li><a href="#feed.job_detail"><span>Job detail</span><span class="status-dot"></span></a></li>
+          <li><a href="#feed.place_bid"><span>Place bid</span><span class="status-dot"></span></a></li>
+          <li><a href="#feed.provider_search"><span>Provider search</span><span class="status-dot"></span></a></li>
+          <li><a href="#feed.provider_detail"><span>Provider detail</span><span class="status-dot"></span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title">Jobs &amp; Bids <span class="count">5</span></div>
+        <ul class="sidebar-nav">
+          <li><a href="#jobs.my_jobs" class="active"><span>My Jobs</span><span class="status-dot status-dot--done"></span></a></li>
+          <li><a href="#jobs.create_job"><span>Create job</span><span class="status-dot"></span></a></li>
+          <li><a href="#jobs.management"><span>Job management</span><span class="status-dot"></span></a></li>
+          <li><a href="#jobs.matched_providers"><span>Matched providers</span><span class="status-dot"></span></a></li>
+          <li><a href="#bids.my_bids"><span>My bids</span><span class="status-dot"></span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title">Deals &amp; Chat <span class="count">5</span></div>
+        <ul class="sidebar-nav">
+          <li><a href="#deals.active_deals"><span>Active deals</span><span class="status-dot"></span></a></li>
+          <li><a href="#deals.deal_detail"><span>Deal detail</span><span class="status-dot"></span></a></li>
+          <li><a href="#deals.chat"><span>Chat</span><span class="status-dot"></span></a></li>
+          <li><a href="#deals.completion_upload"><span>Completion upload</span><span class="status-dot"></span></a></li>
+          <li><a href="#deals.review"><span>Review</span><span class="status-dot"></span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title">Calendar <span class="count">1</span></div>
+        <ul class="sidebar-nav">
+          <li><a href="#calendar.main"><span>Calendar</span><span class="status-dot"></span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title">Profile <span class="count">12</span></div>
+        <ul class="sidebar-nav">
+          <li><a href="#profile.main"><span>Profile</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.settings"><span>Settings</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.verification_center"><span>Verification center</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.referral"><span>Referral</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.preferences"><span>Preferences</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.private_pool"><span>Private pool</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.notifications"><span>Notifications</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.company"><span>Company profile</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.intro_video"><span>Intro video</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.portfolio"><span>Portfolio</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.certifications"><span>Certifications</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.org_role"><span>Org role</span><span class="status-dot"></span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title">Company &amp; Misc <span class="count">3</span></div>
+        <ul class="sidebar-nav">
+          <li><a href="#company.overview"><span>Company overview</span><span class="status-dot"></span></a></li>
+          <li><a href="#company.members"><span>Members</span><span class="status-dot"></span></a></li>
+          <li><a href="#profile.path_expansion"><span>Path expansion</span><span class="status-dot"></span></a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <main>
+      <section id="jobs.my_jobs">
+        <div class="screen-header">
+          <div>
+            <span class="screen-id">jobs.my_jobs</span>
+            <h1>My Jobs</h1>
+            <p class="desc">
+              The client's view of their own posted jobs — every job they've published, organized
+              by status. Each card surfaces what the client needs to act on: new bids, deadline,
+              top bid amount. The previous design treated every job as a media-first card with a
+              large empty thumbnail; this redesign drops the dead media block and uses an info-dense
+              3-stat panel instead.
+            </p>
+            <div class="meta-pills">
+              <span class="meta-pill meta-pill--p0">P0</span>
+              <span class="meta-pill meta-pill--client">Client + Company</span>
+              <span class="meta-pill">src/screens/jobs/MyJobsScreen.tsx</span>
+              <span class="meta-pill meta-pill--done">Redesigned</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-grid">
+          <!-- LIGHT FRAME -->
+          <div class="preview-frame" data-theme="light">
+            <div class="preview-label">Light · Soft Pro paper</div>
+            <div class="phone">
+              <div class="status-bar">
+                <span>9:41</span>
+                <span class="status-bar-right">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 22h3v-7H2v7zm5 0h3V12H7v10zm5 0h3V8h-3v14zm5 0h3V2h-3v20z"/></svg>
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21l3.6-4.5c-1-.8-2.3-1.3-3.6-1.3s-2.6.5-3.6 1.3L12 21zm0-12C8.8 9 5.9 10.1 3.6 12L2.2 10.6C5 8 8.3 6.5 12 6.5s7 1.5 9.8 4.1l-1.4 1.4C18.1 10.1 15.2 9 12 9zm0-6C7 3 2.4 4.9-1 8.1L.4 9.5C3.5 6.7 7.5 5 12 5s8.5 1.7 11.6 4.5L25 8.1C21.6 4.9 17 3 12 3z"/></svg>
+                  <span class="battery"><span class="fill"></span></span>
+                </span>
+              </div>
+
+              <div class="mob-header">
+                <h2>My jobs</h2>
+                <div class="mob-header-actions">
+                  <button class="mob-icon-btn" aria-label="Notifications">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    <span class="badge-dot"></span>
+                  </button>
+                  <button class="mob-icon-btn" aria-label="Filters">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mob-filters">
+                <button class="mob-chip mob-chip--active">All <span class="chip-count">5</span></button>
+                <button class="mob-chip mob-chip--alert">Awaiting you <span class="chip-count">1</span></button>
+                <button class="mob-chip">Open <span class="chip-count">3</span></button>
+                <button class="mob-chip">Drafts <span class="chip-count">1</span></button>
+                <button class="mob-chip">Closed</button>
+              </div>
+
+              <div class="mob-scroll">
+                <article class="myjob-card myjob-card--awaiting">
+                  <div class="myjob-top">
+                    <span class="sector-pill sector-pill--accent">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546"/></svg>
+                      Loodgieter
+                    </span>
+                    <span class="pill pill--accent"><span class="dot"></span>AWAITING YOU</span>
+                  </div>
+                  <div class="myjob-title">Boiler defect — geen warm water</div>
+                  <div class="myjob-meta">
+                    <span>Utrecht Oost</span>
+                    <span class="dot-sep"></span>
+                    <span>3511AB</span>
+                    <span class="dot-sep"></span>
+                    <span>posted 2d</span>
+                  </div>
+                  <button class="myjob-cta myjob-cta--accent">
+                    <span>Review 5 bids · top €75/hr</span>
+                    <span class="cta-meta">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </span>
+                  </button>
+                </article>
+
+                <article class="myjob-card">
+                  <div class="myjob-top">
+                    <span class="sector-pill">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4v8M14 4v4M18 12a2 2 0 1 1-4 0M20 16H8a3 3 0 0 0-3 3v1h18v-1a3 3 0 0 0-3-3M9 16v-3a4 4 0 0 1 4-4"/></svg>
+                      Schilder
+                    </span>
+                    <span class="pill pill--success"><span class="dot"></span>OPEN</span>
+                  </div>
+                  <div class="myjob-title">Paint living room and hallway</div>
+                  <div class="myjob-meta">
+                    <span>Rotterdam Centrum</span>
+                    <span class="dot-sep"></span>
+                    <span>3011EA</span>
+                    <span class="dot-sep"></span>
+                    <span>posted 4d</span>
+                  </div>
+                  <div class="myjob-stats">
+                    <div class="myjob-stat">
+                      <div class="myjob-stat-label">Bids</div>
+                      <div class="myjob-stat-value">
+                        <span>3</span>
+                        <span class="new-flag">2 new</span>
+                      </div>
+                    </div>
+                    <div class="myjob-stat myjob-stat--flexible">
+                      <div class="myjob-stat-label">Deadline</div>
+                      <div class="myjob-stat-value">Flexible</div>
+                    </div>
+                    <div class="myjob-stat">
+                      <div class="myjob-stat-label">Richtprijs</div>
+                      <div class="myjob-stat-value">€300<span class="unit">–500</span></div>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="myjob-card">
+                  <div class="myjob-top">
+                    <span class="sector-pill">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                      Elektricien
+                    </span>
+                    <span class="pill pill--success"><span class="dot"></span>OPEN</span>
+                  </div>
+                  <div class="myjob-title">Spoed: stoppenkast vervangen</div>
+                  <div class="myjob-meta">
+                    <span>Amsterdam Zuid</span>
+                    <span class="dot-sep"></span>
+                    <span>1071DK</span>
+                    <span class="dot-sep"></span>
+                    <span>posted 6h</span>
+                  </div>
+                  <div class="myjob-stats">
+                    <div class="myjob-stat">
+                      <div class="myjob-stat-label">Bids</div>
+                      <div class="myjob-stat-value">8</div>
+                    </div>
+                    <div class="myjob-stat myjob-stat--urgent">
+                      <div class="myjob-stat-label">Deadline</div>
+                      <div class="myjob-stat-value">42m left</div>
+                    </div>
+                    <div class="myjob-stat">
+                      <div class="myjob-stat-label">Richtprijs</div>
+                      <div class="myjob-stat-value">€180<span class="unit">fixed</span></div>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="myjob-card myjob-card--draft">
+                  <div class="myjob-top">
+                    <span class="sector-pill">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-4a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v4"/><path d="M5 11l1.5-5L8 11"/><path d="M16 11l1.5-5L19 11"/></svg>
+                      Timmerman
+                    </span>
+                    <span class="pill pill--muted"><span class="dot"></span>DRAFT</span>
+                  </div>
+                  <div class="myjob-title">Install new kitchen worktop</div>
+                  <div class="myjob-meta">
+                    <span>Den Haag</span>
+                    <span class="dot-sep"></span>
+                    <span>2511BV</span>
+                    <span class="dot-sep"></span>
+                    <span>saved 1d</span>
+                  </div>
+                  <button class="myjob-cta myjob-cta--ghost">
+                    <span>Finish posting</span>
+                    <span class="cta-meta">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </span>
+                  </button>
+                </article>
+              </div>
+
+              <button class="fab" aria-label="Post new job">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+
+              <nav class="tab-bar">
+                <button class="tab-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <span>Search</span>
+                </button>
+                <button class="tab-btn tab-btn--active">
+                  <span class="tab-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+                  </span>
+                  <span>Jobs</span>
+                </button>
+                <button class="tab-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/></svg>
+                  <span>Deals</span>
+                </button>
+                <button class="tab-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <span>Agenda</span>
+                </button>
+                <button class="tab-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Profile</span>
+                </button>
+              </nav>
+            </div>
+          </div>
+
+          <!-- DARK FRAME -->
+          <div class="preview-frame" data-theme="dark">
+            <div class="preview-label">Dark · midnight ink</div>
+            <div class="phone">
+              <div class="status-bar">
+                <span>9:41</span>
+                <span class="status-bar-right">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 22h3v-7H2v7zm5 0h3V12H7v10zm5 0h3V8h-3v14zm5 0h3V2h-3v20z"/></svg>
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21l3.6-4.5c-1-.8-2.3-1.3-3.6-1.3s-2.6.5-3.6 1.3L12 21zm0-12C8.8 9 5.9 10.1 3.6 12L2.2 10.6C5 8 8.3 6.5 12 6.5s7 1.5 9.8 4.1l-1.4 1.4C18.1 10.1 15.2 9 12 9zm0-6C7 3 2.4 4.9-1 8.1L.4 9.5C3.5 6.7 7.5 5 12 5s8.5 1.7 11.6 4.5L25 8.1C21.6 4.9 17 3 12 3z"/></svg>
+                  <span class="battery"><span class="fill"></span></span>
+                </span>
+              </div>
+
+              <div class="mob-header">
+                <h2>My jobs</h2>
+                <div class="mob-header-actions">
+                  <button class="mob-icon-btn" aria-label="Notifications">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    <span class="badge-dot"></span>
+                  </button>
+                  <button class="mob-icon-btn" aria-label="Filters">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mob-filters">
+                <button class="mob-chip mob-chip--active">All <span class="chip-count">5</span></button>
+                <button class="mob-chip mob-chip--alert">Awaiting you <span class="chip-count">1</span></button>
+                <button class="mob-chip">Open <span class="chip-count">3</span></button>
+                <button class="mob-chip">Drafts <span class="chip-count">1</span></button>
+                <button class="mob-chip">Closed</button>
+              </div>
+
+              <div class="mob-scroll">
+                <article class="myjob-card myjob-card--awaiting">
+                  <div class="myjob-top">
+                    <span class="sector-pill sector-pill--accent">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546"/></svg>
+                      Loodgieter
+                    </span>
+                    <span class="pill pill--accent"><span class="dot"></span>AWAITING YOU</span>
+                  </div>
+                  <div class="myjob-title">Boiler defect — geen warm water</div>
+                  <div class="myjob-meta">
+                    <span>Utrecht Oost</span>
+                    <span class="dot-sep"></span>
+                    <span>3511AB</span>
+                    <span class="dot-sep"></span>
+                    <span>posted 2d</span>
+                  </div>
+                  <button class="myjob-cta myjob-cta--accent">
+                    <span>Review 5 bids · top €75/hr</span>
+                    <span class="cta-meta">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </span>
+                  </button>
+                </article>
+
+                <article class="myjob-card">
+                  <div class="myjob-top">
+                    <span class="sector-pill">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4v8M14 4v4M18 12a2 2 0 1 1-4 0M20 16H8a3 3 0 0 0-3 3v1h18v-1a3 3 0 0 0-3-3M9 16v-3a4 4 0 0 1 4-4"/></svg>
+                      Schilder
+                    </span>
+                    <span class="pill pill--success"><span class="dot"></span>OPEN</span>
+                  </div>
+                  <div class="myjob-title">Paint living room and hallway</div>
+                  <div class="myjob-meta">
+                    <span>Rotterdam Centrum</span>
+                    <span class="dot-sep"></span>
+                    <span>3011EA</span>
+                    <span class="dot-sep"></span>
+                    <span>posted 4d</span>
+                  </div>
+                  <div class="myjob-stats">
+                    <div class="myjob-stat">
+                      <div class="myjob-stat-label">Bids</div>
+                      <div class="myjob-stat-value">
+                        <span>3</span>
+                        <span class="new-flag">2 new</span>
+                      </div>
+                    </div>
+                    <div class="myjob-stat myjob-stat--flexible">
+                      <div class="myjob-stat-label">Deadline</div>
+                      <div class="myjob-stat-value">Flexible</div>
+                    </div>
+                    <div class="myjob-stat">
+                      <div class="myjob-stat-label">Richtprijs</div>
+                      <div class="myjob-stat-value">€300<span class="unit">–500</span></div>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="myjob-card">
+                  <div class="myjob-top">
+                    <span class="sector-pill">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg>
+                      Elektricien
+                    </span>
+                    <span class="pill pill--success"><span class="dot"></span>OPEN</span>
+                  </div>
+                  <div class="myjob-title">Spoed: stoppenkast vervangen</div>
+                  <div class="myjob-meta">
+                    <span>Amsterdam Zuid</span>
+                    <span class="dot-sep"></span>
+                    <span>1071DK</span>
+                    <span class="dot-sep"></span>
+                    <span>posted 6h</span>
+                  </div>
+                  <div class="myjob-stats">
+                    <div class="myjob-stat">
+                      <div class="myjob-stat-label">Bids</div>
+                      <div class="myjob-stat-value">8</div>
+                    </div>
+                    <div class="myjob-stat myjob-stat--urgent">
+                      <div class="myjob-stat-label">Deadline</div>
+                      <div class="myjob-stat-value">42m left</div>
+                    </div>
+                    <div class="myjob-stat">
+                      <div class="myjob-stat-label">Richtprijs</div>
+                      <div class="myjob-stat-value">€180<span class="unit">fixed</span></div>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="myjob-card myjob-card--draft">
+                  <div class="myjob-top">
+                    <span class="sector-pill">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-4a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v4"/><path d="M5 11l1.5-5L8 11"/><path d="M16 11l1.5-5L19 11"/></svg>
+                      Timmerman
+                    </span>
+                    <span class="pill pill--muted"><span class="dot"></span>DRAFT</span>
+                  </div>
+                  <div class="myjob-title">Install new kitchen worktop</div>
+                  <div class="myjob-meta">
+                    <span>Den Haag</span>
+                    <span class="dot-sep"></span>
+                    <span>2511BV</span>
+                    <span class="dot-sep"></span>
+                    <span>saved 1d</span>
+                  </div>
+                  <button class="myjob-cta myjob-cta--ghost">
+                    <span>Finish posting</span>
+                    <span class="cta-meta">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </span>
+                  </button>
+                </article>
+              </div>
+
+              <button class="fab" aria-label="Post new job">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+
+              <nav class="tab-bar">
+                <button class="tab-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <span>Search</span>
+                </button>
+                <button class="tab-btn tab-btn--active">
+                  <span class="tab-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+                  </span>
+                  <span>Jobs</span>
+                </button>
+                <button class="tab-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/></svg>
+                  <span>Deals</span>
+                </button>
+                <button class="tab-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <span>Agenda</span>
+                </button>
+                <button class="tab-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Profile</span>
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <div class="notes">
+          <h3>Redesign rationale</h3>
+
+          <div class="diff-grid">
+            <div class="diff-col diff-col--before">
+              <h4>Before</h4>
+              <ul>
+                <li>Every card had a huge empty media block (~50% of card height wasted on warm-grey nothing).</li>
+                <li>Carousel dots floated on empty placeholders — implying media that wasn't there.</li>
+                <li>Generic <code>Klus</code> pill on the media — same on every card, communicated nothing.</li>
+                <li>Footer triplet (<code>Richtprijs · Deadline · Bids</code>) used label-above-value, no visual weight on the action-critical fields.</li>
+                <li>No surfacing of <strong>new</strong> bids — the client had to open each job to see if anything had happened.</li>
+                <li>No state for jobs awaiting the client's decision — the most important state is invisible.</li>
+                <li>FAB overlapped the second card, blocking content.</li>
+              </ul>
+            </div>
+            <div class="diff-col diff-col--after">
+              <h4>After</h4>
+              <ul>
+                <li>No media slot. Jobs in the client's <strong>My Jobs</strong> view don't need to advertise themselves; they need to surface activity.</li>
+                <li><strong>SectorPill</strong> takes the top-left slot, communicating the trade at a glance using the same component the provider feed uses.</li>
+                <li><strong>StatusPill</strong> at the top-right is the visual anchor: <code>AWAITING YOU</code> (accent) · <code>OPEN</code> (success) · <code>DRAFT</code> (muted).</li>
+                <li>Three-stat panel (<code>Bids · Deadline · Richtprijs</code>) puts the action-critical fields on equal footing with tabular-number values for fast scanning.</li>
+                <li><code>2 new</code> chartreuse flag on the Bids cell — the single most valuable signal for a client returning to the app.</li>
+                <li>Awaiting-decision state replaces the stat panel with a full-width <strong>Review N bids · top €X</strong> CTA — one tap from notification to action.</li>
+                <li>Draft cards are dashed-border + muted, with a "Finish posting" CTA. Visually distinct from live jobs.</li>
+                <li>FAB sits 88px above the bottom edge so it stops overlapping cards.</li>
+                <li>New filter chip: <code>Awaiting you 1</code> styled with chartreuse — pulls the eye to the queue that needs attention.</li>
+              </ul>
+            </div>
+          </div>
+
+          <h4>Tokens used</h4>
+          <ul>
+            <li><strong>Surface:</strong> <code>surface.primary</code> (card bg), <code>surface.secondary</code> (3-stat panel, draft card), <code>surface.bg</code> (screen)</li>
+            <li><strong>Text:</strong> <code>text.primary</code> (title, values), <code>text.secondary</code> (meta line), <code>text.muted</code> (stat labels, sep dots)</li>
+            <li><strong>Brand:</strong> <code>brand.accent</code> + <code>brand.accent-soft</code> (Awaiting state, new-bid flag, FAB), <code>brand.primary</code> (active filter chip, Review-bids CTA)</li>
+            <li><strong>Feedback:</strong> <code>success</code> (OPEN status, flexible deadline), <code>error</code> (urgent deadline — Card 3)</li>
+            <li><strong>Radius:</strong> <code>cornerRadius.card</code> (16) on cards, <code>cornerRadius.chip</code> (pill) on chips/pills, <code>radius.md</code> (12) on stat panel + CTAs</li>
+            <li><strong>Spacing:</strong> 4 px grid throughout — <code>inset.card</code> (16) per card, <code>gap.snug</code> (8) between chips, <code>space.md</code> (12) between cards</li>
+            <li><strong>Shadow:</strong> <code>elevation.resting</code> (<code>shadow.xs</code> at rest, <code>shadow.sm</code> on hover)</li>
+          </ul>
+
+          <h4>New component to add to the library</h4>
+          <ul>
+            <li><strong>MyJobCard</strong> — sibling to JobCard in the signature components section. Same data shape minus media/voice/urgency-timer, plus <code>status</code> and <code>newBidCount</code> fields. The provider feed uses JobCard; the client management view uses MyJobCard.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="feed.job_feed" style="margin-top: var(--space-3xl);">
+        <div class="screen-header">
+          <div>
+            <span class="screen-id">feed.job_feed</span>
+            <h1>Job Feed</h1>
+            <p class="desc">
+              Provider's browse view. Hero of the discovery flow — uses the existing JobCard
+              signature component (media-first, urgency timer, sector pill, bid count).
+            </p>
+            <div class="meta-pills">
+              <span class="meta-pill meta-pill--p0">P0</span>
+              <span class="meta-pill">Provider</span>
+              <span class="meta-pill">src/screens/feed/JobFeedScreen.tsx</span>
+            </div>
+          </div>
+        </div>
+        <div class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          <h3>Not yet designed</h3>
+          <p>This screen is in the inventory but hasn't been mocked up yet. The pattern from <strong>jobs.my_jobs</strong> above should be applied as each screen is tackled.</p>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    // Theme toggle
+    const root = document.documentElement;
+    const toggle = document.getElementById('themeToggle');
+    const label  = document.getElementById('themeLabel');
+
+    const stored = localStorage.getItem('softpro-theme');
+    const initial = stored || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    apply(initial);
+
+    toggle.addEventListener('click', () => {
+      apply(root.dataset.theme === 'dark' ? 'light' : 'dark');
+    });
+
+    function apply(theme) {
+      root.dataset.theme = theme;
+      label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+      localStorage.setItem('softpro-theme', theme);
+    }
+
+    // Sidebar drawer toggle (mobile only)
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    sidebarToggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('open');
+      sidebarToggle.setAttribute('aria-expanded', String(open));
+    });
+    // Close on link tap
+    sidebar.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        if (window.matchMedia('(max-width: 900px)').matches) {
+          sidebar.classList.remove('open');
+          sidebarToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+
+    window.addEventListener('load', () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => {
+        document.documentElement.style.scrollBehavior = '';
+      });
+    });
+  </script>
+
+</body>
+</html>

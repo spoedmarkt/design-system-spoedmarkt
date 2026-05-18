@@ -523,6 +523,64 @@
       margin-left: 4px;
       vertical-align: middle;
     }
+
+    /* =========================================================
+       RESPONSIVE — tablets & phones
+       ========================================================= */
+    @media (max-width: 900px) {
+      .topbar-inner,
+      .page-header,
+      .stats,
+      .search-wrap,
+      .filters,
+      .table-wrap { padding-left: 16px; padding-right: 16px; }
+
+      .page-header { padding-top: 28px; padding-bottom: 16px; }
+      .page-header h1 { font-size: 26px; }
+      .page-header p { font-size: 14px; }
+
+      .stats { padding-bottom: 16px; gap: 10px; }
+      .stat { padding: 12px 16px; min-width: 0; flex: 1 1 calc(50% - 5px); }
+      .stat-value { font-size: 20px; }
+
+      /* Filter rows stack: label above chip group */
+      .filter-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .filter-label { width: auto; font-size: 10px; }
+      .filter-group { gap: 5px; }
+      .filter-btn { padding: 6px 12px; font-size: 12px; min-height: 32px; }
+
+      /* Audit panel collapses 5 cols → 2 cols (still has horizontal density per cell) */
+      .audit-panel { grid-template-columns: 1fr 1fr; gap: 16px 0; padding: 16px 18px 20px; }
+      .audit-section { padding: 0 16px 16px 0; border-right: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
+      .audit-section + .audit-section { padding-left: 16px; }
+      .audit-section:nth-child(2n) { padding-right: 0; border-right: none; }
+      .audit-section:last-child { border-bottom: none; padding-bottom: 0; }
+      .audit-section:nth-last-child(2):nth-child(odd) { border-bottom: none; padding-bottom: 0; }
+
+      .notes { max-width: none; }
+    }
+
+    @media (max-width: 540px) {
+      .topbar-inner { padding-top: 10px; padding-bottom: 10px; }
+      .topbar-inner .crumb { font-size: 12px; }
+      .page-header h1 { font-size: 22px; }
+      .page-header p { font-size: 13px; }
+
+      /* Stats: 2 columns stable, but trim padding */
+      .stat-value { font-size: 18px; }
+      .stat-label { font-size: 10px; }
+
+      /* Audit panel: single column on tiny screens */
+      .audit-panel { grid-template-columns: 1fr; padding: 14px 16px 16px; }
+      .audit-section { padding: 0 0 12px 0; border-right: none; }
+      .audit-section + .audit-section { padding-left: 0; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+
+      /* Reserve room for the floating horizontal scrollbar */
+      .table-wrap { padding-bottom: 100px; }
+
+      td, th { padding: 8px 10px; font-size: 12px; }
+      .screen-id, .filepath { font-size: 10px; }
+    }
   </style>
 </head>
 <body data-theme="light">

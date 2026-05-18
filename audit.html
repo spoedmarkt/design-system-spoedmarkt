@@ -456,13 +456,63 @@
     }
     footer a { color: var(--ink); }
 
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+    @media (max-width: 900px) {
+      .topbar-inner { padding: 12px 20px; }
+      .hero { padding: 48px 24px 40px; }
+      .hero::after { width: 240px; height: 240px; right: -80px; top: -80px; }
+      .hero h1 { font-size: 34px; }
+      .hero p { font-size: 16px; }
+      .container { padding: 0 24px; }
+      .toc { margin: -24px 20px 32px; padding: 18px 20px; max-width: none; }
+      .toc ol { grid-template-columns: 1fr 1fr; }
+      section { margin-bottom: 40px; }
+      section h2 { font-size: 24px; }
+      section h3 { font-size: 18px; }
+      footer { padding: 20px 24px; max-width: none; }
+    }
+
     @media (max-width: 600px) {
-      .hero { padding: 40px 20px 32px; }
-      .hero h1 { font-size: 30px; }
-      .container { padding: 0 20px; }
-      .toc { margin: -24px 16px 32px; padding: 16px 18px; }
-      section h2 { font-size: 22px; }
-      th, td { padding: 10px 12px; font-size: 13px; }
+      .topbar-inner { padding: 10px 16px; gap: 8px; }
+      .crumb { font-size: 12px; }
+      .crumb span { display: inline; }
+      .theme-pill { padding: 6px 10px; font-size: 12px; }
+
+      .hero { padding: 36px 20px 28px; }
+      .hero-eyebrow { font-size: 10px; padding: 4px 10px; margin-bottom: 14px; }
+      .hero h1 { font-size: 26px; line-height: 1.15; }
+      .hero p { font-size: 14px; }
+      .hero p code { font-size: 13px; padding: 1px 6px; }
+
+      .container { padding: 0 16px; }
+      .toc { margin: -20px 12px 28px; padding: 14px 16px; }
+      .toc h2 { font-size: 11px; }
+      .toc ol { grid-template-columns: 1fr; gap: 4px; }
+      .toc ol li a { font-size: 14px; }
+
+      section { margin-bottom: 32px; }
+      section h2 { font-size: 20px; }
+      section h2 .step { width: 26px; height: 26px; line-height: 26px; font-size: 12px; margin-right: 8px; }
+      section h3 { font-size: 16px; margin: 24px 0 10px; }
+      section p, section li { font-size: 14px; }
+
+      /* Tables: keep readable; wrap aggressively */
+      th, td { padding: 8px 10px; font-size: 12px; }
+      td.hex, td.token { font-size: 11px; }
+      td.count { width: 56px; }
+
+      /* Code blocks scroll horizontally */
+      pre { padding: 14px 16px; font-size: 12px; }
+
+      /* Palette grid stays auto-fit; tile sizes shrink */
+      .palette-grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 10px; }
+      .palette-color { height: 52px; }
+      .palette-meta { padding: 8px 10px; font-size: 11px; }
+
+      .callout { padding: 12px 14px; font-size: 14px; margin: 12px 0 18px; }
+      footer { padding: 18px 16px; font-size: 12px; }
     }
   </style>
 </head>

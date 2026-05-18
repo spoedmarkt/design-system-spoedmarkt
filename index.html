@@ -55,9 +55,23 @@
       max-width: 540px;
       margin-bottom: 40px;
     }
-    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    @media (max-width: 800px) { .cards { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 540px) { .cards { grid-template-columns: 1fr; } }
+    .cards { display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr); }
+    .cards--row2 { grid-template-columns: repeat(2, 1fr); }
+    .cards + .cards { margin-top: 16px; }
+    @media (max-width: 800px) {
+      .cards, .cards--row2 { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 540px) {
+      body { padding: 24px 20px; }
+      h1 { font-size: 32px; line-height: 1.1; margin-bottom: 12px; }
+      p.lead { font-size: 15px; margin-bottom: 28px; }
+      .eyebrow { font-size: 10px; padding: 5px 10px; margin-bottom: 18px; }
+      .cards, .cards--row2 { grid-template-columns: 1fr; gap: 12px; }
+      .cards + .cards { margin-top: 12px; }
+      .card { padding: 20px; border-radius: 16px; }
+      .card-title { font-size: 18px; }
+      .card-body { font-size: 13px; }
+    }
     .card {
       background: var(--surface);
       border: 1px solid var(--paper-400);
@@ -103,20 +117,31 @@
       semantic, light + dark, token-driven foundation.
     </p>
 
-    <div class="cards" style="grid-template-columns: repeat(2, 1fr);">
-      <a class="card" href="./screen-inventory.html" style="grid-column: 1 / -1;">
+    <div class="cards cards--row2">
+      <a class="card" href="./screen-inventory.html">
         <span class="card-meta">Redesign · 1.1</span>
         <span class="card-title">Screen inventory</span>
         <span class="card-body">
           All 52 screens mapped from the mobile codebase — Screen ID, cluster, user role,
           registration path, file path, priority, and status. Filterable by cluster, role,
-          and priority. Source of truth for the redesign.
+          and priority.
+        </span>
+        <span class="card-arrow">Open</span>
+      </a>
+
+      <a class="card" href="./screens.html">
+        <span class="card-meta">Redesign · 1.2</span>
+        <span class="card-title">Screen mockups</span>
+        <span class="card-body">
+          Phone-frame mockups of each redesigned screen in light + dark, sourced from the
+          screen inventory. Currently mocked up: <strong>My Jobs</strong>. The other 51
+          screens are stubbed.
         </span>
         <span class="card-arrow">Open</span>
       </a>
     </div>
 
-    <div class="cards" style="margin-top: 16px;">
+    <div class="cards">
       <a class="card" href="./component-library.html">
         <span class="card-meta">Showcase</span>
         <span class="card-title">Component library</span>
